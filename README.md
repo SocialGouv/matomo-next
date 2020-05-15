@@ -1,7 +1,4 @@
-# matomo-next <a href="https://github.com/SocialGouv/matomo-next/workflows/main/"><img src="https://github.com/SocialGouv/matomo-next/workflows/main/badge.svg" alt="Github Master Main Status"></a>
-
-<a href="https://opensource.org/licenses/Apache-2.0"><img src="https://img.shields.io/badge/License-Apache--2.0-yellow.svg" alt="License: Apache-2.0"></a>
-<a href="https://www.npmjs.com/package/@socialgouv/matomo-next"><img src="https://img.shields.io/npm/v/@socialgouv/matomo-next.svg" alt="Npm version"></a>
+# matomo-next <a href="https://github.com/SocialGouv/matomo-next/workflows/main/"><img src="https://github.com/SocialGouv/matomo-next/workflows/main/badge.svg" alt="Github Master Main Status"></a> <a href="https://opensource.org/licenses/Apache-2.0"><img src="https://img.shields.io/badge/License-Apache--2.0-yellow.svg" alt="License: Apache-2.0"></a><a href="https://www.npmjs.com/package/@socialgouv/matomo-next"><img src="https://img.shields.io/npm/v/@socialgouv/matomo-next.svg" alt="Npm version"></a>
 
 Matomo analytics for Next.js applications. will track route changes.
 
