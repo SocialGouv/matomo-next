@@ -1,0 +1,118 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`init should create a js tag and initialize 1`] = `
+Array [
+  Array [
+    "trackPageView",
+  ],
+  Array [
+    "enableLinkTracking",
+  ],
+  Array [
+    "setTrackerUrl",
+    "https://YO/matomo.php",
+  ],
+  Array [
+    "setSiteId",
+    "42",
+  ],
+]
+`;
+
+exports[`push should append data to window._paq 1`] = `
+Array [
+  Array [
+    "trackEvent",
+    "kikoo",
+    "lol",
+  ],
+]
+`;
+
+exports[`router.routeChangeComplete event should trackPageView with correct title on route change 1`] = `
+Array [
+  Array [
+    "setReferrerUrl",
+    "/",
+  ],
+  Array [
+    "setCustomUrl",
+    "/path/to/hello",
+  ],
+  Array [
+    "setDocumentTitle",
+    "test page",
+  ],
+  Array [
+    "deleteCustomVariables",
+    "page",
+  ],
+  Array [
+    "setGenerationTimeMs",
+    0,
+  ],
+  Array [
+    "trackPageView",
+  ],
+  Array [
+    "enableLinkTracking",
+  ],
+]
+`;
+
+exports[`router.routeChangeComplete event should use previousPath as referer on consecutive route change 1`] = `
+Array [
+  Array [
+    "setReferrerUrl",
+    "/",
+  ],
+  Array [
+    "setCustomUrl",
+    "/path/to/hello",
+  ],
+  Array [
+    "setDocumentTitle",
+    "test page",
+  ],
+  Array [
+    "deleteCustomVariables",
+    "page",
+  ],
+  Array [
+    "setGenerationTimeMs",
+    0,
+  ],
+  Array [
+    "trackPageView",
+  ],
+  Array [
+    "enableLinkTracking",
+  ],
+  Array [
+    "setReferrerUrl",
+    "/path/to/hello",
+  ],
+  Array [
+    "setCustomUrl",
+    "/path/to/hello2",
+  ],
+  Array [
+    "setDocumentTitle",
+    "test page 2",
+  ],
+  Array [
+    "deleteCustomVariables",
+    "page",
+  ],
+  Array [
+    "setGenerationTimeMs",
+    0,
+  ],
+  Array [
+    "trackPageView",
+  ],
+  Array [
+    "enableLinkTracking",
+  ],
+]
+`;
