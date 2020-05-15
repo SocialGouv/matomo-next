@@ -6,16 +6,16 @@
   "files": "lib",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@babel/cli": "^7.8.4",
-    "@babel/preset-env": "^7.9.6",
-    "@socialgouv/eslint-config-react": "^0.21.0",
-    "eslint": "^7.0.0",
-    "esm": "^3.2.25",
-    "jest": "^26.0.1",
-    "next": "9.4",
-    "prettier": "^2.0.5",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "@babel/cli": "7.8.4",
+    "@babel/preset-env": "7.9.6",
+    "@socialgouv/eslint-config-react": "0.21.0",
+    "eslint": "7.0.0",
+    "esm": "3.2.25",
+    "jest": "26.0.1",
+    "next": "9.4.0",
+    "prettier": "2.0.5",
+    "react": "16.13.1",
+    "react-dom": "16.13.1"
   },
   "peerDependencies": {
     "next": "9"
