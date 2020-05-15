@@ -4,7 +4,7 @@ Matomo analytics for Next.js applications. Will track route changes and custom e
 
 ## Usage
 
-A sample this to your `_app.js` :
+Add the `init` call in your `_app.js` :
 
 ```jsx
 import React from "react";
