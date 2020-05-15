@@ -1,5 +1,6 @@
 import Router from "next/router";
 
+// initialize the tracker
 export function init({
   url,
   siteId,
