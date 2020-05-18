@@ -1,4 +1,5 @@
-name: main
+name: CI
+
 on:
   - push
   - pull_request
@@ -60,6 +61,12 @@ jobs:
       - name: Build
         run: yarn build
 
+      - name: Archive build
+        uses: actions/upload-artifact@v1
+        with:
+          name: lib
+          path: lib
+
   release:
     needs: [build]
     if: github.event_name == 'push'
@@ -71,6 +78,12 @@ jobs:
           node-version: 12.x
 
       - uses: actions/checkout@v2
+
+      - name: Download lib form build job
+        uses: actions/download-artifact@v1
+        with:
+          name: lib
+          path: lib
 
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v2
