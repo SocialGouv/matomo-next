@@ -1,10 +1,7 @@
 {
   "name": "@socialgouv/matomo-next",
-  "author": "Fabrique numérique des Ministères Sociaux <dsi-incubateur@sg.social.gouv.fr> (https://www.fabrique.social.gouv.fr)",
   "version": "1.0.0",
-  "main": "lib/index.js",
-  "files": "lib",
-  "license": "Apache-2.0",
+  "author": "Fabrique numérique des Ministères Sociaux <dsi-incubateur@sg.social.gouv.fr> (https://www.fabrique.social.gouv.fr)",
   "devDependencies": {
     "@babel/cli": "7.8.4",
     "@babel/preset-env": "7.9.6",
@@ -17,6 +14,11 @@
     "react": "16.13.1",
     "react-dom": "16.13.1"
   },
+  "files": [
+    "lib"
+  ],
+  "license": "Apache-2.0",
+  "main": "lib/index.js",
   "peerDependencies": {
     "next": "9"
   },
