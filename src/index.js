@@ -1,11 +1,22 @@
 import Router from "next/router";
 
+const isExcludedUrl = (url, patterns) => {
+  let excluded = false;
+  patterns.forEach((pattern) => {
+    if (url.match(pattern)) {
+      excluded = true;
+    }
+  });
+  return excluded;
+};
+
 // initialize the tracker
 export function init({
   url,
   siteId,
   jsTrackerFile = "matomo.js",
   phpTrackerFile = "matomo.php",
+  excludeUrlsPatterns = [],
 }) {
   window._paq = window._paq || [];
   if (!url) {
@@ -36,6 +47,11 @@ export function init({
   previousPath = location.pathname;
 
   Router.events.on("routeChangeComplete", (path) => {
+    const excludedUrl = isExcludedUrl(path, excludeUrlsPatterns);
+    if (excludedUrl) {
+      console.log(`matomo: exclude track ${path}`);
+      return;
+    }
     // We use only the part of the url without the querystring to ensure piwik is happy
     // It seems that piwik doesn't track well page with querystring
     const [pathname] = path.split("?");

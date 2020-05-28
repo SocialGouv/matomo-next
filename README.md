@@ -48,7 +48,19 @@ export default MyApp;
 
 Will track routes changes by default.
 
-You can also track additionnal events :
+### Exclude tracking some routes :
+
+This wont track `/login.php` or any url containing `?token=`.
+
+```js
+init({
+  url: MATOMO_URL,
+  siteId: MATOMO_SITE_ID,
+  excludeUrlsPatterns: [/^\/login.php/, /\?token=.+/],
+});
+```
+
+### Track additionnal events :
 
 ```js
 import { push } from "@socialgouv/matomo-next";

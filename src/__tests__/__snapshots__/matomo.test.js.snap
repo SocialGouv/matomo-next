@@ -1,5 +1,50 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`excludeUrlsPatterns should excluded login.php and token variables 1`] = `
+Array [
+  Array [
+    "trackPageView",
+  ],
+  Array [
+    "enableLinkTracking",
+  ],
+  Array [
+    "setTrackerUrl",
+    "https://YO/matomo.php",
+  ],
+  Array [
+    "setSiteId",
+    "42",
+  ],
+  Array [
+    "setReferrerUrl",
+    "/",
+  ],
+  Array [
+    "setCustomUrl",
+    "/path/to/page.php",
+  ],
+  Array [
+    "setDocumentTitle",
+    "test page 2",
+  ],
+  Array [
+    "deleteCustomVariables",
+    "page",
+  ],
+  Array [
+    "setGenerationTimeMs",
+    0,
+  ],
+  Array [
+    "trackPageView",
+  ],
+  Array [
+    "enableLinkTracking",
+  ],
+]
+`;
+
 exports[`init should create a js tag and initialize 1`] = `
 Array [
   Array [
