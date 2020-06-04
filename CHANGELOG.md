@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/SocialGouv/matomo-next/compare/v1.0.1...v1.1.0) (2020-06-04)
+
+
+### Features
+
+* add init.excludeUrlsPatterns ([#20](https://github.com/SocialGouv/matomo-next/issues/20)) ([b4db11d](https://github.com/SocialGouv/matomo-next/commit/b4db11d2f26e15ba0aae7976521be2aa89aec219))
+
 ## [1.0.1](https://github.com/SocialGouv/matomo-next/compare/v1.0.0...v1.0.1) (2020-05-18)
 
 
