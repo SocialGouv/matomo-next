@@ -6,7 +6,7 @@
     "@babel/cli": "7.8.4",
     "@babel/preset-env": "7.9.6",
     "@socialgouv/eslint-config-react": "0.25.0",
-    "eslint": "7.0.0",
+    "eslint": "7.1.0",
     "esm": "3.2.25",
     "jest": "26.0.1",
     "next": "9.4.4",
