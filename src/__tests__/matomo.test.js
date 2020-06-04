@@ -66,4 +66,29 @@ describe("router.routeChangeComplete event", () => {
   });
 });
 
+describe("excludeUrlsPatterns", () => {
+  beforeEach(() => {
+    global._paq = [];
+  });
+  it("should excluded login.php and token variables", () => {
+    // we need to add a fake script node so
+    // init can insert matomo tracker code before it
+    document.head.appendChild(document.createElement("script"));
+    init({
+      siteId: "42",
+      url: "https://YO",
+      excludeUrlsPatterns: [/^\/login.php/, /\?token=.+/],
+    });
+    Router.events.emit("routeChangeComplete", "/login.php");
+    Router.events.emit("routeChangeComplete", "/path/to/page.php");
+    Router.events.emit("routeChangeComplete", "/path/to/page.php?token=pouet");
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        expect(window._paq).toMatchSnapshot();
+        resolve();
+      }, 0);
+    });
+  });
+});
+
 // todo: should track pageview on next router routeChangeComplete
