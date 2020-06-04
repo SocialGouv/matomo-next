@@ -1,0 +1,5 @@
+{
+  "extends": [
+    "github>SocialGouv/renovate-config:light"
+  ]
+}
