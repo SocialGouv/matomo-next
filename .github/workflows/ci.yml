@@ -46,7 +46,7 @@ jobs:
             ${{ runner.os }}-${{ matrix.node-version }}-yarn-
 
       - name: Installing
-        run: yarn --frozen-lockfile --perfer-offline --link-duplicates
+        run: yarn --frozen-lockfile --perfer-offline
 
       - name: Lint
         run: yarn lint
