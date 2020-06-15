@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/SocialGouv/matomo-next/compare/v1.1.0...v1.1.1) (2020-06-15)
+
+
+### Bug Fixes
+
+* **matomo:** dont track excludeUrls even on first load ([#24](https://github.com/SocialGouv/matomo-next/issues/24)) ([647d039](https://github.com/SocialGouv/matomo-next/commit/647d0393305ad70d3e13223d0866ad4a75a079e9))
+
 # [1.1.0](https://github.com/SocialGouv/matomo-next/compare/v1.0.1...v1.1.0) (2020-06-04)
 
 
