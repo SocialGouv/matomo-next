@@ -1,5 +1,21 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`excludeUrlsPatterns should exclude initial page tracking 1`] = `
+Array [
+  Array [
+    "enableLinkTracking",
+  ],
+  Array [
+    "setTrackerUrl",
+    "https://YO/matomo.php",
+  ],
+  Array [
+    "setSiteId",
+    "42",
+  ],
+]
+`;
+
 exports[`excludeUrlsPatterns should excluded login.php and token variables 1`] = `
 Array [
   Array [
@@ -41,6 +57,25 @@ Array [
   ],
   Array [
     "enableLinkTracking",
+  ],
+]
+`;
+
+exports[`excludeUrlsPatterns should track initial page if not excluded 1`] = `
+Array [
+  Array [
+    "trackPageView",
+  ],
+  Array [
+    "enableLinkTracking",
+  ],
+  Array [
+    "setTrackerUrl",
+    "https://YO/matomo.php",
+  ],
+  Array [
+    "setSiteId",
+    "42",
   ],
 ]
 `;

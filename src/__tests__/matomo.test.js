@@ -15,6 +15,13 @@ jest.mock("next/router", () => ({
   },
 }));
 
+// default window.location.pathname
+Object.defineProperty(window, "location", {
+  value: {
+    pathname: "/",
+  },
+});
+
 describe("init", () => {
   beforeEach(() => {
     global._paq = [];
@@ -82,6 +89,39 @@ describe("excludeUrlsPatterns", () => {
     Router.events.emit("routeChangeComplete", "/login.php");
     Router.events.emit("routeChangeComplete", "/path/to/page.php");
     Router.events.emit("routeChangeComplete", "/path/to/page.php?token=pouet");
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        expect(window._paq).toMatchSnapshot();
+        resolve();
+      }, 0);
+    });
+  });
+  it("should exclude initial page tracking", () => {
+    window.location.pathname = "/change-password-pouet";
+    document.head.appendChild(document.createElement("script"));
+    init({
+      siteId: "42",
+      url: "https://YO",
+      excludeUrlsPatterns: [/^\/change-password/],
+    });
+
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        expect(window._paq).toMatchSnapshot();
+        resolve();
+      }, 0);
+    });
+  });
+
+  it("should track initial page if not excluded", () => {
+    window.location.pathname = "/some-page";
+    document.head.appendChild(document.createElement("script"));
+    init({
+      siteId: "42",
+      url: "https://YO",
+      excludeUrlsPatterns: [/^\/change-password/],
+    });
+
     return new Promise((resolve) => {
       setTimeout(() => {
         expect(window._paq).toMatchSnapshot();

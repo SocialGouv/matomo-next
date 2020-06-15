@@ -25,7 +25,18 @@ export function init({
   }
   let previousPath = "";
   // order is important -_- so campaign are detected
-  push(["trackPageView"]);
+  const excludedUrl =
+    typeof window !== "undefined" &&
+    isExcludedUrl(window.location.pathname, excludeUrlsPatterns);
+
+  if (excludedUrl) {
+    if (typeof window !== "undefined") {
+      console.log(`matomo: exclude track ${window.location.pathname}`);
+    }
+  } else {
+    push(["trackPageView"]);
+  }
+
   push(["enableLinkTracking"]);
   push(["setTrackerUrl", `${url}/${phpTrackerFile}`]);
   push(["setSiteId", siteId]);
