@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/SocialGouv/matomo-next/compare/v1.1.1...v1.1.2) (2020-06-15)
+
+
+### Bug Fixes
+
+* dont double-enableLinkTracking fix [#23](https://github.com/SocialGouv/matomo-next/issues/23) ([#26](https://github.com/SocialGouv/matomo-next/issues/26)) ([12ae2e5](https://github.com/SocialGouv/matomo-next/commit/12ae2e54900faf2f452494c721e4946bf622a674))
+
 ## [1.1.1](https://github.com/SocialGouv/matomo-next/compare/v1.1.0...v1.1.1) (2020-06-15)
 
 
