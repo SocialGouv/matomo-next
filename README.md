@@ -79,4 +79,8 @@ push
 router.routeChangeComplete event
   ✓ should trackPageView with correct title on route change (4 ms)
   ✓ should use previousPath as referer on consecutive route change (6 ms)
+excludeUrlsPatterns
+  ✓ should excluded login.php and token variables (22 ms)
+  ✓ should exclude initial page tracking (4 ms)
+  ✓ should track initial page if not excluded (3 ms)
 ```
