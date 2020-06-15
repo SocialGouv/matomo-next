@@ -55,9 +55,6 @@ Array [
   Array [
     "trackPageView",
   ],
-  Array [
-    "enableLinkTracking",
-  ],
 ]
 `;
 
@@ -134,9 +131,6 @@ Array [
   Array [
     "trackPageView",
   ],
-  Array [
-    "enableLinkTracking",
-  ],
 ]
 `;
 
@@ -166,9 +160,6 @@ Array [
     "trackPageView",
   ],
   Array [
-    "enableLinkTracking",
-  ],
-  Array [
     "setReferrerUrl",
     "/path/to/hello",
   ],
@@ -190,9 +181,6 @@ Array [
   ],
   Array [
     "trackPageView",
-  ],
-  Array [
-    "enableLinkTracking",
   ],
 ]
 `;

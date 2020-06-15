@@ -83,7 +83,6 @@ export function init({
       } else {
         push(["trackPageView"]);
       }
-      push(["enableLinkTracking"]);
       previousPath = pathname;
     }, 0);
   });
