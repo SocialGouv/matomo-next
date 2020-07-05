@@ -3,8 +3,8 @@
   "version": "1.1.2",
   "author": "Fabrique numérique des Ministères Sociaux <dsi-incubateur@sg.social.gouv.fr> (https://www.fabrique.social.gouv.fr)",
   "devDependencies": {
-    "@babel/cli": "7.10.3",
-    "@babel/preset-env": "7.10.3",
+    "@babel/cli": "7.10.4",
+    "@babel/preset-env": "7.10.4",
     "@socialgouv/eslint-config-react": "0.25.0",
     "eslint": "7.1.0",
     "esm": "3.2.25",
