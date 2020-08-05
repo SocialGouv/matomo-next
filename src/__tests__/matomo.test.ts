@@ -1,11 +1,15 @@
-import Router from "next/router";
+import { init, push } from "..";
+import { default as Router } from "next/router";
 
-import { init, push } from "../index";
+type RouteChangeFunction = (route: string) => void;
+let mockRouteChangeComplete: RouteChangeFunction;
 
-let mockRouteChangeComplete;
 jest.mock("next/router", () => ({
   events: {
-    emit: (event, route) => {
+    on: (_event: unknown, cb: RouteChangeFunction) => {
+      mockRouteChangeComplete = cb;
+    },
+    emit: (_event: unknown, route: string) => {
       mockRouteChangeComplete(route);
       jest.fn();
     },
