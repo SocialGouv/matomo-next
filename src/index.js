@@ -90,6 +90,7 @@ export function init({
 
 // to push custom events
 export function push(args) {
+  window._paq = window._paq || [];
   window._paq.push(args);
 }
 
