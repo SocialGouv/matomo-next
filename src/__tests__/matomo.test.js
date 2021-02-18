@@ -1,18 +1,19 @@
-import { init, push } from "../index";
 import Router from "next/router";
+
+import { init, push } from "../index";
 
 let mockRouteChangeComplete;
 jest.mock("next/router", () => ({
-  query: {},
   events: {
-    on: (event, cb) => {
-      mockRouteChangeComplete = cb;
-    },
     emit: (event, route) => {
       mockRouteChangeComplete(route);
       jest.fn();
     },
+    on: (event, cb) => {
+      mockRouteChangeComplete = cb;
+    },
   },
+  query: {},
 }));
 
 // default window.location.pathname
@@ -82,9 +83,9 @@ describe("excludeUrlsPatterns", () => {
     // init can insert matomo tracker code before it
     document.head.appendChild(document.createElement("script"));
     init({
+      excludeUrlsPatterns: [/^\/login.php/, /\?token=.+/],
       siteId: "42",
       url: "https://YO",
-      excludeUrlsPatterns: [/^\/login.php/, /\?token=.+/],
     });
     Router.events.emit("routeChangeComplete", "/login.php");
     Router.events.emit("routeChangeComplete", "/path/to/page.php");
@@ -100,9 +101,9 @@ describe("excludeUrlsPatterns", () => {
     window.location.pathname = "/change-password-pouet";
     document.head.appendChild(document.createElement("script"));
     init({
+      excludeUrlsPatterns: [/^\/change-password/],
       siteId: "42",
       url: "https://YO",
-      excludeUrlsPatterns: [/^\/change-password/],
     });
 
     return new Promise((resolve) => {
@@ -117,9 +118,9 @@ describe("excludeUrlsPatterns", () => {
     window.location.pathname = "/some-page";
     document.head.appendChild(document.createElement("script"));
     init({
+      excludeUrlsPatterns: [/^\/change-password/],
       siteId: "42",
       url: "https://YO",
-      excludeUrlsPatterns: [/^\/change-password/],
     });
 
     return new Promise((resolve) => {
