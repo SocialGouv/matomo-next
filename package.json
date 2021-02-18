@@ -3,16 +3,16 @@
   "version": "1.1.2",
   "author": "Fabrique numérique des Ministères Sociaux <dsi-incubateur@sg.social.gouv.fr> (https://www.fabrique.social.gouv.fr)",
   "devDependencies": {
-    "@babel/cli": "7.10.5",
-    "@babel/preset-env": "7.10.4",
-    "@socialgouv/eslint-config-react": "0.25.0",
-    "eslint": "7.1.0",
+    "@babel/cli": "7.12.13",
+    "@babel/preset-env": "7.12.13",
+    "@socialgouv/eslint-config-react": "0.35.0",
+    "eslint": "7.19.0",
     "esm": "3.2.25",
-    "jest": "26.0.1",
-    "next": "9.4.4",
-    "prettier": "2.0.5",
-    "react": "16.13.1",
-    "react-dom": "16.13.1"
+    "jest": "26.6.3",
+    "next": "9.5.5",
+    "prettier": "2.2.1",
+    "react": "16.14.0",
+    "react-dom": "16.14.0"
   },
   "files": [
     "lib"
