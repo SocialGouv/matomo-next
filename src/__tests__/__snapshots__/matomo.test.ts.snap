@@ -42,7 +42,7 @@ Array [
   ],
   Array [
     "setDocumentTitle",
-    "test page 2",
+    "some page",
   ],
   Array [
     "deleteCustomVariables",
@@ -77,6 +77,8 @@ Array [
 ]
 `;
 
+exports[`init should NOT create events when url is not provided 1`] = `Array []`;
+
 exports[`init should create a js tag and initialize 1`] = `
 Array [
   Array [
@@ -102,6 +104,64 @@ Array [
     "trackEvent",
     "kikoo",
     "lol",
+  ],
+]
+`;
+
+exports[`router.routeChangeComplete event should track route as search in /recherche 1`] = `
+Array [
+  Array [
+    "setReferrerUrl",
+    "/path/to/hello2",
+  ],
+  Array [
+    "setCustomUrl",
+    "/recherche",
+  ],
+  Array [
+    "setDocumentTitle",
+    "search results",
+  ],
+  Array [
+    "deleteCustomVariables",
+    "page",
+  ],
+  Array [
+    "setGenerationTimeMs",
+    0,
+  ],
+  Array [
+    "trackSiteSearch",
+    "some+query",
+  ],
+]
+`;
+
+exports[`router.routeChangeComplete event should track route as search in /search 1`] = `
+Array [
+  Array [
+    "setReferrerUrl",
+    "/recherche",
+  ],
+  Array [
+    "setCustomUrl",
+    "/search",
+  ],
+  Array [
+    "setDocumentTitle",
+    "search results",
+  ],
+  Array [
+    "deleteCustomVariables",
+    "page",
+  ],
+  Array [
+    "setGenerationTimeMs",
+    0,
+  ],
+  Array [
+    "trackSiteSearch",
+    "some+query",
   ],
 ]
 `;
@@ -136,29 +196,6 @@ Array [
 
 exports[`router.routeChangeComplete event should use previousPath as referer on consecutive route change 1`] = `
 Array [
-  Array [
-    "setReferrerUrl",
-    "/",
-  ],
-  Array [
-    "setCustomUrl",
-    "/path/to/hello",
-  ],
-  Array [
-    "setDocumentTitle",
-    "test page",
-  ],
-  Array [
-    "deleteCustomVariables",
-    "page",
-  ],
-  Array [
-    "setGenerationTimeMs",
-    0,
-  ],
-  Array [
-    "trackPageView",
-  ],
   Array [
     "setReferrerUrl",
     "/path/to/hello",

@@ -3,20 +3,33 @@ import { default as Router } from "next/router";
 const isExcludedUrl = (url: string, patterns: RegExp[]): boolean => {
   let excluded = false;
   patterns.forEach((pattern) => {
-    if (pattern.exec(url)) {
+    if (pattern.exec(url) !== null) {
       excluded = true;
     }
   });
   return excluded;
 };
 
-type InitSettings = {
+interface InitSettings {
   url: string;
   siteId: string;
   jsTrackerFile?: string;
   phpTrackerFile?: string;
   excludeUrlsPatterns?: RegExp[];
+}
+
+// to push custom events
+export function push(args: (number[] | string[] | number | string)[]): void {
+  if (window._paq) {
+    window._paq.push(args);
+  }
+}
+
+const startsWith = (str: string, needle: string) => {
+  // eslint-disable-next-line @typescript-eslint/prefer-string-starts-ends-with
+  return str.substring(0, needle.length) === needle;
 };
+
 // initialize the tracker
 export function init({
   url,
@@ -25,7 +38,7 @@ export function init({
   phpTrackerFile = "matomo.php",
   excludeUrlsPatterns = [],
 }: InitSettings): void {
-  window._paq = window._paq || [];
+  window._paq = window._paq !== null ? window._paq : [];
   if (!url) {
     console.warn("Matomo disabled, please provide matomo url");
     return;
@@ -61,12 +74,14 @@ export function init({
   scriptElement.async = true;
   scriptElement.defer = true;
   scriptElement.src = `${url}/${jsTrackerFile}`;
-  refElement.parentNode.insertBefore(scriptElement, refElement);
+  if (refElement.parentNode) {
+    refElement.parentNode.insertBefore(scriptElement, refElement);
+  }
   previousPath = location.pathname;
 
   Router.events.on("routeChangeComplete", (path: string): void => {
-    const excludedUrl = isExcludedUrl(path, excludeUrlsPatterns);
-    if (excludedUrl) {
+    const routeExcludedUrl = isExcludedUrl(path, excludeUrlsPatterns);
+    if (routeExcludedUrl) {
       console.log(`matomo: exclude track ${path}`);
       return;
     }
@@ -85,19 +100,17 @@ export function init({
       push(["setDocumentTitle", document.title]);
       push(["deleteCustomVariables", "page"]);
       push(["setGenerationTimeMs", 0]);
-      if (/^\/recherche/.test(pathname) || /^\/search/.test(pathname)) {
-        push(["trackSiteSearch", q]);
+      if (
+        startsWith(pathname, "/recherche") ||
+        startsWith(pathname, "/search")
+      ) {
+        push(["trackSiteSearch", q ?? ""]);
       } else {
         push(["trackPageView"]);
       }
       previousPath = pathname;
     }, 0);
   });
-}
-
-// to push custom events
-export function push(args: (string | string[] | number | number[])[]): void {
-  window._paq.push(args);
 }
 
 export default init;

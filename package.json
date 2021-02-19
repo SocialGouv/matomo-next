@@ -4,11 +4,9 @@
   "author": "Fabrique numérique des Ministères Sociaux <dsi-incubateur@sg.social.gouv.fr> (https://www.fabrique.social.gouv.fr)",
   "devDependencies": {
     "@socialgouv/eslint-config-react": "1.49.0",
+    "@socialgouv/eslint-config-typescript": "^1.51.0",
     "@types/jest": "26.0.8",
-    "@typescript-eslint/eslint-plugin": "3.8.0",
-    "@typescript-eslint/parser": "3.8.0",
     "eslint": "7.1.0",
-    "eslint-plugin-import": "2.22.0",
     "jest": "26.6.3",
     "next": "9.5.5",
     "prettier": "2.2.1",
