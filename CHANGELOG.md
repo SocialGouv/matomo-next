@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/SocialGouv/matomo-next/compare/v1.2.0...v1.2.1) (2021-02-19)
+
+
+### Bug Fixes
+
+* Allow `push` be called before `init` from [#33](https://github.com/SocialGouv/matomo-next/issues/33) ([#40](https://github.com/SocialGouv/matomo-next/issues/40)) ([4a5a15e](https://github.com/SocialGouv/matomo-next/commit/4a5a15e1cb324a637c09177af8f454d17c58b2e0))
+
 # [1.2.0](https://github.com/SocialGouv/matomo-next/compare/v1.1.2...v1.2.0) (2021-02-19)
 
 
