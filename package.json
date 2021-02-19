@@ -3,16 +3,17 @@
   "version": "1.1.2",
   "author": "Fabrique numérique des Ministères Sociaux <dsi-incubateur@sg.social.gouv.fr> (https://www.fabrique.social.gouv.fr)",
   "devDependencies": {
-    "@babel/cli": "7.12.13",
-    "@babel/preset-env": "7.12.13",
     "@socialgouv/eslint-config-react": "1.49.0",
-    "eslint": "7.19.0",
-    "esm": "3.2.25",
+    "@socialgouv/eslint-config-typescript": "^1.51.0",
+    "@types/jest": "26.0.8",
+    "eslint": "7.1.0",
     "jest": "26.6.3",
     "next": "9.5.5",
     "prettier": "2.2.1",
     "react": "16.14.0",
-    "react-dom": "16.14.0"
+    "react-dom": "16.14.0",
+    "ts-jest": "26.1.4",
+    "typescript": "3.9.7"
   },
   "files": [
     "lib"
@@ -26,7 +27,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "babel src -d lib --ignore '**/*.test.js'",
+    "build": "tsc",
     "lint": "eslint src",
     "test": "jest"
   }

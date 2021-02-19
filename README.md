@@ -73,14 +73,17 @@ push(["trackEvent", "contact", "click phone"]);
 
 ```
 init
-  ✓ should create a js tag and initialize (13 ms)
+  ✓ should create a js tag and initialize (16 ms)
+  ✓ should NOT create events when url is not provided (19 ms)
 push
-  ✓ should append data to window._paq (1 ms)
+  ✓ should append data to window._paq (2 ms)
 router.routeChangeComplete event
-  ✓ should trackPageView with correct title on route change (4 ms)
-  ✓ should use previousPath as referer on consecutive route change (6 ms)
+  ✓ should trackPageView with correct title on route change (5 ms)
+  ✓ should use previousPath as referer on consecutive route change (10 ms)
+  ✓ should track route as search in /recherche (1 ms)
+  ✓ should track route as search in /search (2 ms)
 excludeUrlsPatterns
-  ✓ should excluded login.php and token variables (22 ms)
+  ✓ should excluded login.php and token variables (7 ms)
   ✓ should exclude initial page tracking (4 ms)
   ✓ should track initial page if not excluded (3 ms)
 ```

@@ -1,13 +1,33 @@
-import Router from "next/router";
+import { default as Router } from "next/router";
 
-const isExcludedUrl = (url, patterns) => {
+const isExcludedUrl = (url: string, patterns: RegExp[]): boolean => {
   let excluded = false;
   patterns.forEach((pattern) => {
-    if (url.match(pattern)) {
+    if (pattern.exec(url) !== null) {
       excluded = true;
     }
   });
   return excluded;
+};
+
+interface InitSettings {
+  url: string;
+  siteId: string;
+  jsTrackerFile?: string;
+  phpTrackerFile?: string;
+  excludeUrlsPatterns?: RegExp[];
+}
+
+// to push custom events
+export function push(args: (number[] | string[] | number | string)[]): void {
+  if (window._paq) {
+    window._paq.push(args);
+  }
+}
+
+const startsWith = (str: string, needle: string) => {
+  // eslint-disable-next-line @typescript-eslint/prefer-string-starts-ends-with
+  return str.substring(0, needle.length) === needle;
 };
 
 // initialize the tracker
@@ -17,8 +37,8 @@ export function init({
   jsTrackerFile = "matomo.js",
   phpTrackerFile = "matomo.php",
   excludeUrlsPatterns = [],
-}) {
-  window._paq = window._paq || [];
+}: InitSettings): void {
+  window._paq = window._paq !== null ? window._paq : [];
   if (!url) {
     console.warn("Matomo disabled, please provide matomo url");
     return;
@@ -42,9 +62,9 @@ export function init({
   push(["setSiteId", siteId]);
 
   /**
-   * for intial loading we use the location.pathname
+   * for initial loading we use the location.pathname
    * as the first url visited.
-   * Once user navigate accross the site,
+   * Once user navigate across the site,
    * we rely on Router.pathname
    */
 
@@ -54,12 +74,14 @@ export function init({
   scriptElement.async = true;
   scriptElement.defer = true;
   scriptElement.src = `${url}/${jsTrackerFile}`;
-  refElement.parentNode.insertBefore(scriptElement, refElement);
+  if (refElement.parentNode) {
+    refElement.parentNode.insertBefore(scriptElement, refElement);
+  }
   previousPath = location.pathname;
 
-  Router.events.on("routeChangeComplete", (path) => {
-    const excludedUrl = isExcludedUrl(path, excludeUrlsPatterns);
-    if (excludedUrl) {
+  Router.events.on("routeChangeComplete", (path: string): void => {
+    const routeExcludedUrl = isExcludedUrl(path, excludeUrlsPatterns);
+    if (routeExcludedUrl) {
       console.log(`matomo: exclude track ${path}`);
       return;
     }
@@ -78,19 +100,17 @@ export function init({
       push(["setDocumentTitle", document.title]);
       push(["deleteCustomVariables", "page"]);
       push(["setGenerationTimeMs", 0]);
-      if (/^\/recherche/.test(pathname) || /^\/search/.test(pathname)) {
-        push(["trackSiteSearch", q]);
+      if (
+        startsWith(pathname, "/recherche") ||
+        startsWith(pathname, "/search")
+      ) {
+        push(["trackSiteSearch", q ?? ""]);
       } else {
         push(["trackPageView"]);
       }
       previousPath = pathname;
     }, 0);
   });
-}
-
-// to push custom events
-export function push(args) {
-  window._paq.push(args);
 }
 
 export default init;
