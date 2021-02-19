@@ -20,7 +20,7 @@
   "license": "Apache-2.0",
   "main": "lib/index.js",
   "peerDependencies": {
-    "next": "9"
+    "next": ">= 9"
   },
   "publishConfig": {
     "access": "public"
