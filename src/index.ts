@@ -20,9 +20,10 @@ interface InitSettings {
 
 // to push custom events
 export function push(args: (number[] | string[] | number | string)[]): void {
-  if (window._paq) {
-    window._paq.push(args);
+  if (!window._paq) {
+    window._paq = [];
   }
+  window._paq.push(args);
 }
 
 const startsWith = (str: string, needle: string) => {
