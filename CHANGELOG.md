@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/SocialGouv/matomo-next/compare/v1.1.2...v1.2.0) (2021-02-19)
+
+
+### Features
+
+* typescript ([#38](https://github.com/SocialGouv/matomo-next/issues/38)) ([5c4cc1f](https://github.com/SocialGouv/matomo-next/commit/5c4cc1fd692d2638267b7a3c0bc014a82048b718)), closes [#12](https://github.com/SocialGouv/matomo-next/issues/12)
+
 ## [1.1.2](https://github.com/SocialGouv/matomo-next/compare/v1.1.1...v1.1.2) (2020-06-15)
 
 
