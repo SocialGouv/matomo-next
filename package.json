@@ -3,16 +3,16 @@
   "version": "1.2.1",
   "author": "Fabrique numérique des Ministères Sociaux <dsi-incubateur@sg.social.gouv.fr> (https://www.fabrique.social.gouv.fr)",
   "devDependencies": {
-    "@socialgouv/eslint-config-react": "1.49.0",
-    "@socialgouv/eslint-config-typescript": "^1.51.0",
+    "@socialgouv/eslint-config-react": "1.70.0",
+    "@socialgouv/eslint-config-typescript": "^1.70.0",
     "@types/jest": "26.0.22",
-    "eslint": "7.1.0",
+    "eslint": "7.24.0",
     "jest": "26.6.3",
     "next": "9.5.5",
     "prettier": "2.2.1",
     "react": "16.14.0",
     "react-dom": "16.14.0",
-    "ts-jest": "26.1.4",
+    "ts-jest": "26.5.5",
     "typescript": "3.9.9"
   },
   "files": [
@@ -21,7 +21,7 @@
   "license": "Apache-2.0",
   "main": "lib/index.js",
   "peerDependencies": {
-    "next": ">= 9.0.8"
+    "next": ">= 9.5.5"
   },
   "publishConfig": {
     "access": "public"
