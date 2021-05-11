@@ -1,3 +1,10 @@
+## [1.2.2](https://github.com/SocialGouv/matomo-next/compare/v1.2.1...v1.2.2) (2021-05-11)
+
+
+### Bug Fixes
+
+* dont use deprecated setGenerationTimeMs fix [#36](https://github.com/SocialGouv/matomo-next/issues/36) ([#52](https://github.com/SocialGouv/matomo-next/issues/52)) ([b2c6dd5](https://github.com/SocialGouv/matomo-next/commit/b2c6dd51a243757583e0ec3a37c59d21f7da8b3b))
+
 ## [1.2.1](https://github.com/SocialGouv/matomo-next/compare/v1.2.0...v1.2.1) (2021-02-19)
 
 
