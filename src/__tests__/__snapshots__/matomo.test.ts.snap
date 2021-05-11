@@ -49,10 +49,6 @@ Array [
     "page",
   ],
   Array [
-    "setGenerationTimeMs",
-    0,
-  ],
-  Array [
     "trackPageView",
   ],
 ]
@@ -127,10 +123,6 @@ Array [
     "page",
   ],
   Array [
-    "setGenerationTimeMs",
-    0,
-  ],
-  Array [
     "trackSiteSearch",
     "some+query",
   ],
@@ -154,10 +146,6 @@ Array [
   Array [
     "deleteCustomVariables",
     "page",
-  ],
-  Array [
-    "setGenerationTimeMs",
-    0,
   ],
   Array [
     "trackSiteSearch",
@@ -185,10 +173,6 @@ Array [
     "page",
   ],
   Array [
-    "setGenerationTimeMs",
-    0,
-  ],
-  Array [
     "trackPageView",
   ],
 ]
@@ -211,10 +195,6 @@ Array [
   Array [
     "deleteCustomVariables",
     "page",
-  ],
-  Array [
-    "setGenerationTimeMs",
-    0,
   ],
   Array [
     "trackPageView",
