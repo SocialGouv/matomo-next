@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         node-version:
-          - 12.x
+          - lts/*
 
     steps:
       - name: Set up Node.js ${{ matrix.node-version }}
