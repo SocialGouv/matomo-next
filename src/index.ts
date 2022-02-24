@@ -80,35 +80,37 @@ export function init({
   }
   previousPath = location.pathname;
 
-  Router.events.on("routeChangeComplete", (path: string): void => {
-    const routeExcludedUrl = isExcludedUrl(path, excludeUrlsPatterns);
-    if (routeExcludedUrl) {
-      console.log(`matomo: exclude track ${path}`);
-      return;
-    }
+  Router.events.on("routeChangeStart", (path: string): void => {
+    if (isExcludedUrl(path, excludeUrlsPatterns)) return;
+
     // We use only the part of the url without the querystring to ensure piwik is happy
     // It seems that piwik doesn't track well page with querystring
     const [pathname] = path.split("?");
+
+    if (previousPath) {
+      push(["setReferrerUrl", `${previousPath}`]);
+    }
+    push(["setCustomUrl", pathname]);
+    push(["deleteCustomVariables", "page"]);
+    previousPath = pathname;
+  });
+
+  Router.events.on("routeChangeComplete", (path: string): void => {
+    if (isExcludedUrl(path, excludeUrlsPatterns)) {
+      console.log(`matomo: exclude track ${path}`);
+      return;
+    }
 
     // In order to ensure that the page title had been updated,
     // we delayed pushing the tracking to the next tick.
     setTimeout(() => {
       const { q } = Router.query;
-      if (previousPath) {
-        push(["setReferrerUrl", `${previousPath}`]);
-      }
-      push(["setCustomUrl", pathname]);
       push(["setDocumentTitle", document.title]);
-      push(["deleteCustomVariables", "page"]);
-      if (
-        startsWith(pathname, "/recherche") ||
-        startsWith(pathname, "/search")
-      ) {
+      if (startsWith(path, "/recherche") || startsWith(path, "/search")) {
         push(["trackSiteSearch", q ?? ""]);
       } else {
         push(["trackPageView"]);
       }
-      previousPath = pathname;
     }, 0);
   });
 }
