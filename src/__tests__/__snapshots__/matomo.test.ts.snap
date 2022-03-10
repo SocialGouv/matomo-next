@@ -41,12 +41,12 @@ Array [
     "/path/to/page.php",
   ],
   Array [
-    "setDocumentTitle",
-    "some page",
-  ],
-  Array [
     "deleteCustomVariables",
     "page",
+  ],
+  Array [
+    "setDocumentTitle",
+    "some page",
   ],
   Array [
     "trackPageView",
@@ -107,20 +107,8 @@ Array [
 exports[`router.routeChangeComplete event should track route as search in /recherche 1`] = `
 Array [
   Array [
-    "setReferrerUrl",
-    "/path/to/hello2",
-  ],
-  Array [
-    "setCustomUrl",
-    "/recherche",
-  ],
-  Array [
     "setDocumentTitle",
     "search results",
-  ],
-  Array [
-    "deleteCustomVariables",
-    "page",
   ],
   Array [
     "trackSiteSearch",
@@ -132,20 +120,8 @@ Array [
 exports[`router.routeChangeComplete event should track route as search in /search 1`] = `
 Array [
   Array [
-    "setReferrerUrl",
-    "/recherche",
-  ],
-  Array [
-    "setCustomUrl",
-    "/search",
-  ],
-  Array [
     "setDocumentTitle",
     "search results",
-  ],
-  Array [
-    "deleteCustomVariables",
-    "page",
   ],
   Array [
     "trackSiteSearch",
@@ -157,20 +133,8 @@ Array [
 exports[`router.routeChangeComplete event should trackPageView with correct title on route change 1`] = `
 Array [
   Array [
-    "setReferrerUrl",
-    "/",
-  ],
-  Array [
-    "setCustomUrl",
-    "/path/to/hello",
-  ],
-  Array [
     "setDocumentTitle",
     "test page",
-  ],
-  Array [
-    "deleteCustomVariables",
-    "page",
   ],
   Array [
     "trackPageView",
@@ -181,20 +145,8 @@ Array [
 exports[`router.routeChangeComplete event should use previousPath as referer on consecutive route change 1`] = `
 Array [
   Array [
-    "setReferrerUrl",
-    "/path/to/hello",
-  ],
-  Array [
-    "setCustomUrl",
-    "/path/to/hello2",
-  ],
-  Array [
     "setDocumentTitle",
     "test page 2",
-  ],
-  Array [
-    "deleteCustomVariables",
-    "page",
   ],
   Array [
     "trackPageView",

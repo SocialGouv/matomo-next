@@ -5,6 +5,8 @@ import { init, push } from "..";
 type RouteChangeFunction = (route: string) => void;
 // eslint-disable-next-line @typescript-eslint/init-declarations
 let mockRouteChangeComplete: RouteChangeFunction;
+// eslint-disable-next-line @typescript-eslint/init-declarations
+let mockRouteChangeStart: RouteChangeFunction;
 
 type AnyObject = Record<string, string>;
 
@@ -12,7 +14,7 @@ jest.mock("next/router", () => {
   const query = {} as AnyObject;
   return {
     events: {
-      emit: (_event: unknown, route: string) => {
+      emit: (_event: string, route: string) => {
         if (/\?/.exec(route) !== null) {
           const search = route.split("?")[1];
           // eslint-disable-next-line @typescript-eslint/prefer-includes
@@ -28,11 +30,19 @@ jest.mock("next/router", () => {
             });
           }
         }
-        mockRouteChangeComplete(route);
+        if (_event === "routeChangeStart") {
+          mockRouteChangeStart(route);
+        } else {
+          mockRouteChangeComplete(route);
+        }
         jest.fn();
       },
-      on: (_event: unknown, cb: RouteChangeFunction) => {
-        mockRouteChangeComplete = cb;
+      on: (_event: string, cb: RouteChangeFunction) => {
+        if (_event === "routeChangeStart") {
+          mockRouteChangeStart = cb;
+        } else {
+          mockRouteChangeComplete = cb;
+        }
       },
     },
     query,
@@ -77,6 +87,43 @@ describe("push", () => {
   });
 });
 
+describe("router.routeChangeStart event", () => {
+  beforeEach(() => {
+    global._paq = [];
+    jest.resetAllMocks();
+  });
+  test("should setReferrerUrl and setCustomUrl on route change start", async () => {
+    init({ siteId: "42", url: "YO" });
+    window._paq = [];
+
+    Router.events.emit("routeChangeStart", "/path/to/hello?world");
+
+    return new Promise<void>((resolve) => {
+      expect(window._paq).toEqual([
+        ["setReferrerUrl", "/"],
+        ["setCustomUrl", "/path/to/hello"],
+        ["deleteCustomVariables", "page"],
+      ]);
+
+      resolve();
+    });
+  });
+  test("should use previousPath as referer on consecutive route change", async () => {
+    document.title = "test page 2";
+
+    Router.events.emit("routeChangeStart", "/path/to/hello2?world");
+
+    return new Promise<void>((resolve) => {
+      expect(window._paq).toEqual([
+        ["setReferrerUrl", "/path/to/hello"],
+        ["setCustomUrl", "/path/to/hello2"],
+        ["deleteCustomVariables", "page"],
+      ]);
+      resolve();
+    });
+  });
+});
+
 describe("router.routeChangeComplete event", () => {
   beforeEach(() => {
     global._paq = [];
@@ -89,7 +136,7 @@ describe("router.routeChangeComplete event", () => {
 
     Router.events.emit("routeChangeComplete", "/path/to/hello?world");
 
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       setTimeout(() => {
         expect(window._paq).toMatchSnapshot();
         resolve();
@@ -101,7 +148,7 @@ describe("router.routeChangeComplete event", () => {
 
     Router.events.emit("routeChangeComplete", "/path/to/hello2?world");
 
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       setTimeout(() => {
         expect(window._paq).toMatchSnapshot();
         resolve();
@@ -112,7 +159,7 @@ describe("router.routeChangeComplete event", () => {
   test("should track route as search in /recherche", async () => {
     document.title = "search results";
     Router.events.emit("routeChangeComplete", "/recherche?q=some+query");
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       setTimeout(() => {
         expect(window._paq).toMatchSnapshot();
         resolve();
@@ -123,7 +170,7 @@ describe("router.routeChangeComplete event", () => {
   test("should track route as search in /search", async () => {
     document.title = "search results";
     Router.events.emit("routeChangeComplete", "/search?q=some+query");
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       setTimeout(() => {
         expect(window._paq).toMatchSnapshot();
         resolve();
@@ -147,10 +194,13 @@ describe("excludeUrlsPatterns", () => {
       siteId: "42",
       url: "https://YO",
     });
+    Router.events.emit("routeChangeStart", "/login.php");
+    Router.events.emit("routeChangeStart", "/path/to/page.php");
+    Router.events.emit("routeChangeStart", "/path/to/page.php?token=pouet");
     Router.events.emit("routeChangeComplete", "/login.php");
     Router.events.emit("routeChangeComplete", "/path/to/page.php");
     Router.events.emit("routeChangeComplete", "/path/to/page.php?token=pouet");
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       setTimeout(() => {
         expect(window._paq).toMatchSnapshot();
         resolve();
@@ -166,7 +216,7 @@ describe("excludeUrlsPatterns", () => {
       url: "https://YO",
     });
 
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       setTimeout(() => {
         expect(window._paq).toMatchSnapshot();
         resolve();
@@ -183,7 +233,7 @@ describe("excludeUrlsPatterns", () => {
       url: "https://YO",
     });
 
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       setTimeout(() => {
         expect(window._paq).toMatchSnapshot();
         resolve();
