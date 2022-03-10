@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/SocialGouv/matomo-next/compare/v1.2.2...v1.3.0) (2022-03-10)
+
+
+### Features
+
+* **routeChangeComplete events:** set referrerUrl and customUrl on routeChangeStart so it can matomo events can be used early on page load (e.g. in a react useEffect) with the correct values ([#72](https://github.com/SocialGouv/matomo-next/issues/72)) ([52f2bbc](https://github.com/SocialGouv/matomo-next/commit/52f2bbc5bad294d07a8e14315081c289622b6c11))
+
 ## [1.2.2](https://github.com/SocialGouv/matomo-next/compare/v1.2.1...v1.2.2) (2021-05-11)
 
 
