@@ -31,6 +31,8 @@ const startsWith = (str: string, needle: string) => {
   return str.substring(0, needle.length) === needle;
 };
 
+const defaultIsSearchPath = (path: string) => startsWith(path, "/recherche") || startsWith(path, "/search")
+
 // initialize the tracker
 export function init({
   url,
@@ -38,6 +40,7 @@ export function init({
   jsTrackerFile = "matomo.js",
   phpTrackerFile = "matomo.php",
   excludeUrlsPatterns = [],
+  isSearchPath = defaultIsSearchPath
 }: InitSettings): void {
   window._paq = window._paq !== null ? window._paq : [];
   if (!url) {
@@ -106,7 +109,7 @@ export function init({
     setTimeout(() => {
       const { q } = Router.query;
       push(["setDocumentTitle", document.title]);
-      if (startsWith(path, "/recherche") || startsWith(path, "/search")) {
+      if (isSearchPath(path)) {
         push(["trackSiteSearch", q ?? ""]);
       } else {
         push(["trackPageView"]);
