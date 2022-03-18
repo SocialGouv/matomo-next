@@ -71,6 +71,8 @@ const trustedPolicyHooks: TrustedTypePolicyOptions = {
   createScriptURL: (s) => s,
 };
 
+const defaultIsSearchPath = (path: string) => startsWith(path, "/recherche") || startsWith(path, "/search")
+
 // initialize the tracker
 export function init({
   url,
@@ -85,7 +87,8 @@ export function init({
   onScriptLoadingError = undefined,
   nonce,
   trustedPolicyName = "matomo-next",
-  logExcludedTracks = false
+  logExcludedTracks = false,
+  isSearchPath = defaultIsSearchPath
 }: InitSettings): void {
   window._paq = window._paq !== null ? window._paq : [];
   if (!url) {
@@ -179,7 +182,7 @@ export function init({
     setTimeout(() => {
       const { q } = Router.query;
       push(["setDocumentTitle", document.title]);
-      if (startsWith(path, "/recherche") || startsWith(path, "/search")) {
+      if (isSearchPath(path)) {
         push(["trackSiteSearch", q ?? ""]);
       } else {
         push(["trackPageView"]);
