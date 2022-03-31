@@ -33,7 +33,7 @@ jobs:
         run: yarn build
 
       - name: Archive build
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: lib
           path: lib
