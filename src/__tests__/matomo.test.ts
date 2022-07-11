@@ -85,6 +85,20 @@ describe("push", () => {
     push(["trackEvent", "kikoo", "lol"]);
     expect(window._paq).toMatchSnapshot();
   });
+
+  test("should append dimensions data to window._paq", () => {
+    init({ siteId: "42", url: "YO" });
+    window._paq = [];
+    push([
+      "trackEvent",
+      "kikoo",
+      "lol",
+      null,
+      null,
+      { dimension1: "ok", dimension2: "foobar" },
+    ]);
+    expect(window._paq).toMatchSnapshot();
+  });
 });
 
 describe("router.routeChangeStart event", () => {
