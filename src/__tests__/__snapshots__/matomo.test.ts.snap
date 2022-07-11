@@ -104,6 +104,22 @@ Array [
 ]
 `;
 
+exports[`push should append dimensions data to window._paq 1`] = `
+Array [
+  Array [
+    "trackEvent",
+    "kikoo",
+    "lol",
+    null,
+    null,
+    Object {
+      "dimension1": "ok",
+      "dimension2": "foobar",
+    },
+  ],
+]
+`;
+
 exports[`router.routeChangeComplete event should track route as search in /recherche 1`] = `
 Array [
   Array [

@@ -18,8 +18,31 @@ interface InitSettings {
   excludeUrlsPatterns?: RegExp[];
 }
 
+interface Dimensions {
+  dimension1?: string;
+  dimension2?: string;
+  dimension3?: string;
+  dimension4?: string;
+  dimension5?: string;
+  dimension6?: string;
+  dimension7?: string;
+  dimension8?: string;
+  dimension9?: string;
+  dimension10?: string;
+}
+
 // to push custom events
-export function push(args: (number[] | string[] | number | string)[]): void {
+export function push(
+  args: (
+    | Dimensions
+    | number[]
+    | string[]
+    | number
+    | string
+    | null
+    | undefined
+  )[]
+): void {
   if (!window._paq) {
     window._paq = [];
   }
