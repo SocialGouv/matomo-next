@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/SocialGouv/matomo-next/compare/v1.3.0...v1.4.0) (2022-07-11)
+
+
+### Features
+
+* **ts:** add dimension support ([#84](https://github.com/SocialGouv/matomo-next/issues/84)) ([417e914](https://github.com/SocialGouv/matomo-next/commit/417e914d6a72e61ff056319f8f1bb1724145bec8))
+
 # [1.3.0](https://github.com/SocialGouv/matomo-next/compare/v1.2.2...v1.3.0) (2022-03-10)
 
 
