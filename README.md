@@ -82,7 +82,7 @@ init({
 });
 ```
 
-### Track additionnal events :
+### Track additional events :
 
 ```js
 import { push } from "@socialgouv/matomo-next";
