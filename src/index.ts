@@ -16,6 +16,8 @@ interface InitSettings {
   jsTrackerFile?: string;
   phpTrackerFile?: string;
   excludeUrlsPatterns?: RegExp[];
+  onRouteChangeStart?: (path: string) => void;
+  onRouteChangeComplete?: (path: string) => void;
 }
 
 interface Dimensions {
@@ -61,6 +63,8 @@ export function init({
   jsTrackerFile = "matomo.js",
   phpTrackerFile = "matomo.php",
   excludeUrlsPatterns = [],
+  onRouteChangeStart = undefined,
+  onRouteChangeComplete = undefined,
 }: InitSettings): void {
   window._paq = window._paq !== null ? window._paq : [];
   if (!url) {
@@ -103,7 +107,7 @@ export function init({
   }
   previousPath = location.pathname;
 
-  Router.events.on("routeChangeStart", (path: string): void => {
+  const defaultOnRouteChangeStart = (path: string): void => {
     if (isExcludedUrl(path, excludeUrlsPatterns)) return;
 
     // We use only the part of the url without the querystring to ensure piwik is happy
@@ -116,9 +120,14 @@ export function init({
     push(["setCustomUrl", pathname]);
     push(["deleteCustomVariables", "page"]);
     previousPath = pathname;
-  });
+  };
 
-  Router.events.on("routeChangeComplete", (path: string): void => {
+  Router.events.on(
+    "routeChangeStart",
+    onRouteChangeStart ?? defaultOnRouteChangeStart
+  );
+
+  const defaultOnRouteChangeComplete = (path: string): void => {
     if (isExcludedUrl(path, excludeUrlsPatterns)) {
       console.log(`matomo: exclude track ${path}`);
       return;
@@ -135,7 +144,12 @@ export function init({
         push(["trackPageView"]);
       }
     }, 0);
-  });
+  };
+
+  Router.events.on(
+    "routeChangeComplete",
+    onRouteChangeComplete ?? defaultOnRouteChangeComplete
+  );
 }
 
 export default init;
