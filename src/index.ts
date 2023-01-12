@@ -121,7 +121,7 @@ export function init({
     push(["deleteCustomVariables", "page"]);
     previousPath = pathname;
 
-    onRouteChangeStart ? onRouteChangeStart(path) : undefined;
+    if (onRouteChangeStart) onRouteChangeStart(path);
   };
 
   Router.events.on("routeChangeStart", defaultOnRouteChangeStart);
@@ -143,7 +143,7 @@ export function init({
       }
     }, 0);
 
-    onRouteChangeComplete ? onRouteChangeComplete(path) : undefined;
+    if (onRouteChangeComplete) onRouteChangeComplete(path);
   };
 
   Router.events.on("routeChangeComplete", defaultOnRouteChangeComplete);
