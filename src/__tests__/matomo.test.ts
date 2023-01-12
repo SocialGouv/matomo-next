@@ -136,6 +136,29 @@ describe("router.routeChangeStart event", () => {
       resolve();
     });
   });
+
+  test("should work if the surcharge of the operator", async () => {
+    init({
+      onRouteChangeStart: (path) => {
+        push(["newOperatorStart", "COMPLETE"]);
+        push(["path", path]);
+      },
+      siteId: "42",
+      url: "YO",
+    });
+    Router.events.emit("routeChangeStart", "/bonjour");
+    return new Promise<void>((resolve) => {
+      setTimeout(() => {
+        expect(window._paq).toEqual(
+          expect.arrayContaining([
+            ["newOperatorStart", "COMPLETE"],
+            ["path", "/bonjour"],
+          ])
+        );
+        resolve();
+      }, 0);
+    });
+  });
 });
 
 describe("router.routeChangeComplete event", () => {
@@ -187,6 +210,29 @@ describe("router.routeChangeComplete event", () => {
     return new Promise<void>((resolve) => {
       setTimeout(() => {
         expect(window._paq).toMatchSnapshot();
+        resolve();
+      }, 0);
+    });
+  });
+
+  test("should work if the surcharge of the operator", async () => {
+    init({
+      onRouteChangeComplete: (path) => {
+        push(["newOperatorComplete", "COMPLETE"]);
+        push(["path", path]);
+      },
+      siteId: "42",
+      url: "YO",
+    });
+    Router.events.emit("routeChangeComplete", "/hello-world");
+    return new Promise<void>((resolve) => {
+      setTimeout(() => {
+        expect(window._paq).toEqual(
+          expect.arrayContaining([
+            ["newOperatorComplete", "COMPLETE"],
+            ["path", "/hello-world"],
+          ])
+        );
         resolve();
       }, 0);
     });
