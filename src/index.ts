@@ -120,16 +120,14 @@ export function init({
     push(["setCustomUrl", pathname]);
     push(["deleteCustomVariables", "page"]);
     previousPath = pathname;
+
+    onRouteChangeStart ? onRouteChangeStart(path) : undefined;
   };
 
-  Router.events.on(
-    "routeChangeStart",
-    onRouteChangeStart ?? defaultOnRouteChangeStart
-  );
+  Router.events.on("routeChangeStart", defaultOnRouteChangeStart);
 
   const defaultOnRouteChangeComplete = (path: string): void => {
     if (isExcludedUrl(path, excludeUrlsPatterns)) {
-      console.log(`matomo: exclude track ${path}`);
       return;
     }
 
@@ -144,12 +142,11 @@ export function init({
         push(["trackPageView"]);
       }
     }, 0);
+
+    onRouteChangeComplete ? onRouteChangeComplete(path) : undefined;
   };
 
-  Router.events.on(
-    "routeChangeComplete",
-    onRouteChangeComplete ?? defaultOnRouteChangeComplete
-  );
+  Router.events.on("routeChangeComplete", defaultOnRouteChangeComplete);
 }
 
 export default init;
