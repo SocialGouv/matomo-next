@@ -37,7 +37,7 @@ function MyApp({ Component, pageProps }) {
   useEffect(() => {
     init({ url: MATOMO_URL, siteId: MATOMO_SITE_ID });
   }, []);
-  
+
   return <Component {...pageProps} />;
 }
 
@@ -66,6 +66,16 @@ import { push } from "@socialgouv/matomo-next";
 // track some events
 push(["trackEvent", "contact", "click phone"]);
 ```
+
+### Extensibility
+
+The function has three optional callback properties that allow for custom behavior to be added:
+
+- `onRouteChangeStart(path: string) => void`: This callback is triggered when the route is about to change with Next Router event `routeChangeStart`. It receives the new path as a parameter.
+
+- `onRouteChangeComplete`: This callback is triggered when the route change is complete with Next Router event `routeChangeComplete`. It receives the new path as a parameter.
+
+- `onInitialization`: This callback is triggered when the function is first initialized. It does not receive any parameters. **It could be useful to use it if you want to add parameter to Matomo when the page is render the first time.**
 
 ## Tests
 
