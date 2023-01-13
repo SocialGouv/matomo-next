@@ -18,6 +18,7 @@ interface InitSettings {
   excludeUrlsPatterns?: RegExp[];
   onRouteChangeStart?: (path: string) => void;
   onRouteChangeComplete?: (path: string) => void;
+  onInitialization?: () => void;
 }
 
 interface Dimensions {
@@ -65,6 +66,7 @@ export function init({
   excludeUrlsPatterns = [],
   onRouteChangeStart = undefined,
   onRouteChangeComplete = undefined,
+  onInitialization = undefined,
 }: InitSettings): void {
   window._paq = window._paq !== null ? window._paq : [];
   if (!url) {
@@ -88,6 +90,8 @@ export function init({
   push(["enableLinkTracking"]);
   push(["setTrackerUrl", `${url}/${phpTrackerFile}`]);
   push(["setSiteId", siteId]);
+
+  if (onInitialization) onInitialization();
 
   /**
    * for initial loading we use the location.pathname
