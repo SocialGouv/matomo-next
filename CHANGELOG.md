@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/SocialGouv/matomo-next/compare/v1.5.0...v1.6.0) (2023-01-13)
+
+
+### Features
+
+* add surcharge during initialization of the parameters + add documentation ([#90](https://github.com/SocialGouv/matomo-next/issues/90)) ([51c1d34](https://github.com/SocialGouv/matomo-next/commit/51c1d345391e70b24225483430892186186ff5dd))
+
 # [1.5.0](https://github.com/SocialGouv/matomo-next/compare/v1.4.0...v1.5.0) (2023-01-13)
 
 
