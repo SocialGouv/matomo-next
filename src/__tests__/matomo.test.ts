@@ -101,6 +101,21 @@ describe("push", () => {
   });
 });
 
+describe("onInitialization", () => {
+  test("should work if the surcharge of the operator", () => {
+    init({
+      onInitialization: () => {
+        push(["during_initialization", "hello"]);
+      },
+      siteId: "42",
+      url: "YO",
+    });
+    expect(window._paq).toEqual(
+      expect.arrayContaining([["during_initialization", "hello"]])
+    );
+  });
+});
+
 describe("router.routeChangeStart event", () => {
   beforeEach(() => {
     global._paq = [];
