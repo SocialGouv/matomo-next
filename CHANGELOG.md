@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/SocialGouv/matomo-next/compare/v1.4.0...v1.5.0) (2023-01-13)
+
+
+### Features
+
+* add possibility to surcharge next router listener  ([#88](https://github.com/SocialGouv/matomo-next/issues/88)) ([f1bf4a2](https://github.com/SocialGouv/matomo-next/commit/f1bf4a2e32b0ffb74a994eaeb4cff73f15591031))
+
 # [1.4.0](https://github.com/SocialGouv/matomo-next/compare/v1.3.0...v1.4.0) (2022-07-11)
 
 
