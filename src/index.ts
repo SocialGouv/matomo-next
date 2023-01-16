@@ -79,6 +79,8 @@ export function init({
     typeof window !== "undefined" &&
     isExcludedUrl(window.location.pathname, excludeUrlsPatterns);
 
+  if (onInitialization) onInitialization();
+
   if (excludedUrl) {
     if (typeof window !== "undefined") {
       console.log(`matomo: exclude track ${window.location.pathname}`);
@@ -90,8 +92,6 @@ export function init({
   push(["enableLinkTracking"]);
   push(["setTrackerUrl", `${url}/${phpTrackerFile}`]);
   push(["setSiteId", siteId]);
-
-  if (onInitialization) onInitialization();
 
   /**
    * for initial loading we use the location.pathname
