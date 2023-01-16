@@ -1,3 +1,10 @@
+## [1.6.1](https://github.com/SocialGouv/matomo-next/compare/v1.6.0...v1.6.1) (2023-01-16)
+
+
+### Bug Fixes
+
+* **initialization:** change argument to allow to be enable before `trackPageView` ([#91](https://github.com/SocialGouv/matomo-next/issues/91)) ([9c9a3db](https://github.com/SocialGouv/matomo-next/commit/9c9a3db494c44fdca89514d3f367c1a6f8218cf7))
+
 # [1.6.0](https://github.com/SocialGouv/matomo-next/compare/v1.5.0...v1.6.0) (2023-01-13)
 
 
