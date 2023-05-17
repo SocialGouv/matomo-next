@@ -13,7 +13,6 @@ const isExcludedUrl = (url: string, patterns: RegExp[]): boolean => {
 interface InitSettings {
   url: string;
   siteId: string;
-  jsTrackerFile?: string;
   phpTrackerFile?: string;
   excludeUrlsPatterns?: RegExp[];
   onRouteChangeStart?: (path: string) => void;
@@ -61,7 +60,6 @@ const startsWith = (str: string, needle: string) => {
 export function init({
   url,
   siteId,
-  jsTrackerFile = "matomo.js",
   phpTrackerFile = "matomo.php",
   excludeUrlsPatterns = [],
   onRouteChangeStart = undefined,
@@ -93,6 +91,11 @@ export function init({
   push(["setTrackerUrl", `${url}/${phpTrackerFile}`]);
   push(["setSiteId", siteId]);
 
+  // Load matomo script directly
+  import("./matomo").catch((e) => {
+    console.error("Error importing matomo", e);
+  });
+
   /**
    * for initial loading we use the location.pathname
    * as the first url visited.
@@ -100,15 +103,6 @@ export function init({
    * we rely on Router.pathname
    */
 
-  const scriptElement = document.createElement("script");
-  const refElement = document.getElementsByTagName("script")[0];
-  scriptElement.type = "text/javascript";
-  scriptElement.async = true;
-  scriptElement.defer = true;
-  scriptElement.src = `${url}/${jsTrackerFile}`;
-  if (refElement.parentNode) {
-    refElement.parentNode.insertBefore(scriptElement, refElement);
-  }
   previousPath = location.pathname;
 
   const defaultOnRouteChangeStart = (path: string): void => {
