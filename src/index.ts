@@ -19,6 +19,7 @@ interface InitSettings {
   onRouteChangeStart?: (path: string) => void;
   onRouteChangeComplete?: (path: string) => void;
   onInitialization?: () => void;
+  trackPageView?: boolean;
 }
 
 interface Dimensions {
@@ -67,6 +68,7 @@ export function init({
   onRouteChangeStart = undefined,
   onRouteChangeComplete = undefined,
   onInitialization = undefined,
+  trackPageView = true
 }: InitSettings): void {
   window._paq = window._paq !== null ? window._paq : [];
   if (!url) {
@@ -111,46 +113,48 @@ export function init({
   }
   previousPath = location.pathname;
 
-  const defaultOnRouteChangeStart = (path: string): void => {
-    if (isExcludedUrl(path, excludeUrlsPatterns)) return;
+  if(trackPageView) {
+    const defaultOnRouteChangeStart = (path: string): void => {
+      if (isExcludedUrl(path, excludeUrlsPatterns)) return;
 
-    // We use only the part of the url without the querystring to ensure piwik is happy
-    // It seems that piwik doesn't track well page with querystring
-    const [pathname] = path.split("?");
+      // We use only the part of the url without the querystring to ensure piwik is happy
+      // It seems that piwik doesn't track well page with querystring
+      const [pathname] = path.split("?");
 
-    if (previousPath) {
-      push(["setReferrerUrl", `${previousPath}`]);
-    }
-    push(["setCustomUrl", pathname]);
-    push(["deleteCustomVariables", "page"]);
-    previousPath = pathname;
-
-    if (onRouteChangeStart) onRouteChangeStart(path);
-  };
-
-  Router.events.on("routeChangeStart", defaultOnRouteChangeStart);
-
-  const defaultOnRouteChangeComplete = (path: string): void => {
-    if (isExcludedUrl(path, excludeUrlsPatterns)) {
-      return;
-    }
-
-    // In order to ensure that the page title had been updated,
-    // we delayed pushing the tracking to the next tick.
-    setTimeout(() => {
-      const { q } = Router.query;
-      push(["setDocumentTitle", document.title]);
-      if (startsWith(path, "/recherche") || startsWith(path, "/search")) {
-        push(["trackSiteSearch", q ?? ""]);
-      } else {
-        push(["trackPageView"]);
+      if (previousPath) {
+        push(["setReferrerUrl", `${previousPath}`]);
       }
-    }, 0);
+      push(["setCustomUrl", pathname]);
+      push(["deleteCustomVariables", "page"]);
+      previousPath = pathname;
 
-    if (onRouteChangeComplete) onRouteChangeComplete(path);
-  };
+      if (onRouteChangeStart) onRouteChangeStart(path);
+    };
+  
+    Router.events.on("routeChangeStart", defaultOnRouteChangeStart);
 
-  Router.events.on("routeChangeComplete", defaultOnRouteChangeComplete);
+    const defaultOnRouteChangeComplete = (path: string): void => {
+      if (isExcludedUrl(path, excludeUrlsPatterns)) {
+        return;
+      }
+  
+      // In order to ensure that the page title had been updated,
+      // we delayed pushing the tracking to the next tick.
+      setTimeout(() => {
+        const { q } = Router.query;
+        push(["setDocumentTitle", document.title]);
+        if (startsWith(path, "/recherche") || startsWith(path, "/search")) {
+          push(["trackSiteSearch", q ?? ""]);
+        } else {
+          push(["trackPageView"]);
+        }
+      }, 0);
+  
+      if (onRouteChangeComplete) onRouteChangeComplete(path);
+    };
+    
+    Router.events.on("routeChangeComplete", defaultOnRouteChangeComplete);
+  }
 }
 
 export default init;
