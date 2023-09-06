@@ -318,3 +318,17 @@ describe("excludeUrlsPatterns", () => {
 });
 
 // todo: should track pageview on next router routeChangeComplete
+
+describe("disableCookies", () => {
+  test("should NOT append disableCookies to window._paq by default", () => {
+    init({ disableCookies: false, siteId: "42", url: "YO" });
+    expect(window._paq).not.toEqual(
+      expect.arrayContaining([["disableCookies"]])
+    );
+  });
+
+  test("should append disableCookies to window._paq", () => {
+    init({ disableCookies: true, siteId: "42", url: "YO" });
+    expect(window._paq).toEqual(expect.arrayContaining([["disableCookies"]]));
+  });
+});
