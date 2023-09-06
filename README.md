@@ -58,6 +58,18 @@ init({
 });
 ```
 
+### Disable cookies :
+
+To disable cookies (for better GDPR compliance) set the `disableCookies` flag to `true`.
+
+```js
+init({
+  url: MATOMO_URL,
+  siteId: MATOMO_SITE_ID,
+  disableCookies: true,
+});
+```
+
 ### Track additional events :
 
 ```js
@@ -81,17 +93,28 @@ The function has three optional callback properties that allow for custom behavi
 
 ```
 init
-  ✓ should create a js tag and initialize (16 ms)
-  ✓ should NOT create events when url is not provided (19 ms)
+  ✓ should create a js tag and initialize (7 ms)
+  ✓ should NOT create events when url is not provided (9 ms)
 push
-  ✓ should append data to window._paq (2 ms)
+  ✓ should append data to window._paq (1 ms)
+  ✓ should append dimensions data to window._paq (1 ms)
+onInitialization
+  ✓ should work if the surcharge of the operator (1 ms)
+router.routeChangeStart event
+  ✓ should setReferrerUrl and setCustomUrl on route change start (1 ms)
+  ✓ should use previousPath as referer on consecutive route change (1 ms)
+  ✓ should work if the surcharge of the operator (3 ms)
 router.routeChangeComplete event
-  ✓ should trackPageView with correct title on route change (5 ms)
-  ✓ should use previousPath as referer on consecutive route change (10 ms)
+  ✓ should trackPageView with correct title on route change (3 ms)
+  ✓ should use previousPath as referer on consecutive route change (2 ms)
   ✓ should track route as search in /recherche (1 ms)
   ✓ should track route as search in /search (2 ms)
+  ✓ should work if the surcharge of the operator (2 ms)
 excludeUrlsPatterns
-  ✓ should excluded login.php and token variables (7 ms)
-  ✓ should exclude initial page tracking (4 ms)
-  ✓ should track initial page if not excluded (3 ms)
+  ✓ should excluded login.php and token variables (2 ms)
+  ✓ should exclude initial page tracking (3 ms)
+  ✓ should track initial page if not excluded (2 ms)
+disableCookies
+  ✓ should NOT append disableCookies to window._paq by default (1 ms)
+  ✓ should append disableCookies to window._paq (1 ms)
 ```
