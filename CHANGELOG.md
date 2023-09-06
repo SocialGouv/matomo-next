@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/SocialGouv/matomo-next/compare/v1.6.1...v1.7.0) (2023-09-06)
+
+
+### Features
+
+* allow disabling of cookie usage ([#111](https://github.com/SocialGouv/matomo-next/issues/111)) ([3d50f80](https://github.com/SocialGouv/matomo-next/commit/3d50f80dc2384de9681f3e8611a2040e934b026d)), closes [#82](https://github.com/SocialGouv/matomo-next/issues/82) [#82](https://github.com/SocialGouv/matomo-next/issues/82) [#82](https://github.com/SocialGouv/matomo-next/issues/82)
+
 ## [1.6.1](https://github.com/SocialGouv/matomo-next/compare/v1.6.0...v1.6.1) (2023-01-16)
 
 
