@@ -16,6 +16,7 @@ interface InitSettings {
   jsTrackerFile?: string;
   phpTrackerFile?: string;
   excludeUrlsPatterns?: RegExp[];
+  disableCookies?: boolean;
   onRouteChangeStart?: (path: string) => void;
   onRouteChangeComplete?: (path: string) => void;
   onInitialization?: () => void;
@@ -64,6 +65,7 @@ export function init({
   jsTrackerFile = "matomo.js",
   phpTrackerFile = "matomo.php",
   excludeUrlsPatterns = [],
+  disableCookies = false,
   onRouteChangeStart = undefined,
   onRouteChangeComplete = undefined,
   onInitialization = undefined,
@@ -87,6 +89,10 @@ export function init({
     }
   } else {
     push(["trackPageView"]);
+  }
+
+  if (disableCookies) {
+    push(["disableCookies"]);
   }
 
   push(["enableLinkTracking"]);
