@@ -79,6 +79,35 @@ import { push } from "@socialgouv/matomo-next";
 push(["trackEvent", "contact", "click phone"]);
 ```
 
+### Content-Security-Policy
+#### [Nonce](https://developer.mozilla.org/fr/docs/Web/HTML/Global_attributes/nonce)
+If you use a `Content-Security-Policy` header with a `nonce` attribute, you can pass it to the `init` function to allow the script to be executed.
+
+```js
+init({
+  url: MATOMO_URL,
+  siteId: MATOMO_SITE_ID,
+  nonce: "123456789",
+})
+```
+
+#### [Trusted Types](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/trusted-types)
+As the `matomo-next` injects a matomo script, if you use strict Trusted Types, you need to allow the `script` tag to be created by adding our policy name to your `trusted types` directive.
+
+```
+Content-Security-Policy: require-trusted-types-for 'script'; trusted-types matomo-next;
+```
+
+You can set a custom policy name by passing it to the `init` function.
+
+```js
+init({
+  url: MATOMO_URL,
+  siteId: MATOMO_SITE_ID,
+  trustedPolicyName: "your-custom-policy-name",
+})
+```
+
 ### Extensibility
 
 The function has three optional callback properties that allow for custom behavior to be added:
