@@ -1,3 +1,10 @@
+# [1.8.0](https://github.com/SocialGouv/matomo-next/compare/v1.7.0...v1.8.0) (2023-09-21)
+
+
+### Features
+
+* **csp:** handle nonce and trusted types ([#113](https://github.com/SocialGouv/matomo-next/issues/113)) ([2d7de88](https://github.com/SocialGouv/matomo-next/commit/2d7de880081e61abcf69727dda272c00fad9e7eb))
+
 # [1.7.0](https://github.com/SocialGouv/matomo-next/compare/v1.6.1...v1.7.0) (2023-09-06)
 
 
