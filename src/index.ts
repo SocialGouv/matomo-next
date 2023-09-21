@@ -1,5 +1,9 @@
 import { default as Router } from "next/router";
 
+interface HTMLTrustedScriptElement extends Omit<HTMLScriptElement, "src"> {
+  src: TrustedScriptURL | string;
+}
+
 const isExcludedUrl = (url: string, patterns: RegExp[]): boolean => {
   let excluded = false;
   patterns.forEach((pattern) => {
@@ -20,6 +24,8 @@ interface InitSettings {
   onRouteChangeStart?: (path: string) => void;
   onRouteChangeComplete?: (path: string) => void;
   onInitialization?: () => void;
+  nonce?: string;
+  trustedPolicyName?: string;
 }
 
 interface Dimensions {
@@ -58,6 +64,11 @@ const startsWith = (str: string, needle: string) => {
   return str.substring(0, needle.length) === needle;
 };
 
+const trustedPolicyHooks: TrustedTypePolicyOptions = {
+  createScript: (s) => s,
+  createScriptURL: (s) => s,
+};
+
 // initialize the tracker
 export function init({
   url,
@@ -69,12 +80,19 @@ export function init({
   onRouteChangeStart = undefined,
   onRouteChangeComplete = undefined,
   onInitialization = undefined,
+  nonce,
+  trustedPolicyName = "matomo-next",
 }: InitSettings): void {
   window._paq = window._paq !== null ? window._paq : [];
   if (!url) {
     console.warn("Matomo disabled, please provide matomo url");
     return;
   }
+
+  const sanitizer =
+    window.trustedTypes?.createPolicy(trustedPolicyName, trustedPolicyHooks) ??
+    trustedPolicyHooks;
+
   let previousPath = "";
   // order is important -_- so campaign are detected
   const excludedUrl =
@@ -106,12 +124,17 @@ export function init({
    * we rely on Router.pathname
    */
 
-  const scriptElement = document.createElement("script");
+  const scriptElement: HTMLTrustedScriptElement =
+    document.createElement("script");
   const refElement = document.getElementsByTagName("script")[0];
+  if (nonce) {
+    scriptElement.setAttribute("nonce", nonce);
+  }
   scriptElement.type = "text/javascript";
   scriptElement.async = true;
   scriptElement.defer = true;
-  scriptElement.src = `${url}/${jsTrackerFile}`;
+  const fullUrl = `${url}/${jsTrackerFile}`;
+  scriptElement.src = sanitizer.createScriptURL?.(fullUrl) ?? fullUrl;
   if (refElement.parentNode) {
     refElement.parentNode.insertBefore(scriptElement, refElement);
   }
