@@ -1,2 +1,3 @@
 extends:
-  - "@socialgouv/eslint-config-typescript"
+  - "eslint-config-typescript"
+  - "eslint-config-prettier"
