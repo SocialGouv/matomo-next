@@ -26,6 +26,7 @@ interface InitSettings {
   onInitialization?: () => void;
   nonce?: string;
   trustedPolicyName?: string;
+  logExcludedTracks?: boolean;
 }
 
 interface Dimensions {
@@ -82,6 +83,7 @@ export function init({
   onInitialization = undefined,
   nonce,
   trustedPolicyName = "matomo-next",
+  logExcludedTracks = false
 }: InitSettings): void {
   window._paq = window._paq !== null ? window._paq : [];
   if (!url) {
@@ -102,7 +104,7 @@ export function init({
   if (onInitialization) onInitialization();
 
   if (excludedUrl) {
-    if (typeof window !== "undefined") {
+    if (typeof window !== "undefined" && logExcludedTracks) {
       console.log(`matomo: exclude track ${window.location.pathname}`);
     }
   } else {
