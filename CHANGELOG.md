@@ -1,3 +1,10 @@
+## [1.8.1](https://github.com/SocialGouv/matomo-next/compare/v1.8.0...v1.8.1) (2024-02-23)
+
+
+### Bug Fixes
+
+* Added flag to opt out of console logging excluded tracks. ([#122](https://github.com/SocialGouv/matomo-next/issues/122)) ([2d9195f](https://github.com/SocialGouv/matomo-next/commit/2d9195f818c35779fedd693c247e714664bd7e30))
+
 # [1.8.0](https://github.com/SocialGouv/matomo-next/compare/v1.7.0...v1.8.0) (2023-09-21)
 
 
