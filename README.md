@@ -19,6 +19,7 @@
 
 - Basic SPA Matomo setup
 - Will track `next/router` route changes `routeChangeComplete` event
+- ⚠️ Notes for [Next.js app router](https://github.com/SocialGouv/matomo-next/issues/99)
 
 ## Usage
 
