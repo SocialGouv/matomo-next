@@ -33,7 +33,7 @@ jobs:
         run: yarn build
 
       - name: Archive build
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         with:
           name: lib
           path: lib
@@ -51,7 +51,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Download lib form build job
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v4
         with:
           name: lib
           path: lib
