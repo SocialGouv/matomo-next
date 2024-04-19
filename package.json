@@ -1,6 +1,6 @@
 {
   "name": "@socialgouv/matomo-next",
-  "version": "1.8.1",
+  "version": "1.9.0",
   "author": "Fabrique numérique des Ministères Sociaux <dsi-incubateur@sg.social.gouv.fr> (https://www.fabrique.social.gouv.fr)",
   "homepage": "https://github.com/SocialGouv/matomo-next#readme",
   "devDependencies": {

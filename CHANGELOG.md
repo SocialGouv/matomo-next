@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/SocialGouv/matomo-next/compare/v1.8.1...v1.9.0) (2024-04-19)
+
+
+### Features
+
+* add a callback to know when the script does not load ([#125](https://github.com/SocialGouv/matomo-next/issues/125)) ([04bf826](https://github.com/SocialGouv/matomo-next/commit/04bf8267050628456e12b363fd7b68499af2550f))
+
 ## [1.8.1](https://github.com/SocialGouv/matomo-next/compare/v1.8.0...v1.8.1) (2024-02-23)
 
 
