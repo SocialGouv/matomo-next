@@ -119,6 +119,8 @@ The function has three optional callback properties that allow for custom behavi
 
 - `onInitialization`: This callback is triggered when the function is first initialized. It does not receive any parameters. **It could be useful to use it if you want to add parameter to Matomo when the page is render the first time.**
 
+- `onScriptLoadingError`: This callback is triggered when the script does not load. It does not receive any parameters. useful to detect ad-blockers.
+
 ## Tests
 
 ```

@@ -24,6 +24,7 @@ interface InitSettings {
   onRouteChangeStart?: (path: string) => void;
   onRouteChangeComplete?: (path: string) => void;
   onInitialization?: () => void;
+  onScriptLoadingError?: () => void;
   nonce?: string;
   trustedPolicyName?: string;
   logExcludedTracks?: boolean;
@@ -81,6 +82,7 @@ export function init({
   onRouteChangeStart = undefined,
   onRouteChangeComplete = undefined,
   onInitialization = undefined,
+  onScriptLoadingError = undefined,
   nonce,
   trustedPolicyName = "matomo-next",
   logExcludedTracks = false
@@ -137,6 +139,11 @@ export function init({
   scriptElement.defer = true;
   const fullUrl = `${url}/${jsTrackerFile}`;
   scriptElement.src = sanitizer.createScriptURL?.(fullUrl) ?? fullUrl;
+  if (onScriptLoadingError) {
+    scriptElement.onerror = () => {
+      onScriptLoadingError()
+    }
+  }
   if (refElement.parentNode) {
     refElement.parentNode.insertBefore(scriptElement, refElement);
   }
