@@ -8,7 +8,7 @@
     "@socialgouv/eslint-config-typescript": "^1.97.3",
     "@types/jest": "26.0.24",
     "@types/trusted-types": "^2.0.4",
-    "eslint": "7.32.0",
+    "eslint": "9.2.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-config-typescript": "^3.0.0",
     "jest": "26.6.3",
