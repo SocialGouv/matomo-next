@@ -137,6 +137,22 @@ describe("router.routeChangeStart event", () => {
       resolve();
     });
   });
+  test("should setReferrerUrl and setCustomUrl on route change start and handle hashtag (by removing it)", async () => {
+    init({ siteId: "42", url: "YO" });
+    window._paq = [];
+
+    Router.events.emit("routeChangeStart", "/path/to/hello#should-not-appear");
+
+    return new Promise<void>((resolve) => {
+      expect(window._paq).toEqual([
+        ["setReferrerUrl", "/"],
+        ["setCustomUrl", "/path/to/hello"],
+        ["deleteCustomVariables", "page"],
+      ]);
+
+      resolve();
+    });
+  });
   test("should use previousPath as referer on consecutive route change", async () => {
     document.title = "test page 2";
 

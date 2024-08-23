@@ -154,7 +154,8 @@ export function init({
 
     // We use only the part of the url without the querystring to ensure piwik is happy
     // It seems that piwik doesn't track well page with querystring
-    const [pathname] = path.split("?");
+    let [pathname] = path.split("?");
+    pathname = pathname.replace(/#.*/, "");
 
     if (previousPath) {
       push(["setReferrerUrl", `${previousPath}`]);

@@ -134,6 +134,7 @@ onInitialization
   ✓ should work if the surcharge of the operator (1 ms)
 router.routeChangeStart event
   ✓ should setReferrerUrl and setCustomUrl on route change start (1 ms)
+  ✓ should setReferrerUrl and setCustomUrl on route change start and handle hashtag (by removing it)
   ✓ should use previousPath as referer on consecutive route change (1 ms)
   ✓ should work if the surcharge of the operator (3 ms)
 router.routeChangeComplete event
