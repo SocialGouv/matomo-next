@@ -1,3 +1,10 @@
+## [1.9.1](https://github.com/SocialGouv/matomo-next/compare/v1.9.0...v1.9.1) (2024-09-09)
+
+
+### Bug Fixes
+
+* release ([8d3a843](https://github.com/SocialGouv/matomo-next/commit/8d3a843c04e98a67357a07325197cd21d752c9bb))
+
 # [1.9.0](https://github.com/SocialGouv/matomo-next/compare/v1.8.1...v1.9.0) (2024-04-19)
 
 
