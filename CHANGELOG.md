@@ -1,3 +1,10 @@
+## [1.9.2](https://github.com/SocialGouv/matomo-next/compare/v1.9.1...v1.9.2) (2024-11-12)
+
+
+### Bug Fixes
+
+* up gh actions ([2bb2bf4](https://github.com/SocialGouv/matomo-next/commit/2bb2bf4b13472bfd6c45193021ec2bb4a9c76902))
+
 ## [1.9.1](https://github.com/SocialGouv/matomo-next/compare/v1.9.0...v1.9.1) (2024-09-09)
 
 
