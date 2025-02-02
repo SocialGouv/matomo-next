@@ -28,6 +28,7 @@ interface InitSettings {
   nonce?: string;
   trustedPolicyName?: string;
   logExcludedTracks?: boolean;
+  isSearchPath?: (path: string) => boolean;
 }
 
 interface Dimensions {
@@ -71,7 +72,7 @@ const trustedPolicyHooks: TrustedTypePolicyOptions = {
   createScriptURL: (s) => s,
 };
 
-const defaultIsSearchPath = (path: string) => startsWith(path, "/recherche") || startsWith(path, "/search")
+const defaultIsSearchPath = (path: string): boolean => startsWith(path, "/recherche") || startsWith(path, "/search")
 
 // initialize the tracker
 export function init({
