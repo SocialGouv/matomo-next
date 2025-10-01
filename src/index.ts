@@ -29,6 +29,7 @@ interface InitSettings {
   trustedPolicyName?: string;
   logExcludedTracks?: boolean;
   pathname?: string;
+  searchParams?: string;
 }
 
 interface Dimensions {
@@ -64,9 +65,8 @@ export function push(
 
 // Internal state for tracking initial page load in App Router
 let isInitialPageview = true;
-let previousPathname = "";
+let previousUrl = "";
 let matomoInitialized = false;
-let matomoConfig: Partial<InitSettings> = {};
 
 const startsWith = (str: string, needle: string) => {
   // eslint-disable-next-line @typescript-eslint/prefer-string-starts-ends-with
@@ -94,6 +94,7 @@ export function init({
   trustedPolicyName = "matomo-next",
   logExcludedTracks = false,
   pathname = undefined,
+  searchParams = undefined,
 }: InitSettings): void {
   window._paq = window._paq !== null ? window._paq : [];
   if (!url) {
@@ -103,19 +104,12 @@ export function init({
 
   // App Router mode: when pathname is provided
   if (pathname !== undefined) {
+    // Build full URL with search params
+    const currentUrl = searchParams ? `${pathname}?${searchParams}` : pathname;
+
     // Initialize Matomo script on first call
     if (!matomoInitialized) {
       matomoInitialized = true;
-      matomoConfig = {
-        url,
-        siteId,
-        jsTrackerFile,
-        phpTrackerFile,
-        excludeUrlsPatterns,
-        disableCookies,
-        nonce,
-        trustedPolicyName,
-      };
 
       const sanitizer =
         window.trustedTypes?.createPolicy(
@@ -155,14 +149,54 @@ export function init({
     }
 
     // Track pageview with App Router logic
+    const excludedUrl = isExcludedUrl(currentUrl, excludeUrlsPatterns);
+
+    if (excludedUrl) {
+      if (logExcludedTracks) {
+        console.log(`matomo: exclude track ${currentUrl}`);
+      }
+      previousUrl = currentUrl;
+      return;
+    }
+
     if (isInitialPageview) {
       isInitialPageview = false;
-      previousPathname = pathname;
+      previousUrl = currentUrl;
       push(["trackPageView"]);
-    } else if (pathname !== previousPathname) {
-      previousPathname = pathname;
-      push(["setCustomUrl", pathname]);
-      push(["trackPageView"]);
+    } else if (currentUrl !== previousUrl) {
+      // We use only the part of the url without the querystring to ensure piwik is happy
+      // It seems that piwik doesn't track well page with querystring
+      let cleanPathname = currentUrl.split("?")[0];
+      cleanPathname = cleanPathname.replace(/#.*/, "");
+
+      if (previousUrl) {
+        push(["setReferrerUrl", previousUrl]);
+      }
+      push(["setCustomUrl", cleanPathname]);
+      push(["deleteCustomVariables", "page"]);
+
+      if (onRouteChangeStart) onRouteChangeStart(currentUrl);
+
+      // In order to ensure that the page title had been updated,
+      // we delayed pushing the tracking to the next tick.
+      setTimeout(() => {
+        push(["setDocumentTitle", document.title]);
+        if (
+          startsWith(currentUrl, "/recherche") ||
+          startsWith(currentUrl, "/search")
+        ) {
+          // Extract search query from searchParams
+          const qMatch = searchParams?.match(/(?:^|&)q=([^&]*)/);
+          const q = qMatch ? decodeURIComponent(qMatch[1]) : "";
+          push(["trackSiteSearch", q]);
+        } else {
+          push(["trackPageView"]);
+        }
+
+        if (onRouteChangeComplete) onRouteChangeComplete(currentUrl);
+      }, 0);
+
+      previousUrl = currentUrl;
     }
     return;
   }
