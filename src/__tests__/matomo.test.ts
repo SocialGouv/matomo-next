@@ -411,3 +411,69 @@ describe("App Router with pathname", () => {
     expect(window._paq).toEqual(expect.arrayContaining([["trackPageView"]]));
   });
 });
+
+describe("enableHeartBeatTimer", () => {
+  beforeEach(() => {
+    global._paq = [];
+  });
+
+  test("should enable HeartBeat Timer with default interval", () => {
+    document.head.appendChild(document.createElement("script"));
+    init({ enableHeartBeatTimer: true, siteId: "42", url: "https://YO" });
+    expect(window._paq).toEqual(
+      expect.arrayContaining([["enableHeartBeatTimer"]]),
+    );
+  });
+
+  test("should enable HeartBeat Timer with custom interval", () => {
+    document.head.appendChild(document.createElement("script"));
+    init({
+      enableHeartBeatTimer: true,
+      heartBeatTimerInterval: 30,
+      siteId: "42",
+      url: "https://YO",
+    });
+    expect(window._paq).toEqual(
+      expect.arrayContaining([["enableHeartBeatTimer", 30]]),
+    );
+  });
+});
+
+describe("enableHeatmapSessionRecording", () => {
+  beforeEach(() => {
+    global._paq = [];
+    // Clean up any existing scripts
+    document.head.querySelectorAll("script").forEach((s) => {
+      s.remove();
+    });
+  });
+
+  test("should load HeatmapSessionRecording script when enabled", () => {
+    document.head.appendChild(document.createElement("script"));
+    init({
+      enableHeatmapSessionRecording: true,
+      siteId: "42",
+      url: "https://YO",
+    });
+
+    const heatmapScript = Array.from(
+      document.head.querySelectorAll("script"),
+    ).find((s) => s.src.includes("HeatmapSessionRecording/tracker.min.js"));
+
+    expect(heatmapScript).toBeDefined();
+    expect(heatmapScript?.src).toContain(
+      "/plugins/HeatmapSessionRecording/tracker.min.js",
+    );
+  });
+
+  test("should not load HeatmapSessionRecording script when disabled", () => {
+    document.head.appendChild(document.createElement("script"));
+    init({ siteId: "42", url: "https://YO" });
+
+    const heatmapScript = Array.from(
+      document.head.querySelectorAll("script"),
+    ).find((s) => s.src.includes("HeatmapSessionRecording/tracker.min.js"));
+
+    expect(heatmapScript).toBeUndefined();
+  });
+});

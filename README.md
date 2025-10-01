@@ -67,7 +67,14 @@ export function MatomoAnalytics() {
   const pathname = usePathname();
 
   useEffect(() => {
-    init({ url: MATOMO_URL, siteId: MATOMO_SITE_ID, pathname });
+    init({
+      url: MATOMO_URL,
+      siteId: MATOMO_SITE_ID,
+      pathname,
+      // Optional: Enable additional features
+      enableHeatmapSessionRecording: true,
+      enableHeartBeatTimer: true,
+    });
   }, [pathname]);
 
   return null;
@@ -124,6 +131,47 @@ import { push } from "@socialgouv/matomo-next";
 // track some events
 push(["trackEvent", "contact", "click phone"]);
 ```
+
+### Enable Heatmap & Session Recording
+
+To enable Matomo's Heatmap & Session Recording feature:
+
+```js
+init({
+  url: MATOMO_URL,
+  siteId: MATOMO_SITE_ID,
+  enableHeatmapSessionRecording: true,
+  heatmapConfig: {
+    // Optional: capture keystrokes (default: false)
+    captureKeystrokes: false,
+    // Optional: capture only visible content (default: false, captures full page)
+    captureVisibleContentOnly: false,
+    // Optional: enable debug mode (default: false)
+    debug: true,
+  },
+});
+```
+
+The Heatmap & Session Recording plugin will be automatically loaded and configured. It will:
+
+- Load the `HeatmapSessionRecording/tracker.min.js` plugin
+- Configure keystroke capture and visible content settings
+- Enable the recording after page load
+
+### Enable HeartBeat Timer
+
+To accurately measure time spent on pages, enable the HeartBeat Timer:
+
+```js
+init({
+  url: MATOMO_URL,
+  siteId: MATOMO_SITE_ID,
+  enableHeartBeatTimer: true,
+  heartBeatTimerInterval: 15, // Optional: interval in seconds (default: 15)
+});
+```
+
+The HeartBeat Timer sends periodic requests to Matomo to measure how long visitors stay on pages. This is particularly useful for tracking engagement on single-page applications.
 
 ### Content-Security-Policy
 
