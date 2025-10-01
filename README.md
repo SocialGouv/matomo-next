@@ -12,14 +12,22 @@
   <a href="https://codecov.io/gh/SocialGouv/matomo-next"><img src="https://codecov.io/gh/SocialGouv/matomo-next/branch/master/graph/badge.svg" alt="codecov"></a>
 </p>
 
-<br>
-<br>
-<br>
-<br>
+<br/>
+<br/>
+<br/>
+<br/>
 
-- Basic SPA Matomo setup
-- Will track `next/router` route changes `routeChangeComplete` event
-- Supports Next.js App Router with custom hook
+## Features
+
+- ✅ Basic SPA Matomo setup
+- ✅ Supports Next.js **Pages Router** (automatic tracking with `next/router` events)
+- ✅ Supports Next.js **App Router** (tracking with `usePathname` and `useSearchParams`)
+- ✅ Tracks route changes and page views
+- ✅ Tracks search queries on `/recherche` and `/search` routes
+- ✅ Excludes URLs based on patterns
+- ✅ GDPR compliant (optional cookie-less tracking)
+- ✅ Custom event tracking
+- ✅ TypeScript support
 
 ## Usage
 
@@ -51,13 +59,13 @@ Will track routes changes by default.
 
 ### App Router
 
-For Next.js App Router (Next.js 13+), create a client component to handle tracking. Simply pass the `pathname` to `init()` and it will automatically handle everything:
+For Next.js App Router (Next.js 13+), create a client component to handle tracking. Pass both `pathname` and `searchParams` to track the full URL including query parameters:
 
 ```jsx
 "use client";
 
 import { init } from "@socialgouv/matomo-next";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 
 const MATOMO_URL = process.env.NEXT_PUBLIC_MATOMO_URL;
@@ -65,39 +73,57 @@ const MATOMO_SITE_ID = process.env.NEXT_PUBLIC_MATOMO_SITE_ID;
 
 export function MatomoAnalytics() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     init({
       url: MATOMO_URL,
       siteId: MATOMO_SITE_ID,
       pathname,
+      searchParams: searchParams.toString(),
       // Optional: Enable additional features
       enableHeatmapSessionRecording: true,
       enableHeartBeatTimer: true,
     });
-  }, [pathname]);
+  }, [pathname, searchParams]);
 
   return null;
 }
 ```
 
-Then add this component to your root layout:
+Then add this component to your root layout wrapped in a `Suspense` boundary (required for `useSearchParams`):
 
 ```jsx
 // app/layout.js
+import { Suspense } from "react";
 import { MatomoAnalytics } from "./matomo";
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <MatomoAnalytics />
         {children}
+
+        <Suspense fallback={null}>
+          <MatomoAnalytics />
+        </Suspense>
       </body>
     </html>
   );
 }
 ```
+
+**Note**: The `Suspense` boundary is required when using `useSearchParams()` in the App Router.
+
+#### App Router Features
+
+The App Router implementation includes the following features:
+
+- **Automatic route tracking**: Detects changes in both pathname and search parameters
+- **Search tracking**: Automatically uses `trackSiteSearch` for `/recherche` and `/search` routes
+- **Clean URLs**: Tracks only the pathname without query strings (Matomo best practice)
+- **Referrer tracking**: Properly tracks the previous page as referrer
+- **Custom callbacks**: Supports `onRouteChangeStart` and `onRouteChangeComplete` hooks
 
 ### Exclude tracking some routes :
 
@@ -207,43 +233,46 @@ init({
 
 ### Extensibility
 
-The function has three optional callback properties that allow for custom behavior to be added:
+The function has optional callback properties that allow for custom behavior to be added:
 
-- `onRouteChangeStart(path: string) => void`: This callback is triggered when the route is about to change with Next Router event `routeChangeStart`. It receives the new path as a parameter.
+- `onRouteChangeStart(path: string) => void`: This callback is triggered when the route is about to change. For Pages Router, it uses Next Router event `routeChangeStart`. For App Router, it's called when the pathname or searchParams change. It receives the new path as a parameter.
 
-- `onRouteChangeComplete`: This callback is triggered when the route change is complete with Next Router event `routeChangeComplete`. It receives the new path as a parameter.
+- `onRouteChangeComplete(path: string) => void`: This callback is triggered when the route change is complete. For Pages Router, it uses Next Router event `routeChangeComplete`. For App Router, it's called after the page view is tracked. It receives the new path as a parameter.
 
-- `onInitialization`: This callback is triggered when the function is first initialized. It does not receive any parameters. **It could be useful to use it if you want to add parameter to Matomo when the page is render the first time.**
+- `onInitialization() => void`: This callback is triggered when the function is first initialized. It does not receive any parameters. **It could be useful to use it if you want to add parameter to Matomo when the page is render the first time.**
 
-- `onScriptLoadingError`: This callback is triggered when the script does not load. It does not receive any parameters. useful to detect ad-blockers.
+- `onScriptLoadingError() => void`: This callback is triggered when the script does not load. It does not receive any parameters. useful to detect ad-blockers.
 
-## Tests
+#### Example with App Router:
 
-```
-init
-  ✓ should create a js tag and initialize (7 ms)
-  ✓ should NOT create events when url is not provided (9 ms)
-push
-  ✓ should append data to window._paq (1 ms)
-  ✓ should append dimensions data to window._paq (1 ms)
-onInitialization
-  ✓ should work if the surcharge of the operator (1 ms)
-router.routeChangeStart event
-  ✓ should setReferrerUrl and setCustomUrl on route change start (1 ms)
-  ✓ should setReferrerUrl and setCustomUrl on route change start and handle hashtag (by removing it)
-  ✓ should use previousPath as referer on consecutive route change (1 ms)
-  ✓ should work if the surcharge of the operator (3 ms)
-router.routeChangeComplete event
-  ✓ should trackPageView with correct title on route change (3 ms)
-  ✓ should use previousPath as referer on consecutive route change (2 ms)
-  ✓ should track route as search in /recherche (1 ms)
-  ✓ should track route as search in /search (2 ms)
-  ✓ should work if the surcharge of the operator (2 ms)
-excludeUrlsPatterns
-  ✓ should excluded login.php and token variables (2 ms)
-  ✓ should exclude initial page tracking (3 ms)
-  ✓ should track initial page if not excluded (2 ms)
-disableCookies
-  ✓ should NOT append disableCookies to window._paq by default (1 ms)
-  ✓ should append disableCookies to window._paq (1 ms)
+```jsx
+"use client";
+
+import { init } from "@socialgouv/matomo-next";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
+
+export function MatomoAnalytics() {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    init({
+      url: process.env.NEXT_PUBLIC_MATOMO_URL,
+      siteId: process.env.NEXT_PUBLIC_MATOMO_SITE_ID,
+      pathname,
+      searchParams: searchParams.toString(),
+      onRouteChangeStart: (path) => {
+        console.log("Route change started:", path);
+        // Your custom logic here
+      },
+      onRouteChangeComplete: (path) => {
+        console.log("Route change completed:", path);
+        // Your custom logic here
+      },
+    });
+  }, [pathname, searchParams]);
+
+  return null;
+}
 ```
