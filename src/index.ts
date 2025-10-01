@@ -28,6 +28,7 @@ interface InitSettings {
   nonce?: string;
   trustedPolicyName?: string;
   logExcludedTracks?: boolean;
+  pathname?: string;
 }
 
 interface Dimensions {
@@ -61,6 +62,12 @@ export function push(
   window._paq.push(args);
 }
 
+// Internal state for tracking initial page load in App Router
+let isInitialPageview = true;
+let previousPathname = "";
+let matomoInitialized = false;
+let matomoConfig: Partial<InitSettings> = {};
+
 const startsWith = (str: string, needle: string) => {
   // eslint-disable-next-line @typescript-eslint/prefer-string-starts-ends-with
   return str.substring(0, needle.length) === needle;
@@ -85,7 +92,8 @@ export function init({
   onScriptLoadingError = undefined,
   nonce,
   trustedPolicyName = "matomo-next",
-  logExcludedTracks = false
+  logExcludedTracks = false,
+  pathname = undefined,
 }: InitSettings): void {
   window._paq = window._paq !== null ? window._paq : [];
   if (!url) {
@@ -93,6 +101,73 @@ export function init({
     return;
   }
 
+  // App Router mode: when pathname is provided
+  if (pathname !== undefined) {
+    // Initialize Matomo script on first call
+    if (!matomoInitialized) {
+      matomoInitialized = true;
+      matomoConfig = {
+        url,
+        siteId,
+        jsTrackerFile,
+        phpTrackerFile,
+        excludeUrlsPatterns,
+        disableCookies,
+        nonce,
+        trustedPolicyName,
+      };
+
+      const sanitizer =
+        window.trustedTypes?.createPolicy(
+          trustedPolicyName,
+          trustedPolicyHooks,
+        ) ?? trustedPolicyHooks;
+
+      if (disableCookies) {
+        push(["disableCookies"]);
+      }
+
+      push(["enableLinkTracking"]);
+      push(["setTrackerUrl", `${url}/${phpTrackerFile}`]);
+      push(["setSiteId", siteId]);
+
+      const scriptElement: HTMLTrustedScriptElement =
+        document.createElement("script");
+      const refElement = document.getElementsByTagName("script")[0];
+      if (nonce) {
+        scriptElement.setAttribute("nonce", nonce);
+      }
+      scriptElement.type = "text/javascript";
+      scriptElement.async = true;
+      scriptElement.defer = true;
+      const fullUrl = `${url}/${jsTrackerFile}`;
+      scriptElement.src = sanitizer.createScriptURL?.(fullUrl) ?? fullUrl;
+      if (onScriptLoadingError) {
+        scriptElement.onerror = () => {
+          onScriptLoadingError();
+        };
+      }
+      if (refElement.parentNode) {
+        refElement.parentNode.insertBefore(scriptElement, refElement);
+      }
+
+      if (onInitialization) onInitialization();
+    }
+
+    // Track pageview with App Router logic
+    if (isInitialPageview) {
+      isInitialPageview = false;
+      previousPathname = pathname;
+      push(["trackPageView"]);
+    } else if (pathname !== previousPathname) {
+      previousPathname = pathname;
+      push(["setCustomUrl", pathname]);
+      push(["trackPageView"]);
+    }
+    return;
+  }
+
+  // Pages Router mode: traditional initialization
   const sanitizer =
     window.trustedTypes?.createPolicy(trustedPolicyName, trustedPolicyHooks) ??
     trustedPolicyHooks;
@@ -141,8 +216,8 @@ export function init({
   scriptElement.src = sanitizer.createScriptURL?.(fullUrl) ?? fullUrl;
   if (onScriptLoadingError) {
     scriptElement.onerror = () => {
-      onScriptLoadingError()
-    }
+      onScriptLoadingError();
+    };
   }
   if (refElement.parentNode) {
     refElement.parentNode.insertBefore(scriptElement, refElement);

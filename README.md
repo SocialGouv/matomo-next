@@ -19,9 +19,11 @@
 
 - Basic SPA Matomo setup
 - Will track `next/router` route changes `routeChangeComplete` event
-- ⚠️ Notes for [Next.js app router](https://github.com/SocialGouv/matomo-next/issues/99)
+- Supports Next.js App Router with custom hook
 
 ## Usage
+
+### Pages Router
 
 Add the `init` call in your `_app.js` :
 
@@ -46,6 +48,49 @@ export default MyApp;
 ```
 
 Will track routes changes by default.
+
+### App Router
+
+For Next.js App Router (Next.js 13+), create a client component to handle tracking. Simply pass the `pathname` to `init()` and it will automatically handle everything:
+
+```jsx
+"use client";
+
+import { init } from "@socialgouv/matomo-next";
+import { usePathname } from "next/navigation";
+import { useEffect } from "react";
+
+const MATOMO_URL = process.env.NEXT_PUBLIC_MATOMO_URL;
+const MATOMO_SITE_ID = process.env.NEXT_PUBLIC_MATOMO_SITE_ID;
+
+export function MatomoAnalytics() {
+  const pathname = usePathname();
+
+  useEffect(() => {
+    init({ url: MATOMO_URL, siteId: MATOMO_SITE_ID, pathname });
+  }, [pathname]);
+
+  return null;
+}
+```
+
+Then add this component to your root layout:
+
+```jsx
+// app/layout.js
+import { MatomoAnalytics } from "./matomo";
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <body>
+        <MatomoAnalytics />
+        {children}
+      </body>
+    </html>
+  );
+}
+```
 
 ### Exclude tracking some routes :
 
@@ -81,7 +126,9 @@ push(["trackEvent", "contact", "click phone"]);
 ```
 
 ### Content-Security-Policy
+
 #### [Nonce](https://developer.mozilla.org/fr/docs/Web/HTML/Global_attributes/nonce)
+
 If you use a `Content-Security-Policy` header with a `nonce` attribute, you can pass it to the `init` function to allow the script to be executed.
 
 ```js
@@ -89,10 +136,11 @@ init({
   url: MATOMO_URL,
   siteId: MATOMO_SITE_ID,
   nonce: "123456789",
-})
+});
 ```
 
 #### [Trusted Types](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/trusted-types)
+
 As the `matomo-next` injects a matomo script, if you use strict Trusted Types, you need to allow the `script` tag to be created by adding our policy name to your `trusted types` directive.
 
 ```
@@ -106,7 +154,7 @@ init({
   url: MATOMO_URL,
   siteId: MATOMO_SITE_ID,
   trustedPolicyName: "your-custom-policy-name",
-})
+});
 ```
 
 ### Extensibility

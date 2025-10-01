@@ -23,7 +23,7 @@ jest.mock("next/router", () => {
               `{"${decodeURI(search)
                 .replace(/"/g, '\\"')
                 .replace(/&/g, '","')
-                .replace(/=/g, '":"')}"}`
+                .replace(/=/g, '":"')}"}`,
             ) as AnyObject;
             Object.keys(values).forEach((key) => {
               query[key] = decodeURIComponent(values[key]);
@@ -111,7 +111,7 @@ describe("onInitialization", () => {
       url: "YO",
     });
     expect(window._paq).toEqual(
-      expect.arrayContaining([["during_initialization", "hello"]])
+      expect.arrayContaining([["during_initialization", "hello"]]),
     );
   });
 });
@@ -184,7 +184,7 @@ describe("router.routeChangeStart event", () => {
           expect.arrayContaining([
             ["newOperatorStart", "COMPLETE"],
             ["path", "/bonjour"],
-          ])
+          ]),
         );
         resolve();
       }, 0);
@@ -262,7 +262,7 @@ describe("router.routeChangeComplete event", () => {
           expect.arrayContaining([
             ["newOperatorComplete", "COMPLETE"],
             ["path", "/hello-world"],
-          ])
+          ]),
         );
         resolve();
       }, 0);
@@ -339,12 +339,75 @@ describe("disableCookies", () => {
   test("should NOT append disableCookies to window._paq by default", () => {
     init({ disableCookies: false, siteId: "42", url: "YO" });
     expect(window._paq).not.toEqual(
-      expect.arrayContaining([["disableCookies"]])
+      expect.arrayContaining([["disableCookies"]]),
     );
   });
 
   test("should append disableCookies to window._paq", () => {
     init({ disableCookies: true, siteId: "42", url: "YO" });
     expect(window._paq).toEqual(expect.arrayContaining([["disableCookies"]]));
+  });
+});
+
+describe("App Router with pathname", () => {
+  beforeEach(() => {
+    global._paq = [];
+    // Reset module state
+    jest.resetModules();
+  });
+
+  test("should track initial pageview when pathname is provided (first call)", () => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { init } = require("../index");
+    document.head.appendChild(document.createElement("script"));
+
+    init({ pathname: "/home", siteId: "42", url: "https://YO" });
+
+    expect(window._paq).toEqual(
+      expect.arrayContaining([
+        ["trackPageView"],
+        ["enableLinkTracking"],
+        ["setTrackerUrl", "https://YO/matomo.php"],
+        ["setSiteId", "42"],
+      ]),
+    );
+  });
+
+  test("should track subsequent pageviews with setCustomUrl", () => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { init } = require("../index");
+    document.head.appendChild(document.createElement("script"));
+
+    // First call
+    init({ pathname: "/home", siteId: "42", url: "https://YO" });
+
+    // Second call with different pathname
+    init({ pathname: "/about", siteId: "42", url: "https://YO" });
+
+    expect(window._paq).toEqual(
+      expect.arrayContaining([["setCustomUrl", "/about"], ["trackPageView"]]),
+    );
+  });
+
+  test("should not track again if pathname hasn't changed", () => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { init } = require("../index");
+    document.head.appendChild(document.createElement("script"));
+
+    init({ pathname: "/home", siteId: "42", url: "https://YO" });
+    const initialLength = window._paq?.length || 0;
+
+    // Call again with same pathname
+    init({ pathname: "/home", siteId: "42", url: "https://YO" });
+
+    // Should not have added more tracking calls
+    expect(window._paq?.length).toBe(initialLength);
+  });
+
+  test("should track initial pageview by default (Pages Router without pathname)", () => {
+    window.location.pathname = "/some-page";
+    document.head.appendChild(document.createElement("script"));
+    init({ siteId: "42", url: "https://YO" });
+    expect(window._paq).toEqual(expect.arrayContaining([["trackPageView"]]));
   });
 });
