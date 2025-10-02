@@ -5,13 +5,7 @@ interface HTMLTrustedScriptElement extends Omit<HTMLScriptElement, "src"> {
 }
 
 const isExcludedUrl = (url: string, patterns: RegExp[]): boolean => {
-  let excluded = false;
-  patterns.forEach((pattern) => {
-    if (pattern.exec(url) !== null) {
-      excluded = true;
-    }
-  });
-  return excluded;
+  return patterns.some((pattern) => pattern.test(url));
 };
 
 interface InitSettings {
@@ -196,7 +190,7 @@ export function init({
   heartBeatTimerInterval = undefined,
   heatmapConfig = {},
 }: InitSettings): void {
-  window._paq = window._paq !== null ? window._paq : [];
+  window._paq = window._paq ?? [];
   if (!url) {
     console.warn("Matomo disabled, please provide matomo url");
     return;
