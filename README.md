@@ -94,10 +94,7 @@ export function MatomoAnalytics() {
 
 **Notes**:
 
-- The `isAppRouter` parameter explicitly enables App Router mode. For backward compatibility, providing `pathname` without `isAppRouter` will also activate App Router mode.
-- You can pass `searchParams` directly from `useSearchParams()` without calling `.toString()` - the library handles both formats automatically.
-
-Then add this component to your root layout wrapped in a `Suspense` boundary (required for `useSearchParams`):
+Add this component to your root layout wrapped in a `Suspense` boundary (required for `useSearchParams`):
 
 ```jsx
 // app/layout.js
