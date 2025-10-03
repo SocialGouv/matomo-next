@@ -140,7 +140,9 @@ init({
 });
 ```
 
-### Custom search keyword parameter :
+### Custom search tracking :
+
+#### Custom search keyword parameter
 
 By default, the search tracking feature looks for a `q` parameter in the URL (e.g., `/search?q=my+query`). If your application uses a different parameter name for search queries, you can customize it:
 
@@ -152,7 +154,20 @@ init({
 });
 ```
 
-This works for both Pages Router and App Router, and applies to both `/recherche` and `/search` routes.
+#### Custom search routes
+
+By default, search tracking is enabled for `/recherche` and `/search` routes. You can define custom routes that should be tracked as search pages:
+
+```js
+init({
+  url: MATOMO_URL,
+  siteId: MATOMO_SITE_ID,
+  searchRoutes: ["/find", "/discover", "/rechercher"], // Custom search routes
+  searchKeyword: "q", // Optional: customize the search parameter
+});
+```
+
+This works for both Pages Router and App Router. When a user visits any of the defined search routes, the library will automatically use `trackSiteSearch` instead of `trackPageView`.
 
 ### Disable cookies :
 

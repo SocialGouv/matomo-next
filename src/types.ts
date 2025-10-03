@@ -20,6 +20,7 @@ export interface InitSettings {
   pathname?: string;
   searchParams?: URLSearchParams;
   searchKeyword?: string;
+  searchRoutes?: string[];
   enableHeatmapSessionRecording?: boolean;
   enableHeartBeatTimer?: boolean;
   heartBeatTimerInterval?: number;

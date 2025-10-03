@@ -29,6 +29,7 @@ export const initPagesRouter = (settings: InitSettings): void => {
     trustedPolicyName = "matomo-next",
     logExcludedTracks = false,
     searchKeyword = "q",
+    searchRoutes = ["/recherche", "/search"],
     enableHeatmapSessionRecording = false,
     enableHeartBeatTimer = false,
     heartBeatTimerInterval,
@@ -115,7 +116,13 @@ export const initPagesRouter = (settings: InitSettings): void => {
       const queryValue = Router.query[searchKeyword];
       const searchQuery = typeof queryValue === "string" ? queryValue : "";
       push(["setDocumentTitle", document.title]);
-      if (startsWith(path, "/recherche") || startsWith(path, "/search")) {
+
+      // Check if current route is a search route
+      const isSearchRoute = searchRoutes.some((route) =>
+        startsWith(path, route),
+      );
+
+      if (isSearchRoute) {
         push(["trackSiteSearch", searchQuery]);
       } else {
         push(["trackPageView"]);

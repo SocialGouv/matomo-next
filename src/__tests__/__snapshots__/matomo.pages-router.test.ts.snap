@@ -73,53 +73,6 @@ Array [
 ]
 `;
 
-exports[`init should NOT create events when url is not provided 1`] = `Array []`;
-
-exports[`init should create a js tag and initialize 1`] = `
-Array [
-  Array [
-    "trackPageView",
-  ],
-  Array [
-    "enableLinkTracking",
-  ],
-  Array [
-    "setTrackerUrl",
-    "https://YO/matomo.php",
-  ],
-  Array [
-    "setSiteId",
-    "42",
-  ],
-]
-`;
-
-exports[`push should append data to window._paq 1`] = `
-Array [
-  Array [
-    "trackEvent",
-    "kikoo",
-    "lol",
-  ],
-]
-`;
-
-exports[`push should append dimensions data to window._paq 1`] = `
-Array [
-  Array [
-    "trackEvent",
-    "kikoo",
-    "lol",
-    null,
-    null,
-    Object {
-      "dimension1": "ok",
-      "dimension2": "foobar",
-    },
-  ],
-]
-`;
-
 exports[`router.routeChangeComplete event should track route as search in /recherche 1`] = `
 Array [
   Array [
