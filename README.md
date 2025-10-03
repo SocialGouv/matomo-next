@@ -183,11 +183,47 @@ init({
 
 ### Track additional events :
 
+#### Type-safe event tracking (recommended)
+
+Use the `sendEvent` helper for type-safe event tracking with auto-completion:
+
+```js
+import { sendEvent } from "@socialgouv/matomo-next";
+
+// Basic event with category and action
+sendEvent({ category: "contact", action: "click phone" });
+
+// Event with optional name parameter
+sendEvent({
+  category: "video",
+  action: "play",
+  name: "intro-video",
+});
+
+// Event with optional name and value parameters
+sendEvent({
+  category: "purchase",
+  action: "buy",
+  name: "product-123",
+  value: "99.99",
+});
+```
+
+#### Advanced tracking with push
+
+For advanced use cases or custom tracking, use the `push` function directly:
+
 ```js
 import { push } from "@socialgouv/matomo-next";
 
-// track some events
+// Track custom events
 push(["trackEvent", "contact", "click phone"]);
+
+// Track custom dimensions
+push(["setCustomDimension", 1, "premium-user"]);
+
+// Any other Matomo tracking method
+push(["trackGoal", 1]);
 ```
 
 ### Enable Heatmap & Session Recording
