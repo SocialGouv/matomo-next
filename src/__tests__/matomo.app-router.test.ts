@@ -49,7 +49,7 @@ describe("App Router functionality", () => {
     expect(window._paq?.length).toBe(initialLength);
   });
 
-  test("should track URL with search params", () => {
+  test("should track URL with search params on initial pageview", () => {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { init } = require("../index");
     document.head.appendChild(document.createElement("script"));
@@ -62,7 +62,12 @@ describe("App Router functionality", () => {
       url: "https://YO",
     });
 
-    expect(window._paq).toEqual(expect.arrayContaining([["trackPageView"]]));
+    expect(window._paq).toEqual(
+      expect.arrayContaining([["trackSiteSearch", "test"]]),
+    );
+    expect(window._paq).not.toEqual(
+      expect.arrayContaining([["trackPageView"]]),
+    );
   });
 
   test("should track different URLs when search params change", (done) => {

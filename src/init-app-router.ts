@@ -94,10 +94,28 @@ export const initAppRouter = (
     return;
   }
 
+  // Helper function to track page or search
+  const trackPageOrSearch = (): void => {
+    // Check if current route is a search route
+    const isSearchRoute = searchRoutes.some((route) =>
+      startsWith(currentUrl, route),
+    );
+
+    push(["setDocumentTitle", document.title]);
+
+    if (isSearchRoute) {
+      // Extract search query from searchParams using configurable keyword
+      const q = searchParams?.get(searchKeyword) || "";
+      push(["trackSiteSearch", q]);
+    } else {
+      push(["trackPageView"]);
+    }
+  };
+
   if (state.isInitialPageview) {
     state.isInitialPageview = false;
     state.previousUrl = currentUrl;
-    push(["trackPageView"]);
+    trackPageOrSearch();
   } else if (currentUrl !== state.previousUrl) {
     // We use only the part of the url without the querystring to ensure piwik is happy
     // It seems that piwik doesn't track well page with querystring
@@ -117,19 +135,7 @@ export const initAppRouter = (
     // In order to ensure that the page title had been updated,
     // we delayed pushing the tracking to the next tick.
     setTimeout(() => {
-      push(["setDocumentTitle", document.title]);
-      // Check if current route is a search route
-      const isSearchRoute = searchRoutes.some((route) =>
-        startsWith(currentUrl, route),
-      );
-
-      if (isSearchRoute) {
-        // Extract search query from searchParams using configurable keyword
-        const q = searchParams?.get(searchKeyword) || "";
-        push(["trackSiteSearch", q]);
-      } else {
-        push(["trackPageView"]);
-      }
+      trackPageOrSearch();
 
       if (onRouteChangeComplete) {
         onRouteChangeComplete(currentUrl);
