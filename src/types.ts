@@ -19,6 +19,7 @@ export interface InitSettings {
   isAppRouter?: boolean;
   pathname?: string;
   searchParams?: URLSearchParams;
+  searchKeyword?: string;
   enableHeatmapSessionRecording?: boolean;
   enableHeartBeatTimer?: boolean;
   heartBeatTimerInterval?: number;

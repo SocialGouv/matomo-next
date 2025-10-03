@@ -32,6 +32,7 @@ export const initAppRouter = (
     logExcludedTracks = false,
     pathname = "",
     searchParams,
+    searchKeyword = "q",
     enableHeatmapSessionRecording = false,
     enableHeartBeatTimer = false,
     heartBeatTimerInterval,
@@ -120,8 +121,8 @@ export const initAppRouter = (
         startsWith(currentUrl, "/recherche") ||
         startsWith(currentUrl, "/search")
       ) {
-        // Extract search query from searchParams
-        const q = searchParams?.get("q") || "";
+        // Extract search query from searchParams using configurable keyword
+        const q = searchParams?.get(searchKeyword) || "";
         push(["trackSiteSearch", q]);
       } else {
         push(["trackPageView"]);

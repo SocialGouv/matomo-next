@@ -489,22 +489,21 @@ describe("App Router with pathname", () => {
     const { init } = require("../index");
     document.head.appendChild(document.createElement("script"));
 
-    const consoleLogSpy = jest.spyOn(console, "log").mockImplementation();
-
     init({
       pathname: "/admin",
       searchParams: new URLSearchParams("token=secret"),
       siteId: "42",
       url: "https://YO",
       excludeUrlsPatterns: [/^\/admin/],
-      logExcludedTracks: true,
     });
 
-    expect(consoleLogSpy).toHaveBeenCalledWith(
-      expect.stringContaining("matomo: exclude track /admin?token=secret"),
+    // Should not have added any pageview tracking calls
+    expect(window._paq).not.toEqual(
+      expect.arrayContaining([["trackPageView"]]),
     );
-
-    consoleLogSpy.mockRestore();
+    expect(window._paq).not.toEqual(
+      expect.arrayContaining([["trackSiteSearch", expect.anything()]]),
+    );
   });
 
   test("should call onRouteChangeStart and onRouteChangeComplete callbacks in App Router", (done) => {
@@ -555,6 +554,8 @@ describe("App Router with pathname", () => {
       url: "https://YO",
     });
 
+    window._paq = [];
+
     // Second call - search route
     init({
       pathname: "/recherche",
@@ -566,6 +567,10 @@ describe("App Router with pathname", () => {
     setTimeout(() => {
       expect(window._paq).toEqual(
         expect.arrayContaining([["trackSiteSearch", "test query"]]),
+      );
+      // Should NOT have trackPageView for search routes
+      expect(window._paq).not.toEqual(
+        expect.arrayContaining([["trackPageView"]]),
       );
       done();
     }, 10);
@@ -583,6 +588,8 @@ describe("App Router with pathname", () => {
       url: "https://YO",
     });
 
+    window._paq = [];
+
     // Second call - search route
     init({
       pathname: "/search",
@@ -594,6 +601,10 @@ describe("App Router with pathname", () => {
     setTimeout(() => {
       expect(window._paq).toEqual(
         expect.arrayContaining([["trackSiteSearch", "next.js"]]),
+      );
+      // Should NOT have trackPageView for search routes
+      expect(window._paq).not.toEqual(
+        expect.arrayContaining([["trackPageView"]]),
       );
       done();
     }, 10);
@@ -611,6 +622,8 @@ describe("App Router with pathname", () => {
       url: "https://YO",
     });
 
+    window._paq = [];
+
     // Second call - search route without q parameter
     init({
       pathname: "/search",
@@ -622,6 +635,119 @@ describe("App Router with pathname", () => {
     setTimeout(() => {
       expect(window._paq).toEqual(
         expect.arrayContaining([["trackSiteSearch", ""]]),
+      );
+      // Should NOT have trackPageView for search routes
+      expect(window._paq).not.toEqual(
+        expect.arrayContaining([["trackPageView"]]),
+      );
+      done();
+    }, 10);
+  });
+
+  test("should track both /recherche and /search routes to avoid regressions", (done) => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { init } = require("../index");
+    document.head.appendChild(document.createElement("script"));
+
+    // First call - initial pageview
+    init({
+      pathname: "/home",
+      siteId: "42",
+      url: "https://YO",
+    });
+
+    // Second call - /recherche route
+    init({
+      pathname: "/recherche",
+      searchParams: new URLSearchParams("q=first%20search"),
+      siteId: "42",
+      url: "https://YO",
+    });
+
+    setTimeout(() => {
+      expect(window._paq).toEqual(
+        expect.arrayContaining([["trackSiteSearch", "first search"]]),
+      );
+
+      window._paq = [];
+
+      // Third call - /search route
+      init({
+        pathname: "/search",
+        searchParams: new URLSearchParams("q=second%20search"),
+        siteId: "42",
+        url: "https://YO",
+      });
+
+      setTimeout(() => {
+        expect(window._paq).toEqual(
+          expect.arrayContaining([["trackSiteSearch", "second search"]]),
+        );
+        done();
+      }, 10);
+    }, 10);
+  });
+
+  test("should handle complex search query with multiple params and hashtag", (done) => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { init } = require("../index");
+    document.head.appendChild(document.createElement("script"));
+
+    // First call - initial pageview
+    init({
+      pathname: "/home",
+      siteId: "42",
+      url: "https://YO",
+    });
+
+    window._paq = [];
+
+    // Second call - search route with multiple params
+    init({
+      pathname: "/search",
+      searchParams: new URLSearchParams("q=test&page=2#more"),
+      siteId: "42",
+      url: "https://YO",
+    });
+
+    setTimeout(() => {
+      expect(window._paq).toEqual(
+        expect.arrayContaining([["trackSiteSearch", "test"]]),
+      );
+      // Should strip hashtag from URL
+      expect(window._paq).toEqual(
+        expect.arrayContaining([["setCustomUrl", "/search"]]),
+      );
+      done();
+    }, 10);
+  });
+
+  test("should support custom search keyword parameter", (done) => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { init } = require("../index");
+    document.head.appendChild(document.createElement("script"));
+
+    // First call - initial pageview
+    init({
+      pathname: "/home",
+      siteId: "42",
+      url: "https://YO",
+    });
+
+    window._paq = [];
+
+    // Second call - search route with custom keyword
+    init({
+      pathname: "/search",
+      searchParams: new URLSearchParams("query=next.js"),
+      searchKeyword: "query",
+      siteId: "42",
+      url: "https://YO",
+    });
+
+    setTimeout(() => {
+      expect(window._paq).toEqual(
+        expect.arrayContaining([["trackSiteSearch", "next.js"]]),
       );
       done();
     }, 10);

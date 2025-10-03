@@ -28,6 +28,7 @@ export const initPagesRouter = (settings: InitSettings): void => {
     nonce,
     trustedPolicyName = "matomo-next",
     logExcludedTracks = false,
+    searchKeyword = "q",
     enableHeatmapSessionRecording = false,
     enableHeartBeatTimer = false,
     heartBeatTimerInterval,
@@ -111,10 +112,11 @@ export const initPagesRouter = (settings: InitSettings): void => {
     // In order to ensure that the page title had been updated,
     // we delayed pushing the tracking to the next tick.
     setTimeout(() => {
-      const { q } = Router.query;
+      const queryValue = Router.query[searchKeyword];
+      const searchQuery = typeof queryValue === "string" ? queryValue : "";
       push(["setDocumentTitle", document.title]);
       if (startsWith(path, "/recherche") || startsWith(path, "/search")) {
-        push(["trackSiteSearch", q ?? ""]);
+        push(["trackSiteSearch", searchQuery]);
       } else {
         push(["trackPageView"]);
       }

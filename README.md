@@ -81,7 +81,7 @@ export function MatomoAnalytics() {
       siteId: MATOMO_SITE_ID,
       isAppRouter: true, // Enable App Router mode
       pathname,
-      searchParams, // Pass searchParams directly
+      searchParams, // Pass URLSearchParams object directly
       // Optional: Enable additional features
       enableHeatmapSessionRecording: true,
       enableHeartBeatTimer: true,
@@ -139,6 +139,20 @@ init({
   excludeUrlsPatterns: [/^\/login.php/, /\?token=.+/],
 });
 ```
+
+### Custom search keyword parameter :
+
+By default, the search tracking feature looks for a `q` parameter in the URL (e.g., `/search?q=my+query`). If your application uses a different parameter name for search queries, you can customize it:
+
+```js
+init({
+  url: MATOMO_URL,
+  siteId: MATOMO_SITE_ID,
+  searchKeyword: "query", // Will track searches from /search?query=my+search
+});
+```
+
+This works for both Pages Router and App Router, and applies to both `/recherche` and `/search` routes.
 
 ### Disable cookies :
 
