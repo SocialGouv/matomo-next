@@ -59,7 +59,7 @@ Will track routes changes by default.
 
 ### App Router
 
-For Next.js App Router (Next.js 13+), create a client component to handle tracking. Pass both `pathname` and `searchParams` to track the full URL including query parameters:
+For Next.js App Router (Next.js 13+), create a client component to handle tracking. Set `isAppRouter: true` and pass both `pathname` and `searchParams` to track the full URL including query parameters:
 
 ```jsx
 "use client";
@@ -79,8 +79,9 @@ export function MatomoAnalytics() {
     init({
       url: MATOMO_URL,
       siteId: MATOMO_SITE_ID,
+      isAppRouter: true, // Enable App Router mode
       pathname,
-      searchParams: searchParams.toString(),
+      searchParams, // Pass searchParams directly
       // Optional: Enable additional features
       enableHeatmapSessionRecording: true,
       enableHeartBeatTimer: true,
@@ -90,6 +91,11 @@ export function MatomoAnalytics() {
   return null;
 }
 ```
+
+**Notes**:
+
+- The `isAppRouter` parameter explicitly enables App Router mode. For backward compatibility, providing `pathname` without `isAppRouter` will also activate App Router mode.
+- You can pass `searchParams` directly from `useSearchParams()` without calling `.toString()` - the library handles both formats automatically.
 
 Then add this component to your root layout wrapped in a `Suspense` boundary (required for `useSearchParams`):
 
@@ -260,8 +266,9 @@ export function MatomoAnalytics() {
     init({
       url: process.env.NEXT_PUBLIC_MATOMO_URL,
       siteId: process.env.NEXT_PUBLIC_MATOMO_SITE_ID,
+      isAppRouter: true,
       pathname,
-      searchParams: searchParams.toString(),
+      searchParams, // Pass directly without .toString()
       onRouteChangeStart: (path) => {
         console.log("Route change started:", path);
         // Your custom logic here

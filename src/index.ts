@@ -21,19 +21,22 @@ const state: MatomoState = {
  *
  * @param settings - Configuration settings for Matomo
  *
- * App Router mode: Provide pathname (and optionally searchParams)
- * Pages Router mode: Do not provide pathname
+ * App Router mode: Set isAppRouter to true and provide pathname (and optionally searchParams)
+ * Pages Router mode: Set isAppRouter to false or omit it
  */
 export function init(settings: InitSettings): void {
-  const { url, pathname } = settings;
+  const { url, isAppRouter, pathname } = settings;
 
   if (!url) {
     console.warn("Matomo disabled, please provide matomo url");
     return;
   }
 
-  // App Router mode: when pathname is provided
-  if (pathname !== undefined) {
+  // App Router mode: when isAppRouter is true OR pathname is provided (backward compatibility)
+  if (
+    isAppRouter === true ||
+    (isAppRouter === undefined && pathname !== undefined)
+  ) {
     initAppRouter(settings, state);
     return;
   }

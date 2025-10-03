@@ -416,9 +416,10 @@ describe("App Router with pathname", () => {
     const { init } = require("../index");
     document.head.appendChild(document.createElement("script"));
 
+    const searchParams = new URLSearchParams("q=test&page=1");
     init({
       pathname: "/search",
-      searchParams: "q=test&page=1",
+      searchParams,
       siteId: "42",
       url: "https://YO",
     });
@@ -434,7 +435,7 @@ describe("App Router with pathname", () => {
     // First call with search params
     init({
       pathname: "/search",
-      searchParams: "q=test",
+      searchParams: new URLSearchParams("q=test"),
       siteId: "42",
       url: "https://YO",
     });
@@ -444,7 +445,7 @@ describe("App Router with pathname", () => {
     // Second call with different search params
     init({
       pathname: "/search",
-      searchParams: "q=other",
+      searchParams: new URLSearchParams("q=other"),
       siteId: "42",
       url: "https://YO",
     });
@@ -464,7 +465,7 @@ describe("App Router with pathname", () => {
 
     init({
       pathname: "/search",
-      searchParams: "q=test",
+      searchParams: new URLSearchParams("q=test"),
       siteId: "42",
       url: "https://YO",
     });
@@ -474,7 +475,7 @@ describe("App Router with pathname", () => {
     // Call again with same pathname and search params
     init({
       pathname: "/search",
-      searchParams: "q=test",
+      searchParams: new URLSearchParams("q=test"),
       siteId: "42",
       url: "https://YO",
     });
@@ -492,7 +493,7 @@ describe("App Router with pathname", () => {
 
     init({
       pathname: "/admin",
-      searchParams: "token=secret",
+      searchParams: new URLSearchParams("token=secret"),
       siteId: "42",
       url: "https://YO",
       excludeUrlsPatterns: [/^\/admin/],
@@ -557,7 +558,7 @@ describe("App Router with pathname", () => {
     // Second call - search route
     init({
       pathname: "/recherche",
-      searchParams: "q=test%20query",
+      searchParams: new URLSearchParams("q=test%20query"),
       siteId: "42",
       url: "https://YO",
     });
@@ -585,7 +586,7 @@ describe("App Router with pathname", () => {
     // Second call - search route
     init({
       pathname: "/search",
-      searchParams: "q=next.js",
+      searchParams: new URLSearchParams("q=next.js"),
       siteId: "42",
       url: "https://YO",
     });
@@ -613,7 +614,7 @@ describe("App Router with pathname", () => {
     // Second call - search route without q parameter
     init({
       pathname: "/search",
-      searchParams: "page=1",
+      searchParams: new URLSearchParams("page=1"),
       siteId: "42",
       url: "https://YO",
     });
@@ -641,7 +642,7 @@ describe("App Router with pathname", () => {
     // Second call - URL with hashtag
     init({
       pathname: "/about#section",
-      searchParams: "tab=info",
+      searchParams: new URLSearchParams("tab=info"),
       siteId: "42",
       url: "https://YO",
     });

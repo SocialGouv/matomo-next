@@ -2,7 +2,6 @@ export interface HTMLTrustedScriptElement
   extends Omit<HTMLScriptElement, "src"> {
   src: TrustedScriptURL | string;
 }
-
 export interface InitSettings {
   url: string;
   siteId: string;
@@ -17,8 +16,9 @@ export interface InitSettings {
   nonce?: string;
   trustedPolicyName?: string;
   logExcludedTracks?: boolean;
+  isAppRouter?: boolean;
   pathname?: string;
-  searchParams?: string;
+  searchParams?: URLSearchParams;
   enableHeatmapSessionRecording?: boolean;
   enableHeartBeatTimer?: boolean;
   heartBeatTimerInterval?: number;

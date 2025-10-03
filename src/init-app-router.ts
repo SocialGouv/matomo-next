@@ -31,7 +31,7 @@ export const initAppRouter = (
     trustedPolicyName = "matomo-next",
     logExcludedTracks = false,
     pathname = "",
-    searchParams = "",
+    searchParams,
     enableHeatmapSessionRecording = false,
     enableHeartBeatTimer = false,
     heartBeatTimerInterval,
@@ -40,8 +40,13 @@ export const initAppRouter = (
 
   window._paq = window._paq ?? [];
 
+  // Convert searchParams to string
+  const searchParamsString = searchParams?.toString() || "";
+
   // Build full URL with search params
-  const currentUrl = searchParams ? `${pathname}?${searchParams}` : pathname;
+  const currentUrl = searchParamsString
+    ? `${pathname}?${searchParamsString}`
+    : pathname;
 
   // Initialize Matomo script on first call
   if (!state.matomoInitialized) {
@@ -116,8 +121,7 @@ export const initAppRouter = (
         startsWith(currentUrl, "/search")
       ) {
         // Extract search query from searchParams
-        const qMatch = searchParams?.match(/(?:^|&)q=([^&]*)/);
-        const q = qMatch ? decodeURIComponent(qMatch[1]) : "";
+        const q = searchParams?.get("q") || "";
         push(["trackSiteSearch", q]);
       } else {
         push(["trackPageView"]);
