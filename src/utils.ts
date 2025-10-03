@@ -9,8 +9,7 @@ export const isExcludedUrl = (url: string, patterns: RegExp[]): boolean => {
  * Check if a string starts with a specific needle
  */
 export const startsWith = (str: string, needle: string): boolean => {
-  // eslint-disable-next-line @typescript-eslint/prefer-string-starts-ends-with
-  return str.substring(0, needle.length) === needle;
+  return str.startsWith(needle);
 };
 
 /**

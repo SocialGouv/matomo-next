@@ -81,7 +81,7 @@ export const initPagesRouter = (settings: InitSettings): void => {
    * Once user navigate across the site,
    * we rely on Router.pathname
    */
-  previousPath = location.pathname;
+  previousPath = typeof window !== "undefined" ? window.location.pathname : "";
 
   const defaultOnRouteChangeStart = (path: string): void => {
     if (isExcludedUrl(path, excludeUrlsPatterns)) return;

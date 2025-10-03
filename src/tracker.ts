@@ -16,7 +16,7 @@ export function push(args: PushArgs): void {
 export const loadMatomoScript = (
   url: string,
   jsTrackerFile: string,
-  sanitizer: any,
+  sanitizer: TrustedTypePolicy | TrustedTypePolicyOptions,
   nonce?: string,
   onScriptLoadingError?: () => void,
 ): void => {
