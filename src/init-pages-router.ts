@@ -36,6 +36,11 @@ export const initPagesRouter = (settings: InitSettings): void => {
     heatmapConfig = {},
   } = settings;
 
+  if (!url) {
+    console.warn("Matomo disabled, please provide matomo url");
+    return;
+  }
+
   window._paq = window._paq ?? [];
 
   const sanitizer = createSanitizer(trustedPolicyName);

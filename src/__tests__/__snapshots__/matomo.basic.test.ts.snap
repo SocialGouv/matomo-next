@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Basic Matomo functionality init should NOT create events when url is not provided 1`] = `Array []`;
+exports[`Basic Matomo functionality initPagesRouter should NOT create events when url is not provided 1`] = `Array []`;
 
-exports[`Basic Matomo functionality init should create a js tag and initialize 1`] = `
+exports[`Basic Matomo functionality initPagesRouter should create a js tag and initialize 1`] = `
 Array [
   Array [
     "trackPageView",

@@ -1,5 +1,5 @@
 import "./test-setup";
-import { init } from "..";
+import { initPagesRouter } from "..";
 
 describe("Matomo Configuration", () => {
   beforeEach(() => {
@@ -12,7 +12,7 @@ describe("Matomo Configuration", () => {
   describe("disableCookies", () => {
     test("should NOT append disableCookies to window._paq by default", () => {
       document.head.appendChild(document.createElement("script"));
-      init({ disableCookies: false, siteId: "42", url: "YO" });
+      initPagesRouter({ disableCookies: false, siteId: "42", url: "YO" });
       expect(window._paq).not.toEqual(
         expect.arrayContaining([["disableCookies"]]),
       );
@@ -20,7 +20,7 @@ describe("Matomo Configuration", () => {
 
     test("should append disableCookies to window._paq", () => {
       document.head.appendChild(document.createElement("script"));
-      init({ disableCookies: true, siteId: "42", url: "YO" });
+      initPagesRouter({ disableCookies: true, siteId: "42", url: "YO" });
       expect(window._paq).toEqual(expect.arrayContaining([["disableCookies"]]));
     });
   });
@@ -28,7 +28,11 @@ describe("Matomo Configuration", () => {
   describe("enableHeartBeatTimer", () => {
     test("should enable HeartBeat Timer with default interval", () => {
       document.head.appendChild(document.createElement("script"));
-      init({ enableHeartBeatTimer: true, siteId: "42", url: "https://YO" });
+      initPagesRouter({
+        enableHeartBeatTimer: true,
+        siteId: "42",
+        url: "https://YO",
+      });
       expect(window._paq).toEqual(
         expect.arrayContaining([["enableHeartBeatTimer"]]),
       );
@@ -36,7 +40,7 @@ describe("Matomo Configuration", () => {
 
     test("should enable HeartBeat Timer with custom interval", () => {
       document.head.appendChild(document.createElement("script"));
-      init({
+      initPagesRouter({
         enableHeartBeatTimer: true,
         heartBeatTimerInterval: 30,
         siteId: "42",
@@ -51,7 +55,7 @@ describe("Matomo Configuration", () => {
   describe("enableHeatmapSessionRecording", () => {
     test("should load HeatmapSessionRecording script when enabled", () => {
       document.head.appendChild(document.createElement("script"));
-      init({
+      initPagesRouter({
         enableHeatmapSessionRecording: true,
         siteId: "42",
         url: "https://YO",
@@ -69,7 +73,7 @@ describe("Matomo Configuration", () => {
 
     test("should not load HeatmapSessionRecording script when disabled", () => {
       document.head.appendChild(document.createElement("script"));
-      init({ siteId: "42", url: "https://YO" });
+      initPagesRouter({ siteId: "42", url: "https://YO" });
 
       const heatmapScript = Array.from(
         document.head.querySelectorAll("script"),
@@ -83,7 +87,7 @@ describe("Matomo Configuration", () => {
     test("should track initial pageview by default", () => {
       window.location.pathname = "/some-page";
       document.head.appendChild(document.createElement("script"));
-      init({ siteId: "42", url: "https://YO" });
+      initPagesRouter({ siteId: "42", url: "https://YO" });
       expect(window._paq).toEqual(expect.arrayContaining([["trackPageView"]]));
     });
   });

@@ -1,15 +1,15 @@
 import "./test-setup";
-import { init, push } from "..";
+import { initPagesRouter, push } from "..";
 
 describe("Basic Matomo functionality", () => {
   beforeEach(() => {
     global._paq = [];
   });
 
-  describe("init", () => {
+  describe("initPagesRouter", () => {
     it("should create a js tag and initialize", () => {
       document.head.appendChild(document.createElement("script"));
-      init({ siteId: "42", url: "https://YO" });
+      initPagesRouter({ siteId: "42", url: "https://YO" });
       expect(global._paq).toMatchSnapshot();
     });
 
@@ -17,21 +17,21 @@ describe("Basic Matomo functionality", () => {
       document.head.appendChild(document.createElement("script"));
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-expect-error
-      init({ siteId: "42" });
+      initPagesRouter({ siteId: "42" });
       expect(global._paq).toMatchSnapshot();
     });
   });
 
   describe("push", () => {
     test("should append data to window._paq", () => {
-      init({ siteId: "42", url: "YO" });
+      initPagesRouter({ siteId: "42", url: "YO" });
       window._paq = [];
       push(["trackEvent", "kikoo", "lol"]);
       expect(window._paq).toMatchSnapshot();
     });
 
     test("should append dimensions data to window._paq", () => {
-      init({ siteId: "42", url: "YO" });
+      initPagesRouter({ siteId: "42", url: "YO" });
       window._paq = [];
       push([
         "trackEvent",
@@ -47,7 +47,7 @@ describe("Basic Matomo functionality", () => {
 
   describe("onInitialization", () => {
     test("should work if the surcharge of the operator", () => {
-      init({
+      initPagesRouter({
         onInitialization: () => {
           push(["during_initialization", "hello"]);
         },

@@ -8,10 +8,10 @@ describe("App Router functionality", () => {
 
   test("should track initial pageview when pathname is provided (first call)", () => {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const { init } = require("../index");
+    const { initAppRouter } = require("../index");
     document.head.appendChild(document.createElement("script"));
 
-    init({ pathname: "/home", siteId: "42", url: "https://YO" });
+    initAppRouter({ pathname: "/home", siteId: "42", url: "https://YO" });
 
     expect(window._paq).toEqual(
       expect.arrayContaining([
@@ -25,11 +25,11 @@ describe("App Router functionality", () => {
 
   test("should track subsequent pageviews with setCustomUrl", () => {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const { init } = require("../index");
+    const { initAppRouter } = require("../index");
     document.head.appendChild(document.createElement("script"));
 
-    init({ pathname: "/home", siteId: "42", url: "https://YO" });
-    init({ pathname: "/about", siteId: "42", url: "https://YO" });
+    initAppRouter({ pathname: "/home", siteId: "42", url: "https://YO" });
+    initAppRouter({ pathname: "/about", siteId: "42", url: "https://YO" });
 
     expect(window._paq).toEqual(
       expect.arrayContaining([["setCustomUrl", "/about"], ["trackPageView"]]),
@@ -38,24 +38,24 @@ describe("App Router functionality", () => {
 
   test("should not track again if pathname hasn't changed", () => {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const { init } = require("../index");
+    const { initAppRouter } = require("../index");
     document.head.appendChild(document.createElement("script"));
 
-    init({ pathname: "/home", siteId: "42", url: "https://YO" });
+    initAppRouter({ pathname: "/home", siteId: "42", url: "https://YO" });
     const initialLength = window._paq?.length || 0;
 
-    init({ pathname: "/home", siteId: "42", url: "https://YO" });
+    initAppRouter({ pathname: "/home", siteId: "42", url: "https://YO" });
 
     expect(window._paq?.length).toBe(initialLength);
   });
 
   test("should track URL with search params on initial pageview", () => {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const { init } = require("../index");
+    const { initAppRouter } = require("../index");
     document.head.appendChild(document.createElement("script"));
 
     const searchParams = new URLSearchParams("q=test&page=1");
-    init({
+    initAppRouter({
       pathname: "/search",
       searchParams,
       siteId: "42",
@@ -72,10 +72,10 @@ describe("App Router functionality", () => {
 
   test("should track different URLs when search params change", (done) => {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const { init } = require("../index");
+    const { initAppRouter } = require("../index");
     document.head.appendChild(document.createElement("script"));
 
-    init({
+    initAppRouter({
       pathname: "/search",
       searchParams: new URLSearchParams("q=test"),
       siteId: "42",
@@ -84,7 +84,7 @@ describe("App Router functionality", () => {
 
     const initialLength = window._paq?.length || 0;
 
-    init({
+    initAppRouter({
       pathname: "/search",
       searchParams: new URLSearchParams("q=other"),
       siteId: "42",
@@ -105,10 +105,10 @@ describe("App Router functionality", () => {
 
   test("should not track when URL with search params hasn't changed", () => {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const { init } = require("../index");
+    const { initAppRouter } = require("../index");
     document.head.appendChild(document.createElement("script"));
 
-    init({
+    initAppRouter({
       pathname: "/search",
       searchParams: new URLSearchParams("q=test"),
       siteId: "42",
@@ -117,7 +117,7 @@ describe("App Router functionality", () => {
 
     const initialLength = window._paq?.length || 0;
 
-    init({
+    initAppRouter({
       pathname: "/search",
       searchParams: new URLSearchParams("q=test"),
       siteId: "42",
@@ -129,10 +129,10 @@ describe("App Router functionality", () => {
 
   test("should exclude URLs based on patterns even with search params", () => {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const { init } = require("../index");
+    const { initAppRouter } = require("../index");
     document.head.appendChild(document.createElement("script"));
 
-    init({
+    initAppRouter({
       pathname: "/admin",
       searchParams: new URLSearchParams("token=secret"),
       siteId: "42",
@@ -150,13 +150,13 @@ describe("App Router functionality", () => {
 
   test("should call onRouteChangeStart and onRouteChangeComplete callbacks in App Router", (done) => {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const { init } = require("../index");
+    const { initAppRouter } = require("../index");
     document.head.appendChild(document.createElement("script"));
 
     const onRouteChangeStart = jest.fn();
     const onRouteChangeComplete = jest.fn();
 
-    init({
+    initAppRouter({
       pathname: "/home",
       siteId: "42",
       url: "https://YO",
@@ -164,7 +164,7 @@ describe("App Router functionality", () => {
       onRouteChangeComplete,
     });
 
-    init({
+    initAppRouter({
       pathname: "/about",
       siteId: "42",
       url: "https://YO",
@@ -183,10 +183,10 @@ describe("App Router functionality", () => {
   describe("Site search tracking", () => {
     test("should track site search in App Router for /recherche route", (done) => {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const { init } = require("../index");
+      const { initAppRouter } = require("../index");
       document.head.appendChild(document.createElement("script"));
 
-      init({
+      initAppRouter({
         pathname: "/home",
         siteId: "42",
         url: "https://YO",
@@ -194,7 +194,7 @@ describe("App Router functionality", () => {
 
       window._paq = [];
 
-      init({
+      initAppRouter({
         pathname: "/recherche",
         searchParams: new URLSearchParams("q=test%20query"),
         siteId: "42",
@@ -214,10 +214,10 @@ describe("App Router functionality", () => {
 
     test("should track site search in App Router for /search route", (done) => {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const { init } = require("../index");
+      const { initAppRouter } = require("../index");
       document.head.appendChild(document.createElement("script"));
 
-      init({
+      initAppRouter({
         pathname: "/home",
         siteId: "42",
         url: "https://YO",
@@ -225,7 +225,7 @@ describe("App Router functionality", () => {
 
       window._paq = [];
 
-      init({
+      initAppRouter({
         pathname: "/search",
         searchParams: new URLSearchParams("q=next.js"),
         siteId: "42",
@@ -245,10 +245,10 @@ describe("App Router functionality", () => {
 
     test("should handle search route without q parameter in App Router", (done) => {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const { init } = require("../index");
+      const { initAppRouter } = require("../index");
       document.head.appendChild(document.createElement("script"));
 
-      init({
+      initAppRouter({
         pathname: "/home",
         siteId: "42",
         url: "https://YO",
@@ -256,7 +256,7 @@ describe("App Router functionality", () => {
 
       window._paq = [];
 
-      init({
+      initAppRouter({
         pathname: "/search",
         searchParams: new URLSearchParams("page=1"),
         siteId: "42",
@@ -276,16 +276,16 @@ describe("App Router functionality", () => {
 
     test("should track both /recherche and /search routes to avoid regressions", (done) => {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const { init } = require("../index");
+      const { initAppRouter } = require("../index");
       document.head.appendChild(document.createElement("script"));
 
-      init({
+      initAppRouter({
         pathname: "/home",
         siteId: "42",
         url: "https://YO",
       });
 
-      init({
+      initAppRouter({
         pathname: "/recherche",
         searchParams: new URLSearchParams("q=first%20search"),
         siteId: "42",
@@ -299,7 +299,7 @@ describe("App Router functionality", () => {
 
         window._paq = [];
 
-        init({
+        initAppRouter({
           pathname: "/search",
           searchParams: new URLSearchParams("q=second%20search"),
           siteId: "42",
@@ -317,10 +317,10 @@ describe("App Router functionality", () => {
 
     test("should handle complex search query with multiple params and hashtag", (done) => {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const { init } = require("../index");
+      const { initAppRouter } = require("../index");
       document.head.appendChild(document.createElement("script"));
 
-      init({
+      initAppRouter({
         pathname: "/home",
         siteId: "42",
         url: "https://YO",
@@ -328,7 +328,7 @@ describe("App Router functionality", () => {
 
       window._paq = [];
 
-      init({
+      initAppRouter({
         pathname: "/search",
         searchParams: new URLSearchParams("q=test&page=2#more"),
         siteId: "42",
@@ -348,10 +348,10 @@ describe("App Router functionality", () => {
 
     test("should support custom search keyword parameter", (done) => {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const { init } = require("../index");
+      const { initAppRouter } = require("../index");
       document.head.appendChild(document.createElement("script"));
 
-      init({
+      initAppRouter({
         pathname: "/home",
         siteId: "42",
         url: "https://YO",
@@ -359,7 +359,7 @@ describe("App Router functionality", () => {
 
       window._paq = [];
 
-      init({
+      initAppRouter({
         pathname: "/search",
         searchParams: new URLSearchParams("query=next.js"),
         searchKeyword: "query",
@@ -377,10 +377,10 @@ describe("App Router functionality", () => {
 
     test("should support custom search routes", (done) => {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const { init } = require("../index");
+      const { initAppRouter } = require("../index");
       document.head.appendChild(document.createElement("script"));
 
-      init({
+      initAppRouter({
         pathname: "/home",
         siteId: "42",
         url: "https://YO",
@@ -388,7 +388,7 @@ describe("App Router functionality", () => {
 
       window._paq = [];
 
-      init({
+      initAppRouter({
         pathname: "/find",
         searchParams: new URLSearchParams("q=custom+route"),
         searchRoutes: ["/find", "/discover"],
@@ -409,10 +409,10 @@ describe("App Router functionality", () => {
 
     test("should not track as search on non-search routes when custom searchRoutes is defined", (done) => {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const { init } = require("../index");
+      const { initAppRouter } = require("../index");
       document.head.appendChild(document.createElement("script"));
 
-      init({
+      initAppRouter({
         pathname: "/home",
         siteId: "42",
         url: "https://YO",
@@ -420,7 +420,7 @@ describe("App Router functionality", () => {
 
       window._paq = [];
 
-      init({
+      initAppRouter({
         pathname: "/search",
         searchParams: new URLSearchParams("q=test"),
         searchRoutes: ["/find"],
@@ -442,16 +442,16 @@ describe("App Router functionality", () => {
 
   test("should strip hashtag from URL in App Router", () => {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const { init } = require("../index");
+    const { initAppRouter } = require("../index");
     document.head.appendChild(document.createElement("script"));
 
-    init({
+    initAppRouter({
       pathname: "/home",
       siteId: "42",
       url: "https://YO",
     });
 
-    init({
+    initAppRouter({
       pathname: "/about#section",
       searchParams: new URLSearchParams("tab=info"),
       siteId: "42",

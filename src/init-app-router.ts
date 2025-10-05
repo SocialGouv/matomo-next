@@ -8,14 +8,18 @@ import {
 } from "./tracker";
 import { loadHeatmapSessionRecording } from "./heatmap";
 
+// Internal state for tracking initial page load in App Router
+const state: MatomoState = {
+  isInitialPageview: true,
+  previousUrl: "",
+  matomoInitialized: false,
+};
+
 /**
  * Initialize Matomo for Next.js App Router
  * Uses pathname and searchParams from the component
  */
-export const initAppRouter = (
-  settings: InitSettings,
-  state: MatomoState,
-): void => {
+export const initAppRouter = (settings: InitSettings): void => {
   const {
     url,
     siteId,
@@ -39,6 +43,11 @@ export const initAppRouter = (
     heartBeatTimerInterval,
     heatmapConfig = {},
   } = settings;
+
+  if (!url) {
+    console.warn("Matomo disabled, please provide matomo url");
+    return;
+  }
 
   window._paq = window._paq ?? [];
 
