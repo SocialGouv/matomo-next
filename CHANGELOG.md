@@ -1,3 +1,10 @@
+# [1.10.0-alpha.1](https://github.com/SocialGouv/matomo-next/compare/v1.9.2...v1.10.0-alpha.1) (2025-10-07)
+
+
+### Features
+
+* new version ([831c540](https://github.com/SocialGouv/matomo-next/commit/831c5409a565c764e7ade21c6364024dde9c58a0))
+
 ## [1.9.2](https://github.com/SocialGouv/matomo-next/compare/v1.9.1...v1.9.2) (2024-11-12)
 
 
