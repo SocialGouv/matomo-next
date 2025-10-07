@@ -1,6 +1,5 @@
 import { default as Router } from "next/router";
-
-import { init, push } from "..";
+import { initPagesRouter, push } from "..";
 
 type RouteChangeFunction = (route: string) => void;
 // eslint-disable-next-line @typescript-eslint/init-declarations
@@ -23,7 +22,7 @@ jest.mock("next/router", () => {
               `{"${decodeURI(search)
                 .replace(/"/g, '\\"')
                 .replace(/&/g, '","')
-                .replace(/=/g, '":"')}"}`
+                .replace(/=/g, '":"')}"}`,
             ) as AnyObject;
             Object.keys(values).forEach((key) => {
               query[key] = decodeURIComponent(values[key]);
@@ -56,73 +55,19 @@ Object.defineProperty(window, "location", {
   },
 });
 
-describe("init", () => {
-  beforeEach(() => {
-    global._paq = [];
-  });
-  it("should create a js tag and initialize", () => {
-    // we need to add a fake script node so
-    // init can insert matomo tracker code before it
+beforeEach(() => {
+  // Add a fake script node so init can insert matomo tracker code before it
+  if (!document.head.querySelector("script")) {
     document.head.appendChild(document.createElement("script"));
-    init({ siteId: "42", url: "https://YO" });
-    expect(global._paq).toMatchSnapshot();
-  });
-  it("should NOT create events when url is not provided", () => {
-    // we need to add a fake script node so
-    // init can insert matomo tracker code before it
-    document.head.appendChild(document.createElement("script"));
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    init({ siteId: "42" });
-    expect(global._paq).toMatchSnapshot();
-  });
-});
-
-describe("push", () => {
-  test("should append data to window._paq", () => {
-    init({ siteId: "42", url: "YO" });
-    window._paq = [];
-    push(["trackEvent", "kikoo", "lol"]);
-    expect(window._paq).toMatchSnapshot();
-  });
-
-  test("should append dimensions data to window._paq", () => {
-    init({ siteId: "42", url: "YO" });
-    window._paq = [];
-    push([
-      "trackEvent",
-      "kikoo",
-      "lol",
-      null,
-      null,
-      { dimension1: "ok", dimension2: "foobar" },
-    ]);
-    expect(window._paq).toMatchSnapshot();
-  });
-});
-
-describe("onInitialization", () => {
-  test("should work if the surcharge of the operator", () => {
-    init({
-      onInitialization: () => {
-        push(["during_initialization", "hello"]);
-      },
-      siteId: "42",
-      url: "YO",
-    });
-    expect(window._paq).toEqual(
-      expect.arrayContaining([["during_initialization", "hello"]])
-    );
-  });
+  }
 });
 
 describe("router.routeChangeStart event", () => {
   beforeEach(() => {
     global._paq = [];
-    jest.resetAllMocks();
   });
   test("should setReferrerUrl and setCustomUrl on route change start", async () => {
-    init({ siteId: "42", url: "YO" });
+    initPagesRouter({ siteId: "42", url: "YO" });
     window._paq = [];
 
     Router.events.emit("routeChangeStart", "/path/to/hello?world");
@@ -138,7 +83,7 @@ describe("router.routeChangeStart event", () => {
     });
   });
   test("should setReferrerUrl and setCustomUrl on route change start and handle hashtag (by removing it)", async () => {
-    init({ siteId: "42", url: "YO" });
+    initPagesRouter({ siteId: "42", url: "YO" });
     window._paq = [];
 
     Router.events.emit("routeChangeStart", "/path/to/hello#should-not-appear");
@@ -169,7 +114,7 @@ describe("router.routeChangeStart event", () => {
   });
 
   test("should work if the surcharge of the operator", async () => {
-    init({
+    initPagesRouter({
       onRouteChangeStart: (path) => {
         push(["newOperatorStart", "COMPLETE"]);
         push(["path", path]);
@@ -184,7 +129,7 @@ describe("router.routeChangeStart event", () => {
           expect.arrayContaining([
             ["newOperatorStart", "COMPLETE"],
             ["path", "/bonjour"],
-          ])
+          ]),
         );
         resolve();
       }, 0);
@@ -195,10 +140,9 @@ describe("router.routeChangeStart event", () => {
 describe("router.routeChangeComplete event", () => {
   beforeEach(() => {
     global._paq = [];
-    jest.resetAllMocks();
   });
   test("should trackPageView with correct title on route change", async () => {
-    init({ siteId: "42", url: "YO" });
+    initPagesRouter({ siteId: "42", url: "YO" });
     window._paq = [];
     document.title = "test page";
 
@@ -247,7 +191,7 @@ describe("router.routeChangeComplete event", () => {
   });
 
   test("should work if the surcharge of the operator", async () => {
-    init({
+    initPagesRouter({
       onRouteChangeComplete: (path) => {
         push(["newOperatorComplete", "COMPLETE"]);
         push(["path", path]);
@@ -262,7 +206,7 @@ describe("router.routeChangeComplete event", () => {
           expect.arrayContaining([
             ["newOperatorComplete", "COMPLETE"],
             ["path", "/hello-world"],
-          ])
+          ]),
         );
         resolve();
       }, 0);
@@ -271,16 +215,11 @@ describe("router.routeChangeComplete event", () => {
 });
 
 describe("excludeUrlsPatterns", () => {
-  beforeEach(() => {
+  it("should excluded login.php and token variables", async () => {
     global._paq = [];
     document.title = "some page";
-    jest.resetAllMocks();
-  });
-  it("should excluded login.php and token variables", async () => {
-    // we need to add a fake script node so
-    // init can insert matomo tracker code before it
     document.head.appendChild(document.createElement("script"));
-    init({
+    initPagesRouter({
       excludeUrlsPatterns: [/^\/login.php/, /\?token=.+/],
       siteId: "42",
       url: "https://YO",
@@ -299,9 +238,11 @@ describe("excludeUrlsPatterns", () => {
     });
   });
   it("should exclude initial page tracking", async () => {
+    global._paq = [];
+    document.title = "some page";
     window.location.pathname = "/change-password-pouet";
     document.head.appendChild(document.createElement("script"));
-    init({
+    initPagesRouter({
       excludeUrlsPatterns: [/^\/change-password/],
       siteId: "42",
       url: "https://YO",
@@ -316,9 +257,11 @@ describe("excludeUrlsPatterns", () => {
   });
 
   it("should track initial page if not excluded", async () => {
+    global._paq = [];
+    document.title = "some page";
     window.location.pathname = "/some-page";
     document.head.appendChild(document.createElement("script"));
-    init({
+    initPagesRouter({
       excludeUrlsPatterns: [/^\/change-password/],
       siteId: "42",
       url: "https://YO",
@@ -330,21 +273,5 @@ describe("excludeUrlsPatterns", () => {
         resolve();
       }, 0);
     });
-  });
-});
-
-// todo: should track pageview on next router routeChangeComplete
-
-describe("disableCookies", () => {
-  test("should NOT append disableCookies to window._paq by default", () => {
-    init({ disableCookies: false, siteId: "42", url: "YO" });
-    expect(window._paq).not.toEqual(
-      expect.arrayContaining([["disableCookies"]])
-    );
-  });
-
-  test("should append disableCookies to window._paq", () => {
-    init({ disableCookies: true, siteId: "42", url: "YO" });
-    expect(window._paq).toEqual(expect.arrayContaining([["disableCookies"]]));
   });
 });
