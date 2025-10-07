@@ -1,6 +1,6 @@
 import { default as Router } from "next/router";
 import type { InitSettings } from "./types";
-import { isExcludedUrl, createSanitizer, startsWith } from "./utils";
+import { isExcludedUrl, createSanitizer } from "./utils";
 import {
   push,
   loadMatomoScript,
@@ -124,7 +124,7 @@ export const initPagesRouter = (settings: InitSettings): void => {
 
       // Check if current route is a search route
       const isSearchRoute = searchRoutes.some((route) =>
-        startsWith(path, route),
+        path.startsWith(route),
       );
 
       if (isSearchRoute) {

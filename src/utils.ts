@@ -6,13 +6,6 @@ export const isExcludedUrl = (url: string, patterns: RegExp[]): boolean => {
 };
 
 /**
- * Check if a string starts with a specific needle
- */
-export const startsWith = (str: string, needle: string): boolean => {
-  return str.startsWith(needle);
-};
-
-/**
  * Trusted policy hooks for Trusted Types API
  */
 export const trustedPolicyHooks: TrustedTypePolicyOptions = {

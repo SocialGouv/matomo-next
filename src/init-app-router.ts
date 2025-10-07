@@ -1,5 +1,5 @@
 import type { InitSettings, MatomoState } from "./types";
-import { isExcludedUrl, createSanitizer, startsWith } from "./utils";
+import { isExcludedUrl, createSanitizer } from "./utils";
 import {
   push,
   loadMatomoScript,
@@ -107,7 +107,7 @@ export const initAppRouter = (settings: InitSettings): void => {
   const trackPageOrSearch = (): void => {
     // Check if current route is a search route
     const isSearchRoute = searchRoutes.some((route) =>
-      startsWith(currentUrl, route),
+      currentUrl.startsWith(route),
     );
 
     push(["setDocumentTitle", document.title]);
