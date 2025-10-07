@@ -298,8 +298,6 @@ initPagesRouter({
     captureKeystrokes: false,
     // Optional: capture only visible content (default: false, captures full page)
     captureVisibleContentOnly: false,
-    // Optional: enable debug mode (default: false)
-    debug: true,
   },
 });
 ```
@@ -318,8 +316,6 @@ initAppRouter({
     captureKeystrokes: false,
     // Optional: capture only visible content (default: false, captures full page)
     captureVisibleContentOnly: false,
-    // Optional: enable debug mode (default: false)
-    debug: true,
   },
 });
 ```
@@ -359,6 +355,41 @@ initAppRouter({
 ```
 
 The HeartBeat Timer sends periodic requests to Matomo to measure how long visitors stay on pages. This is particularly useful for tracking engagement on single-page applications.
+
+### Debug Mode
+
+Enable debug mode to see console logs for tracking events, excluded URLs, and Heatmap & Session Recording operations. This is useful for troubleshooting and development.
+
+**Pages Router:**
+
+```js
+initPagesRouter({
+  url: MATOMO_URL,
+  siteId: MATOMO_SITE_ID,
+  debug: true, // Enable debug logging
+});
+```
+
+**App Router:**
+
+```js
+initAppRouter({
+  url: MATOMO_URL,
+  siteId: MATOMO_SITE_ID,
+  pathname,
+  searchParams,
+  debug: true, // Enable debug logging
+});
+```
+
+When `debug` is enabled, you will see console logs for:
+
+- Matomo initialization warnings
+- Excluded URL tracking (when URLs match `excludeUrlsPatterns`)
+- Heatmap & Session Recording plugin loading and configuration
+- Any errors during script loading
+
+**Note:** Debug mode should be disabled in production to avoid cluttering the console.
 
 ### Content-Security-Policy
 

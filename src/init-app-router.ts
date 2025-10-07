@@ -33,7 +33,7 @@ export const initAppRouter = (settings: InitSettings): void => {
     onScriptLoadingError,
     nonce,
     trustedPolicyName = "matomo-next",
-    logExcludedTracks = false,
+    debug = false,
     pathname = "",
     searchParams,
     searchKeyword = "q",
@@ -45,7 +45,9 @@ export const initAppRouter = (settings: InitSettings): void => {
   } = settings;
 
   if (!url) {
-    console.warn("Matomo disabled, please provide matomo url");
+    if (debug) {
+      console.warn("Matomo disabled, please provide matomo url");
+    }
     return;
   }
 
@@ -81,6 +83,7 @@ export const initAppRouter = (settings: InitSettings): void => {
         heatmapConfig,
         nonce,
         onScriptLoadingError,
+        debug,
       );
     }
 
@@ -96,7 +99,7 @@ export const initAppRouter = (settings: InitSettings): void => {
   const excludedUrl = matchesAnyPattern(currentUrl, excludeUrlsPatterns);
 
   if (excludedUrl) {
-    if (logExcludedTracks) {
+    if (debug) {
       console.log(`matomo: exclude track ${currentUrl}`);
     }
     state.previousUrl = currentUrl;

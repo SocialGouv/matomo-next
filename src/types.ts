@@ -15,8 +15,7 @@ export interface InitSettings {
   onScriptLoadingError?: () => void;
   nonce?: string;
   trustedPolicyName?: string;
-  logExcludedTracks?: boolean;
-  isAppRouter?: boolean;
+  debug?: boolean;
   pathname?: string;
   searchParams?: URLSearchParams;
   searchKeyword?: string;
@@ -30,7 +29,6 @@ export interface InitSettings {
 export interface HeatmapConfig {
   captureKeystrokes?: boolean;
   captureVisibleContentOnly?: boolean;
-  debug?: boolean;
 }
 
 export interface Dimensions {

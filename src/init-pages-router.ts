@@ -27,7 +27,7 @@ export const initPagesRouter = (settings: InitSettings): void => {
     onScriptLoadingError,
     nonce,
     trustedPolicyName = "matomo-next",
-    logExcludedTracks = false,
+    debug = false,
     searchKeyword = "q",
     searchRoutes = ["/recherche", "/search"],
     enableHeatmapSessionRecording = false,
@@ -37,7 +37,9 @@ export const initPagesRouter = (settings: InitSettings): void => {
   } = settings;
 
   if (!url) {
-    console.warn("Matomo disabled, please provide matomo url");
+    if (debug) {
+      console.warn("Matomo disabled, please provide matomo url");
+    }
     return;
   }
 
@@ -57,7 +59,7 @@ export const initPagesRouter = (settings: InitSettings): void => {
   }
 
   if (excludedUrl) {
-    if (typeof window !== "undefined" && logExcludedTracks) {
+    if (typeof window !== "undefined" && debug) {
       console.log(`matomo: exclude track ${window.location.pathname}`);
     }
   } else {
@@ -74,6 +76,7 @@ export const initPagesRouter = (settings: InitSettings): void => {
       heatmapConfig,
       nonce,
       onScriptLoadingError,
+      debug,
     );
   }
 

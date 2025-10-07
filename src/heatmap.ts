@@ -7,12 +7,14 @@ import { push } from "./tracker";
  * @param config - Heatmap configuration options
  * @param nonce - Optional nonce for CSP
  * @param onScriptLoadingError - Optional callback for script loading errors
+ * @param debug - Enable debug logging
  */
 export const loadHeatmapSessionRecording = (
   url: string,
   config: HeatmapConfig = {},
   nonce?: string,
   onScriptLoadingError?: () => void,
+  debug = false,
 ): void => {
   const script = document.createElement("script");
   script.src = `${url}/plugins/HeatmapSessionRecording/tracker.min.js`;
@@ -23,7 +25,7 @@ export const loadHeatmapSessionRecording = (
   }
 
   script.onload = () => {
-    if (config.debug) {
+    if (debug) {
       console.log("HeatmapSessionRecording tracker.min.js loaded");
       push(["HeatmapSessionRecording::debug", "true"]);
     }
@@ -35,7 +37,7 @@ export const loadHeatmapSessionRecording = (
       captureKeystrokes.toString(),
     ]);
 
-    if (config.debug) {
+    if (debug) {
       console.log(`Keystrokes ${captureKeystrokes ? "enabled" : "disabled"}`);
     }
 
@@ -46,7 +48,7 @@ export const loadHeatmapSessionRecording = (
       captureVisibleOnly.toString(),
     ]);
 
-    if (config.debug) {
+    if (debug) {
       console.log(
         `Capture ${
           captureVisibleOnly ? "visible content only" : "full page"
@@ -56,11 +58,11 @@ export const loadHeatmapSessionRecording = (
 
     // Wait for page load before enabling
     const handleLoad = () => {
-      if (config.debug) {
+      if (debug) {
         console.log("Activating Matomo Heatmap & Session Recording");
       }
       push(["HeatmapSessionRecording::enable"]);
-      if (config.debug) {
+      if (debug) {
         console.log(
           "HeatmapSessionRecording enabled at",
           new Date().toISOString(),
@@ -76,7 +78,9 @@ export const loadHeatmapSessionRecording = (
   };
 
   script.onerror = () => {
-    console.error("Failed to load HeatmapSessionRecording tracker.min.js");
+    if (debug) {
+      console.error("Failed to load HeatmapSessionRecording tracker.min.js");
+    }
     if (onScriptLoadingError) {
       onScriptLoadingError();
     }
