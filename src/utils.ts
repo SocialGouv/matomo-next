@@ -1,8 +1,8 @@
 /**
- * Check if a URL is excluded based on patterns
+ * Check if a string matches any of the provided regex patterns
  */
-export const isExcludedUrl = (url: string, patterns: RegExp[]): boolean => {
-  return patterns.some((pattern) => pattern.test(url));
+export const matchesAnyPattern = (str: string, patterns: RegExp[]): boolean => {
+  return patterns.some((pattern) => pattern.test(str));
 };
 
 /**

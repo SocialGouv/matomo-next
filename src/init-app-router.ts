@@ -1,5 +1,5 @@
 import type { InitSettings, MatomoState } from "./types";
-import { isExcludedUrl, createSanitizer } from "./utils";
+import { matchesAnyPattern, createSanitizer } from "./utils";
 import {
   push,
   loadMatomoScript,
@@ -93,7 +93,7 @@ export const initAppRouter = (settings: InitSettings): void => {
   }
 
   // Track pageview with App Router logic
-  const excludedUrl = isExcludedUrl(currentUrl, excludeUrlsPatterns);
+  const excludedUrl = matchesAnyPattern(currentUrl, excludeUrlsPatterns);
 
   if (excludedUrl) {
     if (logExcludedTracks) {

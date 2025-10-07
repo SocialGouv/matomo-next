@@ -1,6 +1,6 @@
 import { default as Router } from "next/router";
 import type { InitSettings } from "./types";
-import { isExcludedUrl, createSanitizer } from "./utils";
+import { matchesAnyPattern, createSanitizer } from "./utils";
 import {
   push,
   loadMatomoScript,
@@ -50,7 +50,7 @@ export const initPagesRouter = (settings: InitSettings): void => {
   // Order is important -_- so campaign are detected
   const excludedUrl =
     typeof window !== "undefined" &&
-    isExcludedUrl(window.location.pathname, excludeUrlsPatterns);
+    matchesAnyPattern(window.location.pathname, excludeUrlsPatterns);
 
   if (onInitialization) {
     onInitialization();
@@ -89,7 +89,7 @@ export const initPagesRouter = (settings: InitSettings): void => {
   previousPath = typeof window !== "undefined" ? window.location.pathname : "";
 
   const defaultOnRouteChangeStart = (path: string): void => {
-    if (isExcludedUrl(path, excludeUrlsPatterns)) return;
+    if (matchesAnyPattern(path, excludeUrlsPatterns)) return;
 
     // We use only the part of the url without the querystring to ensure piwik is happy
     // It seems that piwik doesn't track well page with querystring
@@ -111,7 +111,7 @@ export const initPagesRouter = (settings: InitSettings): void => {
   Router.events.on("routeChangeStart", defaultOnRouteChangeStart);
 
   const defaultOnRouteChangeComplete = (path: string): void => {
-    if (isExcludedUrl(path, excludeUrlsPatterns)) {
+    if (matchesAnyPattern(path, excludeUrlsPatterns)) {
       return;
     }
 
