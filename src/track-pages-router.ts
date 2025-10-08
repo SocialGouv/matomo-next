@@ -10,10 +10,11 @@ import {
 import { loadHeatmapSessionRecording } from "./heatmap";
 
 /**
- * Initialize Matomo for Next.js Pages Router
- * Uses Next.js Router events for page tracking
+ * Track page views with Matomo for Next.js Pages Router
+ * This function should be called in a useEffect hook that runs on mount.
+ * It sets up tracking for route changes using Next.js Router events.
  */
-export const initPagesRouter = (settings: InitSettings): void => {
+export const trackPagesRouter = (settings: InitSettings): void => {
   const {
     url,
     siteId,

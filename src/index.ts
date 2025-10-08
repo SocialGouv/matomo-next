@@ -7,21 +7,25 @@ export { push } from "./tracker";
 // Export sendEvent helper for type-safe event tracking
 export { sendEvent } from "./events";
 
-// Export router-specific initialization functions
-export { initAppRouter } from "./init-app-router";
-export { initPagesRouter } from "./init-pages-router";
+// Export router-specific tracking functions
+export { trackAppRouter } from "./track-app-router";
+export { trackPagesRouter } from "./track-pages-router";
+
+// Export deprecated function names for backwards compatibility
+export { trackAppRouter as initAppRouter } from "./track-app-router";
+export { trackPagesRouter as initPagesRouter } from "./track-pages-router";
 
 // Import for deprecated init function
 import type { InitSettings } from "./types";
-import { initAppRouter } from "./init-app-router";
-import { initPagesRouter } from "./init-pages-router";
+import { trackAppRouter } from "./track-app-router";
+import { trackPagesRouter } from "./track-pages-router";
 
 /**
- * @deprecated Use `initPagesRouter` for Pages Router or `initAppRouter` for App Router instead.
+ * @deprecated Use `trackPagesRouter` (or `initPagesRouter` alias) for Pages Router or `trackAppRouter` (or `initAppRouter` alias) for App Router instead.
  * This function automatically detects the router type based on the provided settings.
  *
- * - For App Router: Use `initAppRouter` with `pathname` and optionally `searchParams`
- * - For Pages Router: Use `initPagesRouter` (no pathname/searchParams needed)
+ * - For App Router: Use `trackAppRouter` with `pathname` and optionally `searchParams`
+ * - For Pages Router: Use `trackPagesRouter` (no pathname/searchParams needed)
  *
  * @param settings - Matomo initialization settings
  *
@@ -33,15 +37,15 @@ import { initPagesRouter } from "./init-pages-router";
  * init({ url: 'https://matomo.example.com', siteId: '1', pathname: '/page', searchParams });
  *
  * // Recommended: Use specific functions instead
- * initPagesRouter({ url: 'https://matomo.example.com', siteId: '1' });
- * initAppRouter({ url: 'https://matomo.example.com', siteId: '1', pathname: '/page', searchParams });
+ * trackPagesRouter({ url: 'https://matomo.example.com', siteId: '1' });
+ * trackAppRouter({ url: 'https://matomo.example.com', siteId: '1', pathname: '/page', searchParams });
  */
 export const init = (settings: InitSettings): void => {
   // Emit deprecation warning
   if (settings.debug !== false) {
     console.warn(
       "matomo-next: The `init` function is deprecated. " +
-        "Please use `initPagesRouter` for Pages Router or `initAppRouter` for App Router instead.",
+        "Please use `trackPagesRouter` for Pages Router or `trackAppRouter` for App Router instead.",
     );
   }
 
@@ -51,8 +55,8 @@ export const init = (settings: InitSettings): void => {
     settings.pathname !== undefined || settings.searchParams !== undefined;
 
   if (isAppRouter) {
-    initAppRouter(settings);
+    trackAppRouter(settings);
   } else {
-    initPagesRouter(settings);
+    trackPagesRouter(settings);
   }
 };

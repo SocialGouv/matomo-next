@@ -16,10 +16,11 @@ const state: MatomoState = {
 };
 
 /**
- * Initialize Matomo for Next.js App Router
- * Uses pathname and searchParams from the component
+ * Track page views with Matomo for Next.js App Router
+ * This function should be called in a useEffect hook with pathname and searchParams as dependencies.
+ * It will automatically track route changes when these values change.
  */
-export const initAppRouter = (settings: InitSettings): void => {
+export const trackAppRouter = (settings: InitSettings): void => {
   const {
     url,
     siteId,

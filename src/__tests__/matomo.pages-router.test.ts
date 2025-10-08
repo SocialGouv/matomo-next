@@ -1,5 +1,5 @@
 import { default as Router } from "next/router";
-import { initPagesRouter, push } from "..";
+import { trackPagesRouter, push } from "..";
 
 type RouteChangeFunction = (route: string) => void;
 // eslint-disable-next-line @typescript-eslint/init-declarations
@@ -67,7 +67,7 @@ describe("router.routeChangeStart event", () => {
     global._paq = [];
   });
   test("should setReferrerUrl and setCustomUrl on route change start", async () => {
-    initPagesRouter({ siteId: "42", url: "YO" });
+    trackPagesRouter({ siteId: "42", url: "YO" });
     window._paq = [];
 
     Router.events.emit("routeChangeStart", "/path/to/hello?world");
@@ -83,7 +83,7 @@ describe("router.routeChangeStart event", () => {
     });
   });
   test("should setReferrerUrl and setCustomUrl on route change start and handle hashtag (by removing it)", async () => {
-    initPagesRouter({ siteId: "42", url: "YO" });
+    trackPagesRouter({ siteId: "42", url: "YO" });
     window._paq = [];
 
     Router.events.emit("routeChangeStart", "/path/to/hello#should-not-appear");
@@ -114,7 +114,7 @@ describe("router.routeChangeStart event", () => {
   });
 
   test("should work if the surcharge of the operator", async () => {
-    initPagesRouter({
+    trackPagesRouter({
       onRouteChangeStart: (path) => {
         push(["newOperatorStart", "COMPLETE"]);
         push(["path", path]);
@@ -142,7 +142,7 @@ describe("router.routeChangeComplete event", () => {
     global._paq = [];
   });
   test("should trackPageView with correct title on route change", async () => {
-    initPagesRouter({ siteId: "42", url: "YO" });
+    trackPagesRouter({ siteId: "42", url: "YO" });
     window._paq = [];
     document.title = "test page";
 
@@ -191,7 +191,7 @@ describe("router.routeChangeComplete event", () => {
   });
 
   test("should work if the surcharge of the operator", async () => {
-    initPagesRouter({
+    trackPagesRouter({
       onRouteChangeComplete: (path) => {
         push(["newOperatorComplete", "COMPLETE"]);
         push(["path", path]);
@@ -219,7 +219,7 @@ describe("excludeUrlsPatterns", () => {
     global._paq = [];
     document.title = "some page";
     document.head.appendChild(document.createElement("script"));
-    initPagesRouter({
+    trackPagesRouter({
       excludeUrlsPatterns: [/^\/login.php/, /\?token=.+/],
       siteId: "42",
       url: "https://YO",
@@ -242,7 +242,7 @@ describe("excludeUrlsPatterns", () => {
     document.title = "some page";
     window.location.pathname = "/change-password-pouet";
     document.head.appendChild(document.createElement("script"));
-    initPagesRouter({
+    trackPagesRouter({
       excludeUrlsPatterns: [/^\/change-password/],
       siteId: "42",
       url: "https://YO",
@@ -261,7 +261,7 @@ describe("excludeUrlsPatterns", () => {
     document.title = "some page";
     window.location.pathname = "/some-page";
     document.head.appendChild(document.createElement("script"));
-    initPagesRouter({
+    trackPagesRouter({
       excludeUrlsPatterns: [/^\/change-password/],
       siteId: "42",
       url: "https://YO",
