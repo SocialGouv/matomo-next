@@ -33,20 +33,20 @@
 
 ### Pages Router
 
-Add the `initPagesRouter` call in your `_app.js`:
+Add the `trackPagesRouter` call in your `_app.js`:
 
 ```jsx
 import React, { useEffect } from "react";
 import App from "next/app";
 
-import { initPagesRouter } from "@socialgouv/matomo-next";
+import { trackPagesRouter } from "@socialgouv/matomo-next";
 
 const MATOMO_URL = process.env.NEXT_PUBLIC_MATOMO_URL;
 const MATOMO_SITE_ID = process.env.NEXT_PUBLIC_MATOMO_SITE_ID;
 
 function MyApp({ Component, pageProps }) {
   useEffect(() => {
-    initPagesRouter({ url: MATOMO_URL, siteId: MATOMO_SITE_ID });
+    trackPagesRouter({ url: MATOMO_URL, siteId: MATOMO_SITE_ID });
   }, []);
 
   return <Component {...pageProps} />;
@@ -59,12 +59,12 @@ Will track routes changes by default.
 
 ### App Router
 
-For Next.js App Router (Next.js 13+), create a client component to handle tracking. Use `initAppRouter` and pass both `pathname` and `searchParams` to track the full URL including query parameters:
+For Next.js App Router (Next.js 13+), create a client component to handle tracking. Use `trackAppRouter` and pass both `pathname` and `searchParams` to track the full URL including query parameters:
 
 ```jsx
 "use client";
 
-import { initAppRouter } from "@socialgouv/matomo-next";
+import { trackAppRouter } from "@socialgouv/matomo-next";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 
@@ -76,7 +76,7 @@ export function MatomoAnalytics() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    initAppRouter({
+    trackAppRouter({
       url: MATOMO_URL,
       siteId: MATOMO_SITE_ID,
       pathname,
@@ -134,7 +134,7 @@ This wont track `/login.php` or any url containing `?token=`.
 **Pages Router:**
 
 ```js
-initPagesRouter({
+trackPagesRouter({
   url: MATOMO_URL,
   siteId: MATOMO_SITE_ID,
   excludeUrlsPatterns: [/^\/login.php/, /\?token=.+/],
@@ -144,7 +144,7 @@ initPagesRouter({
 **App Router:**
 
 ```js
-initAppRouter({
+trackAppRouter({
   url: MATOMO_URL,
   siteId: MATOMO_SITE_ID,
   pathname,
@@ -162,7 +162,7 @@ By default, the search tracking feature looks for a `q` parameter in the URL (e.
 **Pages Router:**
 
 ```js
-initPagesRouter({
+trackPagesRouter({
   url: MATOMO_URL,
   siteId: MATOMO_SITE_ID,
   searchKeyword: "query", // Will track searches from /search?query=my+search
@@ -172,7 +172,7 @@ initPagesRouter({
 **App Router:**
 
 ```js
-initAppRouter({
+trackAppRouter({
   url: MATOMO_URL,
   siteId: MATOMO_SITE_ID,
   pathname,
@@ -188,7 +188,7 @@ By default, search tracking is enabled for `/recherche` and `/search` routes. Yo
 **Pages Router:**
 
 ```js
-initPagesRouter({
+trackPagesRouter({
   url: MATOMO_URL,
   siteId: MATOMO_SITE_ID,
   searchRoutes: ["/find", "/discover", "/rechercher"], // Custom search routes
@@ -199,7 +199,7 @@ initPagesRouter({
 **App Router:**
 
 ```js
-initAppRouter({
+trackAppRouter({
   url: MATOMO_URL,
   siteId: MATOMO_SITE_ID,
   pathname,
@@ -218,7 +218,7 @@ To disable cookies (for better GDPR compliance) set the `disableCookies` flag to
 **Pages Router:**
 
 ```js
-initPagesRouter({
+trackPagesRouter({
   url: MATOMO_URL,
   siteId: MATOMO_SITE_ID,
   disableCookies: true,
@@ -228,7 +228,7 @@ initPagesRouter({
 **App Router:**
 
 ```js
-initAppRouter({
+trackAppRouter({
   url: MATOMO_URL,
   siteId: MATOMO_SITE_ID,
   pathname,
@@ -289,7 +289,7 @@ To enable Matomo's Heatmap & Session Recording feature:
 **Pages Router:**
 
 ```js
-initPagesRouter({
+trackPagesRouter({
   url: MATOMO_URL,
   siteId: MATOMO_SITE_ID,
   enableHeatmapSessionRecording: true,
@@ -305,7 +305,7 @@ initPagesRouter({
 **App Router:**
 
 ```js
-initAppRouter({
+trackAppRouter({
   url: MATOMO_URL,
   siteId: MATOMO_SITE_ID,
   pathname,
@@ -333,7 +333,7 @@ To accurately measure time spent on pages, enable the HeartBeat Timer:
 **Pages Router:**
 
 ```js
-initPagesRouter({
+trackPagesRouter({
   url: MATOMO_URL,
   siteId: MATOMO_SITE_ID,
   enableHeartBeatTimer: true,
@@ -344,7 +344,7 @@ initPagesRouter({
 **App Router:**
 
 ```js
-initAppRouter({
+trackAppRouter({
   url: MATOMO_URL,
   siteId: MATOMO_SITE_ID,
   pathname,
@@ -363,7 +363,7 @@ Enable debug mode to see console logs for tracking events, excluded URLs, and He
 **Pages Router:**
 
 ```js
-initPagesRouter({
+trackPagesRouter({
   url: MATOMO_URL,
   siteId: MATOMO_SITE_ID,
   debug: true, // Enable debug logging
@@ -373,7 +373,7 @@ initPagesRouter({
 **App Router:**
 
 ```js
-initAppRouter({
+trackAppRouter({
   url: MATOMO_URL,
   siteId: MATOMO_SITE_ID,
   pathname,
@@ -400,7 +400,7 @@ If you use a `Content-Security-Policy` header with a `nonce` attribute, you can 
 **Pages Router:**
 
 ```js
-initPagesRouter({
+trackPagesRouter({
   url: MATOMO_URL,
   siteId: MATOMO_SITE_ID,
   nonce: "123456789",
@@ -410,7 +410,7 @@ initPagesRouter({
 **App Router:**
 
 ```js
-initAppRouter({
+trackAppRouter({
   url: MATOMO_URL,
   siteId: MATOMO_SITE_ID,
   pathname,
@@ -432,7 +432,7 @@ You can set a custom policy name by passing it to the initialization function.
 **Pages Router:**
 
 ```js
-initPagesRouter({
+trackPagesRouter({
   url: MATOMO_URL,
   siteId: MATOMO_SITE_ID,
   trustedPolicyName: "your-custom-policy-name",
@@ -442,7 +442,7 @@ initPagesRouter({
 **App Router:**
 
 ```js
-initAppRouter({
+trackAppRouter({
   url: MATOMO_URL,
   siteId: MATOMO_SITE_ID,
   pathname,
@@ -467,11 +467,11 @@ The initialization functions have optional callback properties that allow for cu
 
 ```jsx
 import React, { useEffect } from "react";
-import { initPagesRouter } from "@socialgouv/matomo-next";
+import { trackPagesRouter } from "@socialgouv/matomo-next";
 
 function MyApp({ Component, pageProps }) {
   useEffect(() => {
-    initPagesRouter({
+    trackPagesRouter({
       url: process.env.NEXT_PUBLIC_MATOMO_URL,
       siteId: process.env.NEXT_PUBLIC_MATOMO_SITE_ID,
       onRouteChangeStart: (path) => {
@@ -502,7 +502,7 @@ export default MyApp;
 ```jsx
 "use client";
 
-import { initAppRouter } from "@socialgouv/matomo-next";
+import { trackAppRouter } from "@socialgouv/matomo-next";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 
@@ -511,7 +511,7 @@ export function MatomoAnalytics() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    initAppRouter({
+    trackAppRouter({
       url: process.env.NEXT_PUBLIC_MATOMO_URL,
       siteId: process.env.NEXT_PUBLIC_MATOMO_SITE_ID,
       pathname,
