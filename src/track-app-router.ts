@@ -130,8 +130,8 @@ export const trackAppRouter = (settings: InitSettings): void => {
     state.previousUrl = currentUrl;
     trackPageOrSearch();
   } else if (currentUrl !== state.previousUrl) {
-    // We use only the part of the url without the querystring to ensure piwik is happy
-    // It seems that piwik doesn't track well page with querystring
+    // We use only the part of the url without the querystring to ensure Matomo is happy
+    // It seems that Matomo doesn't track well page with querystring
     let cleanPathname = currentUrl.split("?")[0];
     cleanPathname = cleanPathname.replace(/#.*/, "");
 
