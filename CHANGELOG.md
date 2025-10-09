@@ -1,3 +1,10 @@
+# [1.10.0-alpha.2](https://github.com/SocialGouv/matomo-next/compare/v1.10.0-alpha.1...v1.10.0-alpha.2) (2025-10-09)
+
+
+### Bug Fixes
+
+* **alpha:** app folder support ([#145](https://github.com/SocialGouv/matomo-next/issues/145)) ([db6f9a5](https://github.com/SocialGouv/matomo-next/commit/db6f9a57f3e1a96dfd76cb172e4f018ee58dea50))
+
 # [1.10.0-alpha.1](https://github.com/SocialGouv/matomo-next/compare/v1.9.2...v1.10.0-alpha.1) (2025-10-07)
 
 
