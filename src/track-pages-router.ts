@@ -95,8 +95,8 @@ export const trackPagesRouter = (settings: InitSettings): void => {
   const defaultOnRouteChangeStart = (path: string): void => {
     if (matchesAnyPattern(path, excludeUrlsPatterns)) return;
 
-    // We use only the part of the url without the querystring to ensure piwik is happy
-    // It seems that piwik doesn't track well page with querystring
+    // We use only the part of the url without the querystring to ensure Matomo is happy
+    // It seems that Matomo doesn't track well page with querystring
     let [pathname] = path.split("?");
     pathname = pathname.replace(/#.*/, "");
 
