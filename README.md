@@ -211,6 +211,55 @@ trackAppRouter({
 
 When a user visits any of the defined search routes, the library will automatically use `trackSiteSearch` instead of `trackPageView`.
 
+### Clean URLs
+
+By default, matomo-next tracks URLs with all their query parameters and hash fragments. You can enable URL cleaning to remove these parameters before tracking, which is useful for:
+
+- Removing sensitive data (tokens, user IDs, etc.) from tracked URLs
+- Normalizing URLs for better analytics aggregation
+- Improving privacy compliance
+
+**Important:** Search routes (`/recherche`, `/search`, or custom `searchRoutes`) automatically keep their query parameters even when `cleanUrl` is enabled, to preserve search tracking functionality with `trackSiteSearch`.
+
+**Pages Router:**
+
+```js
+trackPagesRouter({
+  url: MATOMO_URL,
+  siteId: MATOMO_SITE_ID,
+  cleanUrl: true, // Remove query params and hash fragments from tracked URLs
+});
+```
+
+**App Router:**
+
+```js
+trackAppRouter({
+  url: MATOMO_URL,
+  siteId: MATOMO_SITE_ID,
+  pathname,
+  searchParams,
+  cleanUrl: true, // Remove query params and hash fragments from tracked URLs
+});
+```
+
+**Behavior examples:**
+
+```js
+// With cleanUrl: false (default)
+// URL: /products?id=123&ref=home#section
+// Tracked as: /products?id=123&ref=home#section
+
+// With cleanUrl: true
+// URL: /products?id=123&ref=home#section
+// Tracked as: /products
+
+// Search routes preserve query params even with cleanUrl: true
+// URL: /search?q=keyword&category=docs&page=2
+// Tracked as: /search?q=keyword&category=docs&page=2
+// + trackSiteSearch("keyword")
+```
+
 ### Disable cookies
 
 To disable cookies (for better GDPR compliance) set the `disableCookies` flag to `true`.

@@ -94,7 +94,7 @@ describe("App Router functionality", () => {
     setTimeout(() => {
       expect(window._paq?.length).toBeGreaterThan(initialLength);
       expect(window._paq).toEqual(
-        expect.arrayContaining([["setCustomUrl", "/search"]]),
+        expect.arrayContaining([["setCustomUrl", "/search?q=other"]]),
       );
       expect(window._paq).toEqual(
         expect.arrayContaining([["trackSiteSearch", "other"]]),
@@ -340,7 +340,9 @@ describe("App Router functionality", () => {
           expect.arrayContaining([["trackSiteSearch", "test"]]),
         );
         expect(window._paq).toEqual(
-          expect.arrayContaining([["setCustomUrl", "/search"]]),
+          expect.arrayContaining([
+            ["setCustomUrl", "/search?q=test&page=2%23more"],
+          ]),
         );
         done();
       }, 10);
@@ -459,7 +461,278 @@ describe("App Router functionality", () => {
     });
 
     expect(window._paq).toEqual(
-      expect.arrayContaining([["setCustomUrl", "/about"]]),
+      expect.arrayContaining([["setCustomUrl", "/about#section?tab=info"]]),
     );
+  });
+
+  describe("cleanUrl parameter", () => {
+    test("should clean URL by default (cleanUrl=true) - remove query params and hash", (done) => {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const { trackAppRouter } = require("../index");
+      document.head.appendChild(document.createElement("script"));
+
+      trackAppRouter({
+        pathname: "/home",
+        siteId: "42",
+        url: "https://YO",
+        cleanUrl: true,
+      });
+
+      window._paq = [];
+
+      trackAppRouter({
+        pathname: "/products",
+        searchParams: new URLSearchParams(
+          "id=123&category=electronics#reviews",
+        ),
+        siteId: "42",
+        url: "https://YO",
+        cleanUrl: true,
+      });
+
+      setTimeout(() => {
+        expect(window._paq).toEqual(
+          expect.arrayContaining([["setCustomUrl", "/products"]]),
+        );
+        expect(window._paq).not.toEqual(
+          expect.arrayContaining([
+            ["setCustomUrl", "/products?id=123&category=electronics"],
+          ]),
+        );
+        done();
+      }, 10);
+    });
+
+    test("should keep query params and hash when cleanUrl=false", (done) => {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const { trackAppRouter } = require("../index");
+      document.head.appendChild(document.createElement("script"));
+
+      trackAppRouter({
+        pathname: "/home",
+        siteId: "42",
+        url: "https://YO",
+        cleanUrl: false,
+      });
+
+      window._paq = [];
+
+      trackAppRouter({
+        pathname: "/products",
+        searchParams: new URLSearchParams("id=456&ref=homepage"),
+        siteId: "42",
+        url: "https://YO",
+        cleanUrl: false,
+      });
+
+      setTimeout(() => {
+        expect(window._paq).toEqual(
+          expect.arrayContaining([
+            ["setCustomUrl", "/products?id=456&ref=homepage"],
+          ]),
+        );
+        done();
+      }, 10);
+    });
+
+    test("should clean referrer URL when cleanUrl=true", (done) => {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const { trackAppRouter } = require("../index");
+      document.head.appendChild(document.createElement("script"));
+
+      trackAppRouter({
+        pathname: "/products",
+        searchParams: new URLSearchParams("category=books&sort=price"),
+        siteId: "42",
+        url: "https://YO",
+        cleanUrl: true,
+      });
+
+      window._paq = [];
+
+      trackAppRouter({
+        pathname: "/details",
+        searchParams: new URLSearchParams("id=789"),
+        siteId: "42",
+        url: "https://YO",
+        cleanUrl: true,
+      });
+
+      setTimeout(() => {
+        expect(window._paq).toEqual(
+          expect.arrayContaining([
+            ["setReferrerUrl", "/products"],
+            ["setCustomUrl", "/details"],
+          ]),
+        );
+        done();
+      }, 10);
+    });
+
+    test("should keep query params in referrer when cleanUrl=false", (done) => {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const { trackAppRouter } = require("../index");
+      document.head.appendChild(document.createElement("script"));
+
+      trackAppRouter({
+        pathname: "/products",
+        searchParams: new URLSearchParams("filter=new"),
+        siteId: "42",
+        url: "https://YO",
+        cleanUrl: false,
+      });
+
+      window._paq = [];
+
+      trackAppRouter({
+        pathname: "/cart",
+        siteId: "42",
+        url: "https://YO",
+        cleanUrl: false,
+      });
+
+      setTimeout(() => {
+        expect(window._paq).toEqual(
+          expect.arrayContaining([
+            ["setReferrerUrl", "/products?filter=new"],
+            ["setCustomUrl", "/cart"],
+          ]),
+        );
+        done();
+      }, 10);
+    });
+
+    test("should handle hash fragments correctly when cleanUrl=true", (done) => {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const { trackAppRouter } = require("../index");
+      document.head.appendChild(document.createElement("script"));
+
+      trackAppRouter({
+        pathname: "/home",
+        siteId: "42",
+        url: "https://YO",
+      });
+
+      window._paq = [];
+
+      trackAppRouter({
+        pathname: "/docs#installation",
+        searchParams: new URLSearchParams("version=2.0"),
+        siteId: "42",
+        url: "https://YO",
+        cleanUrl: true,
+      });
+
+      setTimeout(() => {
+        expect(window._paq).toEqual(
+          expect.arrayContaining([["setCustomUrl", "/docs"]]),
+        );
+        done();
+      }, 10);
+    });
+
+    test("should keep query params for search routes even with cleanUrl=true", (done) => {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const { trackAppRouter } = require("../index");
+      document.head.appendChild(document.createElement("script"));
+
+      trackAppRouter({
+        pathname: "/home",
+        siteId: "42",
+        url: "https://YO",
+        cleanUrl: true,
+      });
+
+      window._paq = [];
+
+      trackAppRouter({
+        pathname: "/search",
+        searchParams: new URLSearchParams("q=test&category=docs&page=2"),
+        siteId: "42",
+        url: "https://YO",
+        cleanUrl: true,
+      });
+
+      setTimeout(() => {
+        expect(window._paq).toEqual(
+          expect.arrayContaining([
+            ["setCustomUrl", "/search?q=test&category=docs&page=2"],
+            ["trackSiteSearch", "test"],
+          ]),
+        );
+        expect(window._paq).not.toEqual(
+          expect.arrayContaining([["setCustomUrl", "/search"]]),
+        );
+        done();
+      }, 10);
+    });
+
+    test("should keep query params for /recherche route with cleanUrl=true", (done) => {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const { trackAppRouter } = require("../index");
+      document.head.appendChild(document.createElement("script"));
+
+      trackAppRouter({
+        pathname: "/home",
+        siteId: "42",
+        url: "https://YO",
+        cleanUrl: true,
+      });
+
+      window._paq = [];
+
+      trackAppRouter({
+        pathname: "/recherche",
+        searchParams: new URLSearchParams("q=matomo&filter=all"),
+        siteId: "42",
+        url: "https://YO",
+        cleanUrl: true,
+      });
+
+      setTimeout(() => {
+        expect(window._paq).toEqual(
+          expect.arrayContaining([
+            ["setCustomUrl", "/recherche?q=matomo&filter=all"],
+            ["trackSiteSearch", "matomo"],
+          ]),
+        );
+        done();
+      }, 10);
+    });
+
+    test("should clean non-search routes but keep search routes with cleanUrl=true", (done) => {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const { trackAppRouter } = require("../index");
+      document.head.appendChild(document.createElement("script"));
+
+      trackAppRouter({
+        pathname: "/products",
+        searchParams: new URLSearchParams("id=123&ref=home"),
+        siteId: "42",
+        url: "https://YO",
+        cleanUrl: true,
+      });
+
+      window._paq = [];
+
+      trackAppRouter({
+        pathname: "/search",
+        searchParams: new URLSearchParams("q=nextjs"),
+        siteId: "42",
+        url: "https://YO",
+        cleanUrl: true,
+      });
+
+      setTimeout(() => {
+        expect(window._paq).toEqual(
+          expect.arrayContaining([
+            ["setReferrerUrl", "/products"],
+            ["setCustomUrl", "/search?q=nextjs"],
+            ["trackSiteSearch", "nextjs"],
+          ]),
+        );
+        done();
+      }, 10);
+    });
   });
 });

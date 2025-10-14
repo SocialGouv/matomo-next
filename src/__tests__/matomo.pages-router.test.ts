@@ -75,7 +75,7 @@ describe("router.routeChangeStart event", () => {
     return new Promise<void>((resolve) => {
       expect(window._paq).toEqual([
         ["setReferrerUrl", "/"],
-        ["setCustomUrl", "/path/to/hello"],
+        ["setCustomUrl", "/path/to/hello?world"],
         ["deleteCustomVariables", "page"],
       ]);
 
@@ -91,7 +91,7 @@ describe("router.routeChangeStart event", () => {
     return new Promise<void>((resolve) => {
       expect(window._paq).toEqual([
         ["setReferrerUrl", "/"],
-        ["setCustomUrl", "/path/to/hello"],
+        ["setCustomUrl", "/path/to/hello#should-not-appear"],
         ["deleteCustomVariables", "page"],
       ]);
 
@@ -105,8 +105,8 @@ describe("router.routeChangeStart event", () => {
 
     return new Promise<void>((resolve) => {
       expect(window._paq).toEqual([
-        ["setReferrerUrl", "/path/to/hello"],
-        ["setCustomUrl", "/path/to/hello2"],
+        ["setReferrerUrl", "/path/to/hello#should-not-appear"],
+        ["setCustomUrl", "/path/to/hello2?world"],
         ["deleteCustomVariables", "page"],
       ]);
       resolve();
@@ -272,6 +272,241 @@ describe("excludeUrlsPatterns", () => {
         expect(window._paq).toMatchSnapshot();
         resolve();
       }, 0);
+    });
+  });
+});
+
+describe("cleanUrl parameter in Pages Router", () => {
+  beforeEach(() => {
+    global._paq = [];
+    window.location.pathname = "/";
+    if (!document.head.querySelector("script")) {
+      document.head.appendChild(document.createElement("script"));
+    }
+    jest.resetModules();
+  });
+
+  test("should clean URL by default (cleanUrl=true) - remove query params and hash", async () => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { trackPagesRouter } = require("../index");
+    trackPagesRouter({ siteId: "42", url: "YO", cleanUrl: true });
+    window._paq = [];
+
+    Router.events.emit(
+      "routeChangeStart",
+      "/products?id=123&category=electronics#reviews",
+    );
+
+    return new Promise<void>((resolve) => {
+      expect(window._paq).toEqual(
+        expect.arrayContaining([
+          ["setReferrerUrl", "/"],
+          ["setCustomUrl", "/products"],
+          ["deleteCustomVariables", "page"],
+        ]),
+      );
+      resolve();
+    });
+  });
+
+  test("should keep query params and hash when cleanUrl=false", async () => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { trackPagesRouter } = require("../index");
+    trackPagesRouter({ siteId: "42", url: "YO", cleanUrl: false });
+    window._paq = [];
+
+    Router.events.emit(
+      "routeChangeStart",
+      "/products?id=456&ref=homepage#section",
+    );
+
+    return new Promise<void>((resolve) => {
+      expect(window._paq).toEqual(
+        expect.arrayContaining([
+          ["setReferrerUrl", "/"],
+          ["setCustomUrl", "/products?id=456&ref=homepage#section"],
+          ["deleteCustomVariables", "page"],
+        ]),
+      );
+      resolve();
+    });
+  });
+
+  test("should clean consecutive URLs when cleanUrl=true", async () => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { trackPagesRouter } = require("../index");
+    trackPagesRouter({ siteId: "42", url: "YO", cleanUrl: true });
+    window._paq = [];
+
+    Router.events.emit(
+      "routeChangeStart",
+      "/products?category=books&sort=price",
+    );
+    window._paq = [];
+
+    Router.events.emit("routeChangeStart", "/details?id=789#description");
+
+    return new Promise<void>((resolve) => {
+      expect(window._paq).toEqual(
+        expect.arrayContaining([
+          ["setReferrerUrl", "/products"],
+          ["setCustomUrl", "/details"],
+          ["deleteCustomVariables", "page"],
+        ]),
+      );
+      resolve();
+    });
+  });
+
+  test("should keep query params in consecutive URLs when cleanUrl=false", async () => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { trackPagesRouter } = require("../index");
+    trackPagesRouter({ siteId: "42", url: "YO", cleanUrl: false });
+    window._paq = [];
+
+    Router.events.emit("routeChangeStart", "/products?filter=new");
+    window._paq = [];
+
+    Router.events.emit("routeChangeStart", "/cart?item=123");
+
+    return new Promise<void>((resolve) => {
+      expect(window._paq).toEqual(
+        expect.arrayContaining([
+          ["setReferrerUrl", "/products?filter=new"],
+          ["setCustomUrl", "/cart?item=123"],
+          ["deleteCustomVariables", "page"],
+        ]),
+      );
+      resolve();
+    });
+  });
+
+  test("should handle hash-only URLs correctly when cleanUrl=true", async () => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { trackPagesRouter } = require("../index");
+    trackPagesRouter({ siteId: "42", url: "YO", cleanUrl: true });
+    window._paq = [];
+
+    Router.events.emit("routeChangeStart", "/docs#installation");
+
+    return new Promise<void>((resolve) => {
+      expect(window._paq).toEqual(
+        expect.arrayContaining([
+          ["setReferrerUrl", "/"],
+          ["setCustomUrl", "/docs"],
+          ["deleteCustomVariables", "page"],
+        ]),
+      );
+      resolve();
+    });
+  });
+
+  test("should keep hash when cleanUrl=false", async () => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { trackPagesRouter } = require("../index");
+    trackPagesRouter({ siteId: "42", url: "YO", cleanUrl: false });
+    window._paq = [];
+
+    Router.events.emit("routeChangeStart", "/docs#installation");
+
+    return new Promise<void>((resolve) => {
+      expect(window._paq).toEqual(
+        expect.arrayContaining([
+          ["setReferrerUrl", "/"],
+          ["setCustomUrl", "/docs#installation"],
+          ["deleteCustomVariables", "page"],
+        ]),
+      );
+      resolve();
+    });
+  });
+
+  test("should handle complex URLs with query and hash when cleanUrl=true", async () => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { trackPagesRouter } = require("../index");
+    trackPagesRouter({ siteId: "42", url: "YO", cleanUrl: true });
+    window._paq = [];
+
+    Router.events.emit("routeChangeStart", "/search?q=test&page=2#results");
+
+    return new Promise<void>((resolve) => {
+      expect(window._paq).toEqual(
+        expect.arrayContaining([
+          ["setReferrerUrl", "/"],
+          ["setCustomUrl", "/search?q=test&page=2#results"],
+          ["deleteCustomVariables", "page"],
+        ]),
+      );
+      resolve();
+    });
+  });
+
+  test("should keep query params for search routes with cleanUrl=true", async () => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { trackPagesRouter } = require("../index");
+    trackPagesRouter({ siteId: "42", url: "YO", cleanUrl: true });
+    window._paq = [];
+
+    Router.events.emit(
+      "routeChangeStart",
+      "/search?q=test&category=docs&page=2",
+    );
+
+    return new Promise<void>((resolve) => {
+      expect(window._paq).toEqual(
+        expect.arrayContaining([
+          ["setReferrerUrl", "/"],
+          ["setCustomUrl", "/search?q=test&category=docs&page=2"],
+          ["deleteCustomVariables", "page"],
+        ]),
+      );
+      expect(window._paq).not.toEqual(
+        expect.arrayContaining([["setCustomUrl", "/search"]]),
+      );
+      resolve();
+    });
+  });
+
+  test("should keep query params for /recherche route with cleanUrl=true", async () => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { trackPagesRouter } = require("../index");
+    trackPagesRouter({ siteId: "42", url: "YO", cleanUrl: true });
+    window._paq = [];
+
+    Router.events.emit("routeChangeStart", "/recherche?q=matomo&filter=all");
+
+    return new Promise<void>((resolve) => {
+      expect(window._paq).toEqual(
+        expect.arrayContaining([
+          ["setReferrerUrl", "/"],
+          ["setCustomUrl", "/recherche?q=matomo&filter=all"],
+          ["deleteCustomVariables", "page"],
+        ]),
+      );
+      resolve();
+    });
+  });
+
+  test("should clean non-search routes but keep search routes with cleanUrl=true", async () => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { trackPagesRouter } = require("../index");
+    trackPagesRouter({ siteId: "42", url: "YO", cleanUrl: true });
+    window._paq = [];
+
+    Router.events.emit("routeChangeStart", "/products?id=123&ref=home");
+    window._paq = [];
+
+    Router.events.emit("routeChangeStart", "/search?q=nextjs");
+
+    return new Promise<void>((resolve) => {
+      expect(window._paq).toEqual(
+        expect.arrayContaining([
+          ["setReferrerUrl", "/products"],
+          ["setCustomUrl", "/search?q=nextjs"],
+          ["deleteCustomVariables", "page"],
+        ]),
+      );
+      resolve();
     });
   });
 });

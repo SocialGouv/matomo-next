@@ -1,5 +1,5 @@
 import type { InitSettings, MatomoState } from "./types";
-import { matchesAnyPattern, createSanitizer } from "./utils";
+import { matchesAnyPattern, createSanitizer, cleanUrlPath } from "./utils";
 import {
   push,
   loadMatomoScript,
@@ -43,6 +43,7 @@ export const trackAppRouter = (settings: InitSettings): void => {
     enableHeartBeatTimer = false,
     heartBeatTimerInterval,
     heatmapConfig = {},
+    cleanUrl = false,
   } = settings;
 
   if (!url) {
@@ -130,15 +131,28 @@ export const trackAppRouter = (settings: InitSettings): void => {
     state.previousUrl = currentUrl;
     trackPageOrSearch();
   } else if (currentUrl !== state.previousUrl) {
-    // We use only the part of the url without the querystring to ensure Matomo is happy
-    // It seems that Matomo doesn't track well page with querystring
-    let cleanPathname = currentUrl.split("?")[0];
-    cleanPathname = cleanPathname.replace(/#.*/, "");
+    // Check if current route is a search route
+    const isSearchRoute = searchRoutes.some((route) =>
+      currentUrl.startsWith(route),
+    );
+
+    // Clean URL if cleanUrl option is enabled, but keep query params for search routes
+    // to preserve search parameters for trackSiteSearch
+    const urlToTrack =
+      cleanUrl && !isSearchRoute ? cleanUrlPath(currentUrl) : currentUrl;
 
     if (state.previousUrl) {
-      push(["setReferrerUrl", state.previousUrl]);
+      const isPreviousSearchRoute = searchRoutes.some((route) =>
+        state.previousUrl.startsWith(route),
+      );
+      push([
+        "setReferrerUrl",
+        cleanUrl && !isPreviousSearchRoute
+          ? cleanUrlPath(state.previousUrl)
+          : state.previousUrl,
+      ]);
     }
-    push(["setCustomUrl", cleanPathname]);
+    push(["setCustomUrl", urlToTrack]);
     push(["deleteCustomVariables", "page"]);
 
     if (onRouteChangeStart) {

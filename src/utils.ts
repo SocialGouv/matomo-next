@@ -6,6 +6,17 @@ export const matchesAnyPattern = (str: string, patterns: RegExp[]): boolean => {
 };
 
 /**
+ * Clean URL by removing query params and hash fragments
+ */
+export const cleanUrlPath = (url: string): string => {
+  // Remove query params (everything after ?)
+  let cleaned = url.split("?")[0];
+  // Remove hash fragments (everything after #)
+  cleaned = cleaned.replace(/#.*/, "");
+  return cleaned;
+};
+
+/**
  * Trusted policy hooks for Trusted Types API
  */
 export const trustedPolicyHooks: TrustedTypePolicyOptions = {

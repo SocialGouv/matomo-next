@@ -24,6 +24,7 @@ export interface InitSettings {
   enableHeartBeatTimer?: boolean;
   heartBeatTimerInterval?: number;
   heatmapConfig?: HeatmapConfig;
+  cleanUrl?: boolean;
 }
 
 export interface HeatmapConfig {
