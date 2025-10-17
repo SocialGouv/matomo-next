@@ -1,3 +1,10 @@
+# [1.10.0](https://github.com/SocialGouv/matomo-next/compare/v1.9.2...v1.10.0) (2025-10-17)
+
+
+### Features
+
+* support of next `app` folder ([#143](https://github.com/SocialGouv/matomo-next/issues/143)) ([73ed511](https://github.com/SocialGouv/matomo-next/commit/73ed5115265b05aa7dd7055b6fcf7a6e48f8dbe0))
+
 ## [1.9.2](https://github.com/SocialGouv/matomo-next/compare/v1.9.1...v1.9.2) (2024-11-12)
 
 
