@@ -333,7 +333,7 @@ push(["trackGoal", 1]);
 
 ### Enable Heatmap & Session Recording
 
-To enable Matomo's Heatmap & Session Recording feature:
+To enable Matomo's Heatmap & Session Recording feature with comprehensive configuration options:
 
 **Pages Router:**
 
@@ -343,10 +343,32 @@ trackPagesRouter({
   siteId: MATOMO_SITE_ID,
   enableHeatmapSessionRecording: true,
   heatmapConfig: {
-    // Optional: capture keystrokes (default: false)
+    // Optional: capture keystrokes (default: false, disabled since v3.2.0)
     captureKeystrokes: false,
-    // Optional: capture only visible content (default: false, captures full page)
-    captureVisibleContentOnly: false,
+
+    // Optional: record mouse/touch movements (default: true)
+    // Set to false to disable the "Move Heatmap" feature
+    recordMovements: true,
+
+    // Optional: max capture time in seconds (default: 600 = 10 minutes)
+    // Recommended: less than 29 minutes to avoid creating new visits
+    maxCaptureTime: 600,
+
+    // Optional: disable automatic page view detection (default: false)
+    // Set to true if you track "virtual" page views for events/downloads
+    disableAutoDetectNewPageView: false,
+
+    // Optional: custom trigger function to control when recording happens
+    trigger: (config) => {
+      // Example: only record for logged-in users
+      return window.userLoggedIn === true;
+    },
+
+    // Optional: manually add heatmap/session configuration
+    addConfig: {
+      heatmap: { id: 5 },
+      sessionRecording: { id: 10 },
+    },
   },
 });
 ```
@@ -361,19 +383,138 @@ trackAppRouter({
   searchParams,
   enableHeatmapSessionRecording: true,
   heatmapConfig: {
-    // Optional: capture keystrokes (default: false)
+    // Optional: capture keystrokes (default: false, disabled since v3.2.0)
     captureKeystrokes: false,
-    // Optional: capture only visible content (default: false, captures full page)
-    captureVisibleContentOnly: false,
+
+    // Optional: record mouse/touch movements (default: true)
+    // Set to false to disable the "Move Heatmap" feature
+    recordMovements: true,
+
+    // Optional: max capture time in seconds (default: 600 = 10 minutes)
+    // Recommended: less than 29 minutes to avoid creating new visits
+    maxCaptureTime: 600,
+
+    // Optional: disable automatic page view detection (default: false)
+    // Set to true if you track "virtual" page views for events/downloads
+    disableAutoDetectNewPageView: false,
+
+    // Optional: custom trigger function to control when recording happens
+    trigger: (config) => {
+      // Example: only record for logged-in users
+      return window.userLoggedIn === true;
+    },
+
+    // Optional: manually add heatmap/session configuration
+    addConfig: {
+      heatmap: { id: 5 },
+      sessionRecording: { id: 10 },
+    },
   },
 });
 ```
 
-The Heatmap & Session Recording plugin will be automatically loaded and configured. It will:
+#### Configuration Options
 
-- Load the `HeatmapSessionRecording/tracker.min.js` plugin
-- Configure keystroke capture and visible content settings
-- Enable the recording after page load
+The Heatmap & Session Recording plugin will be automatically loaded and configured with the following features:
+
+- **Load Plugin**: Automatically loads `HeatmapSessionRecording/tracker.min.js`
+- **Keystroke Capture**: Control whether keystrokes are captured (disabled by default for privacy)
+- **Movement Recording**: Control whether mouse/touch movements are recorded for heatmaps
+- **Capture Time Limit**: Set maximum recording duration per page view
+- **Page View Detection**: Control automatic detection of new page views for SPAs
+- **Custom Triggers**: Implement conditional recording based on user properties or context
+- **Manual Configuration**: Directly configure specific heatmap or session recording IDs
+
+#### Privacy & Security Notes
+
+By default, Heatmap & Session Recording:
+
+- **Does NOT capture keystrokes** (disabled since v3.2.0)
+- Always masks sensitive form fields (passwords, emails, credit cards)
+- Masks fields with types: `password`, `tel`, `email`
+- Ignores credit card patterns (7-21 consecutive digits)
+- Ignores email patterns (text with `@` symbol)
+- Does not record content within iframes
+
+For more details, see the [Heatmap & Session Recording Developer FAQ](https://matomo.org/faq/heatmap-session-recording/developers/).
+
+#### Advanced Heatmap & Session Recording Usage
+
+**Single-Page Applications (SPA)**
+
+SPAs are supported out of the box. When you call `trackPageView`, a new page view is detected automatically. If you want to track "virtual" page views (e.g., for events or downloads) without stopping the recording, use:
+
+```js
+heatmapConfig: {
+  disableAutoDetectNewPageView: true,
+}
+```
+
+**Conditional Recording with Custom Triggers**
+
+Record sessions only for specific visitors or conditions:
+
+```js
+heatmapConfig: {
+  trigger: (config) => {
+    // Only record for users over 30
+    if (userAge > 30) return true;
+
+    // Only record during business hours
+    const hour = new Date().getHours();
+    if (hour >= 9 && hour <= 17) return true;
+
+    // Only record for logged-in users
+    if (window.isUserLoggedIn) return true;
+
+    return false;
+  },
+}
+```
+
+**Extended Capture Time**
+
+By default, recording stops after 10 minutes. To capture longer sessions:
+
+```js
+heatmapConfig: {
+  maxCaptureTime: 1800, // 30 minutes (in seconds)
+}
+```
+
+**Note**: Keep this under 29 minutes to avoid creating new visits due to Matomo's 30-minute inactivity timeout.
+
+**Disable Movement Tracking**
+
+To disable mouse/touch movement tracking (no "Move Heatmap" data):
+
+```js
+heatmapConfig: {
+  recordMovements: false,
+}
+```
+
+**Manual Configuration**
+
+For advanced use cases where you need to manually configure specific heatmaps or sessions:
+
+```js
+heatmapConfig: {
+  addConfig: {
+    heatmap: { id: 5 },
+    sessionRecording: { id: 10 }
+  },
+}
+```
+
+**Force or Prevent Recording**
+
+When testing, you can force or prevent recording by appending URL parameters:
+
+- Force recording: `?pk_hsr_forcesample=1`
+- Prevent recording: `?pk_hsr_forcesample=0`
+
+This is useful when your sample rate is less than 100% and you want to ensure your activities are recorded or excluded during development.
 
 ### Enable HeartBeat Timer
 
