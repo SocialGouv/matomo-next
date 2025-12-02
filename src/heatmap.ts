@@ -1,5 +1,6 @@
 import type { HeatmapConfig } from "./types";
 import { push } from "./tracker";
+import { safePush } from "./utils";
 
 /**
  * Load and configure Heatmap & Session Recording plugin
@@ -27,15 +28,16 @@ export const loadHeatmapSessionRecording = (
   script.onload = () => {
     if (debug) {
       console.log("HeatmapSessionRecording tracker.min.js loaded");
-      push(["HeatmapSessionRecording::debug", "true"]);
+      safePush(push, ["HeatmapSessionRecording::debug", "true"], debug);
     }
 
     // Configure keystrokes capture (disabled by default)
     const captureKeystrokes = config.captureKeystrokes ?? false;
-    push([
-      "HeatmapSessionRecording.setKeystrokes",
-      captureKeystrokes.toString(),
-    ]);
+    safePush(
+      push,
+      ["HeatmapSessionRecording.setKeystrokes", captureKeystrokes.toString()],
+      debug,
+    );
 
     if (debug) {
       console.log(`Keystrokes ${captureKeystrokes ? "enabled" : "disabled"}`);
@@ -43,10 +45,14 @@ export const loadHeatmapSessionRecording = (
 
     // Configure visible content capture (full page by default)
     const captureVisibleOnly = config.captureVisibleContentOnly ?? false;
-    push([
-      "HeatmapSessionRecording.setCaptureVisibleContentOnly",
-      captureVisibleOnly.toString(),
-    ]);
+    safePush(
+      push,
+      [
+        "HeatmapSessionRecording.setCaptureVisibleContentOnly",
+        captureVisibleOnly.toString(),
+      ],
+      debug,
+    );
 
     if (debug) {
       console.log(
@@ -61,7 +67,7 @@ export const loadHeatmapSessionRecording = (
       if (debug) {
         console.log("Activating Matomo Heatmap & Session Recording");
       }
-      push(["HeatmapSessionRecording::enable"]);
+      safePush(push, ["HeatmapSessionRecording::enable"], debug);
       if (debug) {
         console.log(
           "HeatmapSessionRecording enabled at",
