@@ -16,7 +16,7 @@
 
 A lightweight, TypeScript-ready Matomo analytics integration for Next.js applications with support for both Pages Router and App Router.
 
-## ✨ Features
+## Features
 
 - ✅ **Pages Router & App Router Support** - Works with both Next.js routing systems
 - ✅ **Automatic Page Tracking** - Tracks route changes and page views automatically
@@ -26,15 +26,13 @@ A lightweight, TypeScript-ready Matomo analytics integration for Next.js applica
 - ✅ **Heatmap & Session Recording** - Optional user behavior visualization
 - ✅ **TypeScript Support** - Full type safety and auto-completion
 
-## 📦 Installation
+## Installation
 
 ```bash
 npm install @socialgouv/matomo-next
-# or
-yarn add @socialgouv/matomo-next
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Pages Router
 
@@ -109,21 +107,14 @@ export default function RootLayout({ children }) {
 }
 ```
 
-## 📖 Documentation
+## Documentation
 
-### Core Documentation
+- **[Advanced Configuration](docs/advanced.md)** - All configuration options, HeartBeat timer, callbacks, and extensibility
+- **[Event Tracking](docs/events.md)** - Track custom user interactions
+- **[Heatmap & Session Recording](docs/heatmap-session-recording.md)** - User behavior tracking and visualization
+- **[Security & Privacy](docs/security.md)** - CSP configuration and GDPR compliance
 
-- **[Getting Started](./docs/getting-started.md)** - Installation and basic setup
-- **[Configuration](./docs/configuration.md)** - All configuration options and examples
-- **[Event Tracking](./docs/events.md)** - Track custom user interactions
-- **[Advanced Features](./docs/advanced.md)** - HeartBeat timer, callbacks, and extensibility
-- **[Security & Privacy](./docs/security.md)** - CSP configuration and GDPR compliance
-
-### Advanced Features
-
-- **[Heatmap & Session Recording](./docs/heatmap-session-recording.md)** - User behavior tracking and visualization
-
-## 🎯 Common Use Cases
+## Common Use Cases
 
 ### Track Custom Events
 
@@ -144,96 +135,41 @@ sendEvent({
 });
 ```
 
-### GDPR-Compliant Tracking
+## Configuration Options
 
-Enable cookie-less tracking:
+| Option                          | Type              | Description                         | Default                     | Docs                                                      |
+| ------------------------------- | ----------------- | ----------------------------------- | --------------------------- | --------------------------------------------------------- |
+| `url`                           | `string`          | Matomo instance URL                 | -                           | Required                                                  |
+| `siteId`                        | `string`          | Matomo site ID                      | -                           | Required                                                  |
+| `pathname`                      | `string`          | Current pathname (App Router only)  | -                           | Required for App Router                                   |
+| `searchParams`                  | `URLSearchParams` | URL search params (App Router only) | -                           | Required for App Router                                   |
+| `jsTrackerFile`                 | `string`          | Custom JS tracker filename          | `"matomo.js"`               | [Advanced](docs/advanced.md)                              |
+| `phpTrackerFile`                | `string`          | Custom PHP tracker filename         | `"matomo.php"`              | [Advanced](docs/advanced.md)                              |
+| `excludeUrlsPatterns`           | `RegExp[]`        | URLs to exclude from tracking       | `[]`                        | [Advanced](docs/advanced.md#exclude-url-patterns)         |
+| `disableCookies`                | `boolean`         | Cookie-less tracking                | `false`                     | [Advanced](docs/advanced.md#disable-cookies)              |
+| `cleanUrl`                      | `boolean`         | Remove query params from URLs       | `false`                     | [Advanced](docs/advanced.md#clean-urls)                   |
+| `searchKeyword`                 | `string`          | Search query parameter name         | `"q"`                       | [Advanced](docs/advanced.md#search-tracking)              |
+| `searchRoutes`                  | `string[]`        | Custom search route paths           | `["/recherche", "/search"]` | [Advanced](docs/advanced.md#search-tracking)              |
+| `enableHeartBeatTimer`          | `boolean`         | Track time on page                  | `false`                     | [Advanced](docs/advanced.md#heartbeat-timer)              |
+| `heartBeatTimerInterval`        | `number`          | HeartBeat timer interval (seconds)  | `15` (Matomo default)       | [Advanced](docs/advanced.md#heartbeat-timer)              |
+| `enableHeatmapSessionRecording` | `boolean`         | Enable session recording            | `false`                     | [Heatmap](docs/heatmap-session-recording.md)              |
+| `heatmapConfig`                 | `HeatmapConfig`   | Heatmap configuration object        | `{}`                        | [Heatmap](docs/heatmap-session-recording.md)              |
+| `debug`                         | `boolean`         | Enable debug logs                   | `false`                     | [Advanced](docs/advanced.md#debug-mode)                   |
+| `nonce`                         | `string`          | CSP nonce value                     | -                           | [Security](docs/security.md)                              |
+| `trustedPolicyName`             | `string`          | Trusted Types policy name           | `"matomo-next"`             | [Security](docs/security.md)                              |
+| `onInitialization`              | `() => void`      | Callback on init                    | -                           | [Advanced](docs/advanced.md#extensibility-with-callbacks) |
+| `onRouteChangeStart`            | `(path) => void`  | Callback on route change start      | -                           | [Advanced](docs/advanced.md#extensibility-with-callbacks) |
+| `onRouteChangeComplete`         | `(path) => void`  | Callback on route change complete   | -                           | [Advanced](docs/advanced.md#extensibility-with-callbacks) |
+| `onScriptLoadingError`          | `() => void`      | Callback on script loading error    | -                           | [Advanced](docs/advanced.md#extensibility-with-callbacks) |
 
-```js
-trackPagesRouter({
-  url: MATOMO_URL,
-  siteId: MATOMO_SITE_ID,
-  disableCookies: true,
-});
-```
+See [complete configuration options](docs/advanced.md) for full details.
 
-### Exclude Sensitive Routes
-
-Prevent tracking of specific URLs:
-
-```js
-trackPagesRouter({
-  url: MATOMO_URL,
-  siteId: MATOMO_SITE_ID,
-  excludeUrlsPatterns: [/^\/admin/, /\?token=/],
-});
-```
-
-### Debug Mode
-
-Enable debug logging during development:
-
-```js
-trackPagesRouter({
-  url: MATOMO_URL,
-  siteId: MATOMO_SITE_ID,
-  debug: process.env.NODE_ENV === "development",
-});
-```
-
-## 🔧 Configuration Options
-
-| Option                          | Type       | Description           | Docs                                                              |
-| ------------------------------- | ---------- | --------------------- | ----------------------------------------------------------------- |
-| `url`                           | `string`   | Matomo instance URL   | Required                                                          |
-| `siteId`                        | `string`   | Matomo site ID        | Required                                                          |
-| `disableCookies`                | `boolean`  | Cookie-less tracking  | [Config](./docs/configuration.md#privacy--gdpr)                   |
-| `excludeUrlsPatterns`           | `RegExp[]` | URLs to exclude       | [Config](./docs/configuration.md#exclude-url-patterns)            |
-| `cleanUrl`                      | `boolean`  | Remove query params   | [Config](./docs/configuration.md#clean-urls)                      |
-| `searchKeyword`                 | `string`   | Search parameter name | [Config](./docs/configuration.md#custom-search-keyword-parameter) |
-| `enableHeartBeatTimer`          | `boolean`  | Track time on page    | [Advanced](./docs/advanced.md#heartbeat-timer)                    |
-| `enableHeatmapSessionRecording` | `boolean`  | Enable recordings     | [Heatmap](./docs/heatmap-session-recording.md)                    |
-| `debug`                         | `boolean`  | Enable debug logs     | [Advanced](./docs/advanced.md#debug-mode)                         |
-
-See [complete configuration options](./docs/configuration.md) for full details.
-
-## 🛡️ Security
-
-### Content Security Policy
-
-Configure CSP with nonce support:
-
-```js
-trackPagesRouter({
-  url: MATOMO_URL,
-  siteId: MATOMO_SITE_ID,
-  nonce: "your-nonce-value",
-});
-```
-
-### Trusted Types
-
-Allow the script injection policy:
-
-```txt
-Content-Security-Policy: require-trusted-types-for 'script'; trusted-types matomo-next;
-```
-
-See [Security documentation](./docs/security.md) for complete CSP setup.
-
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## 📄 License
-
-Apache-2.0 © [Social Gouv](https://github.com/SocialGouv)
-
-## 🔗 Links
+## Links
 
 - [Matomo Official Documentation](https://matomo.org/docs/)
 - [Matomo JavaScript Tracker API](https://developer.matomo.org/api-reference/tracking-javascript)
 - [Next.js Documentation](https://nextjs.org/docs)
-
----
-
-<p align="center">Made with ❤️ by <a href="https://github.com/SocialGouv">Social Gouv</a></p>

@@ -1,16 +1,14 @@
 # Heatmap & Session Recording
 
-Enable Matomo's powerful Heatmap & Session Recording features to visualize user behavior and watch session replays.
+**Note:** This feature is **disabled by default**. You must explicitly enable it.
 
-## Quick Start
+Enable Matomo's Heatmap & Session Recording feature to visualize user behavior and watch session replays.
 
-Enable the feature with minimal configuration:
+## Basic Setup
 
 **Pages Router:**
 
 ```js
-import { trackPagesRouter } from "@socialgouv/matomo-next";
-
 trackPagesRouter({
   url: MATOMO_URL,
   siteId: MATOMO_SITE_ID,
@@ -21,8 +19,6 @@ trackPagesRouter({
 **App Router:**
 
 ```js
-import { trackAppRouter } from "@socialgouv/matomo-next";
-
 trackAppRouter({
   url: MATOMO_URL,
   siteId: MATOMO_SITE_ID,
@@ -32,74 +28,39 @@ trackAppRouter({
 });
 ```
 
-This automatically:
-
-- Loads the Heatmap & Session Recording plugin
-- Starts recording user sessions
-- Captures clicks and mouse movements
-- Respects privacy by masking sensitive fields
+The plugin will be automatically loaded from `{url}/plugins/HeatmapSessionRecording/tracker.min.js`.
 
 ## Configuration Options
 
-Customize the behavior with the `heatmapConfig` object:
-
-```js
-trackPagesRouter({
-  url: MATOMO_URL,
-  siteId: MATOMO_SITE_ID,
-  enableHeatmapSessionRecording: true,
-  heatmapConfig: {
-    // Keystroke capture (default: false)
-    captureKeystrokes: false,
-
-    // Mouse/touch movement recording (default: true)
-    recordMovements: true,
-
-    // Max capture time in seconds (default: 600 = 10 minutes)
-    maxCaptureTime: 600,
-
-    // Disable automatic page view detection (default: false)
-    disableAutoDetectNewPageView: false,
-
-    // Custom trigger function
-    trigger: (config) => {
-      return window.userLoggedIn === true;
-    },
-
-    // Manual configuration
-    addConfig: {
-      heatmap: { id: 5 },
-      sessionRecording: { id: 10 },
-    },
-  },
-});
-```
-
-### Configuration Parameters
-
-#### `captureKeystrokes`
+### `captureKeystrokes`
 
 - **Type:** `boolean`
 - **Default:** `false`
 - **Description:** Controls whether keyboard input is captured
 
-**Important:** Disabled by default for privacy. Enable only if needed and ensure GDPR compliance.
-
-#### `recordMovements`
-
-- **Type:** `boolean`
-- **Default:** `true`
-- **Description:** Records mouse/touch movements for heatmap visualization
-
-Disable this to reduce data collection:
+**Important:** Disabled by default since v3.2.0 for privacy. Only enable if needed and ensure GDPR compliance.
 
 ```js
 heatmapConfig: {
-  recordMovements: false, // Disables "Move Heatmap" feature
+  captureKeystrokes: false, // Keep disabled for privacy
 }
 ```
 
-#### `maxCaptureTime`
+### `recordMovements`
+
+- **Type:** `boolean`
+- **Default:** `true`
+- **Description:** Records mouse and touch movements for heatmap visualization
+
+Disable to reduce data collection and prevent "Move Heatmap" feature:
+
+```js
+heatmapConfig: {
+  recordMovements: false,
+}
+```
+
+### `maxCaptureTime`
 
 - **Type:** `number`
 - **Default:** `600` (10 minutes)
@@ -113,13 +74,13 @@ heatmapConfig: {
 }
 ```
 
-#### `disableAutoDetectNewPageView`
+### `disableAutoDetectNewPageView`
 
 - **Type:** `boolean`
 - **Default:** `false`
-- **Description:** Disables automatic page view detection for SPAs
+- **Description:** Disables automatic detection of new page views for SPAs
 
-Enable if you track "virtual" page views for events or downloads:
+Set to `true` if you track "virtual" page views for events or downloads without stopping the recording:
 
 ```js
 heatmapConfig: {
@@ -127,13 +88,13 @@ heatmapConfig: {
 }
 ```
 
-#### `trigger`
+### `trigger`
 
-- **Type:** `(config: any) => boolean`
+- **Type:** `(config: { id?: number }) => boolean`
 - **Default:** `undefined`
 - **Description:** Custom function to control when recording happens
 
-Use this for conditional recording:
+Use for conditional recording based on user properties:
 
 ```js
 heatmapConfig: {
@@ -148,11 +109,11 @@ heatmapConfig: {
 }
 ```
 
-#### `addConfig`
+### `addConfig`
 
 - **Type:** `{ heatmap?: { id: number }, sessionRecording?: { id: number } }`
 - **Default:** `undefined`
-- **Description:** Manually specify heatmap or session recording IDs
+- **Description:** Manually configure specific heatmap or session recording IDs
 
 ```js
 heatmapConfig: {
@@ -163,48 +124,9 @@ heatmapConfig: {
 }
 ```
 
-## Privacy & Security
+## Complete Configuration Example
 
-### Default Privacy Protection
-
-By default, Heatmap & Session Recording:
-
-- ✅ **Does NOT capture keystrokes** (disabled since v3.2.0)
-- ✅ **Masks sensitive fields**: `password`, `tel`, `email` input types
-- ✅ **Ignores credit card patterns**: 7-21 consecutive digits
-- ✅ **Ignores email patterns**: text containing `@` symbol
-- ✅ **Does not record iframes**: content within iframes is not captured
-
-### Additional Privacy Measures
-
-Add `data-matomo-mask` attribute to elements you want to mask:
-
-```html
-<!-- Mask specific elements -->
-<div data-matomo-mask>Sensitive user data</div>
-
-<!-- Mask form fields -->
-<input type="text" data-matomo-mask placeholder="SSN" />
-```
-
-Add `data-matomo-unmask` to override default masking:
-
-```html
-<!-- Override default email masking -->
-<input type="email" data-matomo-unmask />
-```
-
-### GDPR Compliance
-
-Consider these practices for GDPR compliance:
-
-1. **Obtain consent** before enabling recording
-2. **Use trigger function** to respect user preferences
-3. **Keep recordings time-limited** with `maxCaptureTime`
-4. **Disable keystroke capture** (already default)
-5. **Mask PII fields** with `data-matomo-mask`
-
-Example consent-based implementation:
+**Pages Router:**
 
 ```js
 trackPagesRouter({
@@ -212,64 +134,65 @@ trackPagesRouter({
   siteId: MATOMO_SITE_ID,
   enableHeatmapSessionRecording: true,
   heatmapConfig: {
-    trigger: () => {
-      // Check if user consented to recording
-      return localStorage.getItem("matomo-recording-consent") === "true";
+    captureKeystrokes: false, // Privacy: keep disabled
+    recordMovements: true, // Enable move heatmap
+    maxCaptureTime: 600, // 10 minutes max
+    disableAutoDetectNewPageView: false,
+    trigger: (config) => {
+      // Only record logged-in users
+      return window.isUserLoggedIn === true;
     },
   },
 });
 ```
 
-## Use Cases
-
-### User Experience Analysis
-
-Record sessions to understand:
-
-- Where users click
-- How they navigate your site
-- Where they encounter issues
-- What captures their attention
-
-### A/B Testing Validation
-
-Compare user behavior between variants:
+**App Router:**
 
 ```js
-heatmapConfig: {
-  trigger: () => {
-    // Only record control group
-    return window.abTestVariant === "control";
+trackAppRouter({
+  url: MATOMO_URL,
+  siteId: MATOMO_SITE_ID,
+  pathname,
+  searchParams,
+  enableHeatmapSessionRecording: true,
+  heatmapConfig: {
+    captureKeystrokes: false,
+    recordMovements: true,
+    maxCaptureTime: 600,
+    disableAutoDetectNewPageView: false,
+    trigger: (config) => {
+      return window.isUserLoggedIn === true;
+    },
   },
-}
+});
 ```
 
-### Bug Investigation
+## Privacy & Security
 
-Record sessions during testing or for specific users:
+When enabled, Heatmap & Session Recording:
 
-```js
-heatmapConfig: {
-  trigger: () => {
-    // Record QA team sessions
-    return window.location.search.includes("qa=true");
-  },
-}
+- **Does NOT capture keystrokes** (disabled by default since v3.2.0)
+- **Masks sensitive fields**: `password`, `tel`, `email` input types
+- **Ignores credit card patterns**: 7-21 consecutive digits
+- **Ignores email patterns**: text containing `@` symbol
+- **Does not record iframes**: content within iframes is not captured
+
+### Additional Privacy Measures
+
+Use data attributes to control recording:
+
+```html
+<!-- Mask specific elements -->
+<div data-matomo-mask>Sensitive user data</div>
+
+<!-- Mask form fields -->
+<input type="text" data-matomo-mask placeholder="SSN" />
+
+<!-- Override default masking -->
+<input type="email" data-matomo-unmask />
 ```
 
-### Premium Features
-
-Limit recording to paying customers:
-
-```js
-heatmapConfig: {
-  trigger: () => {
-    return window.userPlan === "premium" || window.userPlan === "enterprise";
-  },
-}
-```
-
-## Testing & Development
+## Testing
 
 ### Force Recording
 
@@ -279,8 +202,6 @@ During development, force recording by adding URL parameter:
 ?pk_hsr_forcesample=1
 ```
 
-Example: `http://localhost:3000?pk_hsr_forcesample=1`
-
 ### Prevent Recording
 
 Prevent recording during development:
@@ -289,84 +210,10 @@ Prevent recording during development:
 ?pk_hsr_forcesample=0
 ```
 
-This is useful when your sample rate is less than 100% and you want to control recording during testing.
-
-## Single-Page Applications
-
-SPAs are fully supported out of the box. Each time you call [`trackPageView`](https://developer.matomo.org/api-reference/tracking-javascript#page-views), a new page view is automatically detected.
-
-If you track "virtual" page views (for events, downloads, etc.) without wanting to stop the recording:
-
-```js
-heatmapConfig: {
-  disableAutoDetectNewPageView: true,
-}
-```
-
-## Performance Considerations
-
-### Impact on Performance
-
-Heatmap & Session Recording has minimal performance impact:
-
-- Asynchronous loading
-- Efficient DOM capturing
-- Compressed data transmission
-
-### Optimize Recording Duration
-
-Limit recording time to reduce data:
-
-```js
-heatmapConfig: {
-  maxCaptureTime: 300, // 5 minutes only
-}
-```
-
-### Selective Recording
-
-Use triggers to record only what matters:
-
-```js
-heatmapConfig: {
-  trigger: () => {
-    // Only record checkout process
-    return window.location.pathname.startsWith("/checkout");
-  },
-}
-```
-
-## Troubleshooting
-
-### Recordings Not Appearing
-
-1. **Check if plugin is loaded**: Enable debug mode to see console logs
-2. **Verify sample rate**: In Matomo dashboard, check heatmap sample rate
-3. **Check trigger function**: Ensure your trigger returns `true`
-4. **Use force parameter**: Test with `?pk_hsr_forcesample=1`
-
-### Too Much Data Captured
-
-1. **Reduce capture time**: Lower `maxCaptureTime`
-2. **Disable movements**: Set `recordMovements: false`
-3. **Use selective triggers**: Record only specific user segments
-4. **Lower sample rate**: Adjust in Matomo dashboard
-
-### Privacy Concerns
-
-1. **Disable keystrokes**: Ensure `captureKeystrokes: false`
-2. **Mask fields**: Add `data-matomo-mask` attributes
-3. **Implement consent**: Use trigger function to check consent
-4. **Review captured data**: Regularly audit recordings for PII
-
-## Additional Resources
-
-- [Matomo Heatmap & Session Recording FAQ](https://matomo.org/faq/heatmap-session-recording/)
-- [Developer FAQ](https://matomo.org/faq/heatmap-session-recording/developers/)
-- [JavaScript Tracker API Reference](https://developer.matomo.org/api-reference/tracking-javascript)
+This is useful when your sample rate is less than 100%.
 
 ## Next Steps
 
-- [Advanced Features](./advanced.md) - HeartBeat timer and extensibility
-- [Event Tracking](./events.md) - Track custom events
-- [Security](./security.md) - Content Security Policy configuration
+- [Advanced Configuration](./advanced.md) - All available options, HeartBeat timer, debug mode, callbacks
+- [Events](./events.md) - Track custom events
+- [Security](./security.md) - CSP and privacy
