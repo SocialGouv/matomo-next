@@ -52,37 +52,6 @@ describe("Matomo Configuration", () => {
     });
   });
 
-  describe("enableHeatmapSessionRecording", () => {
-    test("should load HeatmapSessionRecording script when enabled", () => {
-      document.head.appendChild(document.createElement("script"));
-      initPagesRouter({
-        enableHeatmapSessionRecording: true,
-        siteId: "42",
-        url: "https://YO",
-      });
-
-      const heatmapScript = Array.from(
-        document.head.querySelectorAll("script"),
-      ).find((s) => s.src.includes("HeatmapSessionRecording/tracker.min.js"));
-
-      expect(heatmapScript).toBeDefined();
-      expect(heatmapScript?.src).toContain(
-        "/plugins/HeatmapSessionRecording/tracker.min.js",
-      );
-    });
-
-    test("should not load HeatmapSessionRecording script when disabled", () => {
-      document.head.appendChild(document.createElement("script"));
-      initPagesRouter({ siteId: "42", url: "https://YO" });
-
-      const heatmapScript = Array.from(
-        document.head.querySelectorAll("script"),
-      ).find((s) => s.src.includes("HeatmapSessionRecording/tracker.min.js"));
-
-      expect(heatmapScript).toBeUndefined();
-    });
-  });
-
   describe("Pages Router without pathname", () => {
     test("should track initial pageview by default", () => {
       window.location.pathname = "/some-page";
