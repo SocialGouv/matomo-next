@@ -33,3 +33,25 @@ export const createSanitizer = (trustedPolicyName: string) => {
     trustedPolicyHooks
   );
 };
+
+/**
+ * Safely push commands to Matomo tracker with error handling
+ * Some Matomo methods may not be available immediately after script load
+ */
+export const safePush = (
+  pushFn: (args: any[]) => void,
+  command: any[],
+  debug = false,
+): void => {
+  try {
+    pushFn(command);
+  } catch (error) {
+    if (debug) {
+      console.warn(
+        `Matomo: Method "${command[0]}" may not be available yet. Command queued.`,
+        error,
+      );
+    }
+    // Silently fail - command will be in queue for when method becomes available
+  }
+};

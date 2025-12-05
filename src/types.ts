@@ -28,8 +28,45 @@ export interface InitSettings {
 }
 
 export interface HeatmapConfig {
+  /**
+   * Enable/disable keystroke capture (default: false)
+   * Since v3.2.0, keystrokes are disabled by default
+   */
   captureKeystrokes?: boolean;
-  captureVisibleContentOnly?: boolean;
+
+  /**
+   * Enable/disable recording of mouse and touch movements (default: true)
+   * Set to false to disable the "Move Heatmap" feature
+   */
+  recordMovements?: boolean;
+
+  /**
+   * Maximum capture time in seconds (default: 600 = 10 minutes)
+   * Set to less than 29 minutes to avoid creating new visits
+   */
+  maxCaptureTime?: number;
+
+  /**
+   * Disable automatic detection of new page views (default: false)
+   * Set to true if you track "virtual" page views for events/downloads
+   */
+  disableAutoDetectNewPageView?: boolean;
+
+  /**
+   * Custom trigger function to control when recording happens
+   * Return true to record, false to skip
+   * @param config - Configuration object with heatmap/session ID
+   */
+  trigger?: (config: { id?: number }) => boolean;
+
+  /**
+   * Manually add heatmap/session configuration
+   * Use this to manually configure specific heatmaps or sessions
+   */
+  addConfig?: {
+    heatmap?: { id: number };
+    sessionRecording?: { id: number };
+  };
 }
 
 export interface Dimensions {

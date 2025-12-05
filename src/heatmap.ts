@@ -1,5 +1,6 @@
 import type { HeatmapConfig } from "./types";
 import { push } from "./tracker";
+import { safePush } from "./utils";
 
 /**
  * Load and configure Heatmap & Session Recording plugin
@@ -27,33 +28,85 @@ export const loadHeatmapSessionRecording = (
   script.onload = () => {
     if (debug) {
       console.log("HeatmapSessionRecording tracker.min.js loaded");
-      push(["HeatmapSessionRecording::debug", "true"]);
+      safePush(push, ["HeatmapSessionRecording::enableDebugMode"], debug);
     }
 
-    // Configure keystrokes capture (disabled by default)
+    // Configure keystrokes capture (disabled by default since v3.2.0)
     const captureKeystrokes = config.captureKeystrokes ?? false;
-    push([
-      "HeatmapSessionRecording.setKeystrokes",
-      captureKeystrokes.toString(),
-    ]);
-
-    if (debug) {
-      console.log(`Keystrokes ${captureKeystrokes ? "enabled" : "disabled"}`);
+    if (!captureKeystrokes) {
+      safePush(
+        push,
+        ["HeatmapSessionRecording::disableCaptureKeystrokes"],
+        debug,
+      );
+      if (debug) {
+        console.log("Keystrokes capture disabled");
+      }
+    } else if (debug) {
+      console.log("Keystrokes capture enabled");
     }
 
-    // Configure visible content capture (full page by default)
-    const captureVisibleOnly = config.captureVisibleContentOnly ?? false;
-    push([
-      "HeatmapSessionRecording.setCaptureVisibleContentOnly",
-      captureVisibleOnly.toString(),
-    ]);
-
-    if (debug) {
-      console.log(
-        `Capture ${
-          captureVisibleOnly ? "visible content only" : "full page"
-        } enabled`,
+    // Configure mouse/touch movement recording (enabled by default)
+    const recordMovements = config.recordMovements ?? true;
+    if (!recordMovements) {
+      safePush(
+        push,
+        ["HeatmapSessionRecording::disableRecordMovements"],
+        debug,
       );
+      if (debug) {
+        console.log("Mouse/touch movement recording disabled");
+      }
+    } else if (debug) {
+      console.log("Mouse/touch movement recording enabled");
+    }
+
+    // Configure maximum capture time (default: 10 minutes)
+    if (config.maxCaptureTime !== undefined) {
+      safePush(
+        push,
+        ["HeatmapSessionRecording::setMaxCaptureTime", config.maxCaptureTime],
+        debug,
+      );
+      if (debug) {
+        console.log(`Max capture time set to ${config.maxCaptureTime} seconds`);
+      }
+    }
+
+    // Disable automatic detection of new page views if requested
+    if (config.disableAutoDetectNewPageView) {
+      safePush(
+        push,
+        ["HeatmapSessionRecording::disableAutoDetectNewPageView"],
+        debug,
+      );
+      if (debug) {
+        console.log("Automatic page view detection disabled");
+      }
+    }
+
+    // Set custom trigger function if provided
+    if (config.trigger) {
+      safePush(
+        push,
+        ["HeatmapSessionRecording::setTrigger", config.trigger],
+        debug,
+      );
+      if (debug) {
+        console.log("Custom trigger function configured");
+      }
+    }
+
+    // Add manual configuration if provided
+    if (config.addConfig) {
+      safePush(
+        push,
+        ["HeatmapSessionRecording::addConfig", config.addConfig],
+        debug,
+      );
+      if (debug) {
+        console.log("Manual configuration added:", config.addConfig);
+      }
     }
 
     // Wait for page load before enabling
@@ -61,7 +114,7 @@ export const loadHeatmapSessionRecording = (
       if (debug) {
         console.log("Activating Matomo Heatmap & Session Recording");
       }
-      push(["HeatmapSessionRecording::enable"]);
+      safePush(push, ["HeatmapSessionRecording::enable"], debug);
       if (debug) {
         console.log(
           "HeatmapSessionRecording enabled at",
