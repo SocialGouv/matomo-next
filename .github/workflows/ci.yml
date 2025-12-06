@@ -27,7 +27,7 @@ jobs:
 
       - name: Send test coverage to codecov
         continue-on-error: true
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
 
       - name: Build
         run: yarn build
