@@ -1,3 +1,15 @@
+# [1.11.0](https://github.com/SocialGouv/matomo-next/compare/v1.10.0...v1.11.0) (2025-12-08)
+
+
+### Bug Fixes
+
+* add workflow_dispatch trigger to CI workflow ([#147](https://github.com/SocialGouv/matomo-next/issues/147)) ([968d691](https://github.com/SocialGouv/matomo-next/commit/968d691f4557745967d4d197395eba23c14734b7))
+
+
+### Features
+
+* **heatmap:** enhance Heatmap & Session Recording configuration options ([#146](https://github.com/SocialGouv/matomo-next/issues/146)) ([d2f00ab](https://github.com/SocialGouv/matomo-next/commit/d2f00ab8f13d799f5c8694925fe155124d2e0bd1))
+
 # [1.10.0](https://github.com/SocialGouv/matomo-next/compare/v1.9.2...v1.10.0) (2025-10-17)
 
 
