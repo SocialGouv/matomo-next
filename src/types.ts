@@ -81,14 +81,20 @@ export interface HeatmapConfig {
  * Note: keys are expected to be `"dimension1"`, `"dimension2"`, etc.
  * We intentionally keep this type compatible with older TS/ESLint parsers.
  */
-export type ActionDimensions = Partial<Record<string, string>>;
+export type Dimensions =   {
+  dimension1?: string;
+  dimension2?: string;
+  dimension3?: string;
+  dimension4?: string;
+  dimension5?: string;
+  dimension6?: string;
+  dimension7?: string;
+  dimension8?: string;
+  dimension9?: string;
+  dimension10?: string;
+}
 
-/**
- * @deprecated Use `ActionDimensions`.
- *
- * Kept for backward compatibility because this library historically exported `Dimensions`.
- */
-export type Dimensions = ActionDimensions;
+
 
 /**
  * A single value inside a Matomo command pushed to the queue.
@@ -114,11 +120,11 @@ export type PushArg =
  */
 export type MatomoTrackEventCommand =
   | readonly ["trackEvent", string, string]
-  | readonly ["trackEvent", string, string, ActionDimensions]
+  | readonly ["trackEvent", string, string, Dimensions]
   | readonly ["trackEvent", string, string, string]
-  | readonly ["trackEvent", string, string, string, ActionDimensions]
+  | readonly ["trackEvent", string, string, string, Dimensions]
   | readonly ["trackEvent", string, string, string, number]
-  | readonly ["trackEvent", string, string, string, number, ActionDimensions];
+  | readonly ["trackEvent", string, string, string, number, Dimensions];
 
 /**
  * Core commands used by this library (and/or documented in docs).
@@ -128,8 +134,8 @@ export type MatomoCoreCommand =
   // Page view
   | readonly ["trackPageView"]
   | readonly ["trackPageView", string]
-  | readonly ["trackPageView", ActionDimensions]
-  | readonly ["trackPageView", string, ActionDimensions]
+  | readonly ["trackPageView", Dimensions]
+  | readonly ["trackPageView", string, Dimensions]
   // Standard setup / configuration
   | readonly ["enableLinkTracking"]
   | readonly ["disableCookies"]
@@ -141,11 +147,11 @@ export type MatomoCoreCommand =
   | readonly ["setDocumentTitle", string]
   // Site search (Matomo supports an optional dimensions object as last param)
   | readonly ["trackSiteSearch", string]
-  | readonly ["trackSiteSearch", string, ActionDimensions]
+  | readonly ["trackSiteSearch", string, Dimensions]
   | readonly ["trackSiteSearch", string, string]
-  | readonly ["trackSiteSearch", string, string, ActionDimensions]
+  | readonly ["trackSiteSearch", string, string, Dimensions]
   | readonly ["trackSiteSearch", string, string, number]
-  | readonly ["trackSiteSearch", string, string, number, ActionDimensions]
+  | readonly ["trackSiteSearch", string, string, number, Dimensions]
   // Heartbeat
   | readonly ["enableHeartBeatTimer"]
   | readonly ["enableHeartBeatTimer", number]
@@ -153,12 +159,12 @@ export type MatomoCoreCommand =
   | readonly ["setCustomDimension", number, string]
   // Goals (Matomo supports an optional dimensions object as last param)
   | readonly ["trackGoal", number]
-  | readonly ["trackGoal", number, ActionDimensions]
+  | readonly ["trackGoal", number, Dimensions]
   | readonly ["trackGoal", number, number]
-  | readonly ["trackGoal", number, number, ActionDimensions]
+  | readonly ["trackGoal", number, number, Dimensions]
   // Links (Matomo supports an optional dimensions object as last param)
   | readonly ["trackLink", string, string]
-  | readonly ["trackLink", string, string, ActionDimensions]
+  | readonly ["trackLink", string, string, Dimensions]
   // User
   | readonly ["setUserId", string];
 
