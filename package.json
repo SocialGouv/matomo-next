@@ -7,17 +7,17 @@
   "devDependencies": {
     "@socialgouv/eslint-config-react": "1.131.0",
     "@socialgouv/eslint-config-typescript": "^1.97.3",
-    "@types/jest": "26.0.24",
+    "@types/jest": "30.0.0",
     "@types/trusted-types": "^2.0.4",
     "eslint": "7.32.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-config-typescript": "^3.0.0",
-    "jest": "26.6.3",
+    "jest": "30.2.0",
     "next": "11.1.3",
     "prettier": "3.1.1",
     "react": "16.14.0",
     "react-dom": "16.14.0",
-    "ts-jest": "26.5.6",
+    "ts-jest": "29.4.5",
     "typescript": "3.9.10"
   },
   "files": [
