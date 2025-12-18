@@ -30,7 +30,7 @@ describe("Basic Matomo functionality", () => {
       expect(window._paq).toMatchSnapshot();
     });
 
-    test("should append custom dimensions data to window._paq", () => {
+    test("should append dimensions data to window._paq", () => {
       initPagesRouter({ siteId: "42", url: "YO" });
       window._paq = [];
 
