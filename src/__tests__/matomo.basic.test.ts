@@ -30,17 +30,11 @@ describe("Basic Matomo functionality", () => {
       expect(window._paq).toMatchSnapshot();
     });
 
-    test("should append dimensions data to window._paq", () => {
+    test("should append custom dimensions data to window._paq", () => {
       initPagesRouter({ siteId: "42", url: "YO" });
       window._paq = [];
-      push([
-        "trackEvent",
-        "kikoo",
-        "lol",
-        null,
-        null,
-        { dimension1: "ok", dimension2: "foobar" },
-      ]);
+      push(["setCustomDimension", 1, "ok"]);
+      push(["setCustomDimension", 2, "foobar"]);
       expect(window._paq).toMatchSnapshot();
     });
   });

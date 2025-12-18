@@ -21,7 +21,7 @@ type PropsWithName = BaseProps & {
 
 type PropsWithValue = BaseProps & {
   name: string;
-  value: string;
+  value: number;
 };
 
 type Props = PropsWithBaseElement | PropsWithName | PropsWithValue;
@@ -49,7 +49,7 @@ function isPropsWithValue(props: Props): props is PropsWithValue {
  *
  * @example
  * // Event with name and value
- * sendEvent({ category: "purchase", action: "buy", name: "product-123", value: "99.99" });
+ * sendEvent({ category: "purchase", action: "buy", name: "product-123", value: 99 });
  */
 export function sendEvent(props: Props) {
   if (isPropsWithValue(props)) {

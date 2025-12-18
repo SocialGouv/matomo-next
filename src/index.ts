@@ -1,5 +1,5 @@
 // Export types for external use
-export type { InitSettings, Dimensions, HeatmapConfig } from "./types";
+export type { InitSettings, HeatmapConfig } from "./types";
 
 // Export push function for custom event tracking
 export { push } from "./tracker";

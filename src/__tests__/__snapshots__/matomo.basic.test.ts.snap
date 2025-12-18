@@ -21,28 +21,27 @@ Array [
 ]
 `;
 
+exports[`Basic Matomo functionality push should append custom dimensions data to window._paq 1`] = `
+Array [
+  Array [
+    "setCustomDimension",
+    1,
+    "ok",
+  ],
+  Array [
+    "setCustomDimension",
+    2,
+    "foobar",
+  ],
+]
+`;
+
 exports[`Basic Matomo functionality push should append data to window._paq 1`] = `
 Array [
   Array [
     "trackEvent",
     "kikoo",
     "lol",
-  ],
-]
-`;
-
-exports[`Basic Matomo functionality push should append dimensions data to window._paq 1`] = `
-Array [
-  Array [
-    "trackEvent",
-    "kikoo",
-    "lol",
-    null,
-    null,
-    Object {
-      "dimension1": "ok",
-      "dimension2": "foobar",
-    },
   ],
 ]
 `;

@@ -69,28 +69,107 @@ export interface HeatmapConfig {
   };
 }
 
-export interface Dimensions {
-  dimension1?: string;
-  dimension2?: string;
-  dimension3?: string;
-  dimension4?: string;
-  dimension5?: string;
-  dimension6?: string;
-  dimension7?: string;
-  dimension8?: string;
-  dimension9?: string;
-  dimension10?: string;
-}
 
-export type PushArgs = (
-  | Dimensions
-  | number[]
-  | string[]
-  | number
+
+/**
+ * A single value inside a Matomo command pushed to the queue.
+ * Kept as a separate exported type for consumers that want to model custom commands.
+ */
+export type PushArg =
   | string
+  | number
+  | boolean
   | null
   | undefined
-)[];
+  | Record<string, unknown>
+  | readonly unknown[]
+  | ((...args: any[]) => unknown);
+
+/**
+ * Strict Matomo `trackEvent` typing.
+ *
+ * Notes:
+ * - `name` and `value` are optional
+ * - `value` (when present) must be numeric
+ * - `value` requires `name` to be provided (no "hole" argument)
+ */
+export type MatomoTrackEventCommand =
+  | readonly ["trackEvent", string, string]
+  | readonly ["trackEvent", string, string, string]
+  | readonly ["trackEvent", string, string, string, number];
+
+/**
+ * Core commands used by this library (and/or documented in docs).
+ * This list is intentionally limited: any unknown command is still allowed via `MatomoCustomCommand`.
+ */
+export type MatomoCoreCommand =
+  | readonly ["trackPageView"]
+  | readonly ["enableLinkTracking"]
+  | readonly ["disableCookies"]
+  | readonly ["setTrackerUrl", string]
+  | readonly ["setSiteId", string]
+  | readonly ["setReferrerUrl", string]
+  | readonly ["setCustomUrl", string]
+  | readonly ["deleteCustomVariables", string]
+  | readonly ["setDocumentTitle", string]
+  | readonly ["trackSiteSearch", string, string?, number?]
+  | readonly ["enableHeartBeatTimer"]
+  | readonly ["enableHeartBeatTimer", number]
+  | readonly ["setCustomDimension", number, string]
+  | readonly ["trackGoal", number]
+  | readonly ["trackGoal", number, number]
+  | readonly ["setUserId", string];
+
+/**
+ * Heatmap & Session Recording plugin commands used by this library.
+ */
+export type HeatmapSessionRecordingCommand =
+  | readonly ["HeatmapSessionRecording::enableDebugMode"]
+  | readonly ["HeatmapSessionRecording::disableCaptureKeystrokes"]
+  | readonly ["HeatmapSessionRecording::disableRecordMovements"]
+  | readonly ["HeatmapSessionRecording::setMaxCaptureTime", number]
+  | readonly ["HeatmapSessionRecording::disableAutoDetectNewPageView"]
+  | readonly [
+      "HeatmapSessionRecording::setTrigger",
+      NonNullable<HeatmapConfig["trigger"]>,
+    ]
+  | readonly [
+      "HeatmapSessionRecording::addConfig",
+      NonNullable<HeatmapConfig["addConfig"]>,
+    ]
+  | readonly ["HeatmapSessionRecording::enable"];
+
+export type MatomoKnownCommand =
+  | MatomoTrackEventCommand
+  | MatomoCoreCommand
+  | HeatmapSessionRecordingCommand;
+
+export type MatomoKnownCommandName = MatomoKnownCommand[0];
+
+/**
+ * Fallback for any command we don't type explicitly.
+ *
+ * Important: we exclude known command names so that if you use e.g. `"trackEvent"`,
+ * TypeScript will enforce the strict signature from `MatomoTrackEventCommand`.
+ *
+ * This is also required for backward compatibility: consumers can push their own
+ * custom commands (see tests using `onInitialization`, `onRouteChangeStart`, etc.).
+ */
+export type MatomoCustomCommand = readonly [
+  Exclude<string, MatomoKnownCommandName>,
+  ...PushArg[],
+];
+
+
+/**
+ * Matomo also supports queueing functions executed once the tracker is ready.
+ */
+export type MatomoCallbackCommand = readonly [(...args: any[]) => unknown];
+
+export type PushArgs =
+  | MatomoKnownCommand
+  | MatomoCustomCommand
+  | MatomoCallbackCommand;
 
 export interface MatomoState {
   isInitialPageview: boolean;
