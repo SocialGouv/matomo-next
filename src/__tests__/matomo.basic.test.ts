@@ -38,8 +38,8 @@ describe("Basic Matomo functionality", () => {
         "trackEvent",
         "kikoo",
         "lol",
-        "with-dimensions",
-        1,
+        null,
+        null,
         { dimension1: "ok", dimension2: "foobar" },
       ]);
 

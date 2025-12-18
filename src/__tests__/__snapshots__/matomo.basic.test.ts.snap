@@ -27,8 +27,8 @@ Array [
     "trackEvent",
     "kikoo",
     "lol",
-    "with-dimensions",
-    1,
+    null,
+    null,
     Object {
       "dimension1": "ok",
       "dimension2": "foobar",
