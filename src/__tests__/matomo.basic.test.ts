@@ -33,7 +33,6 @@ describe("Basic Matomo functionality", () => {
     test("should append dimensions data to window._paq", () => {
       initPagesRouter({ siteId: "42", url: "YO" });
       window._paq = [];
-
       push([
         "trackEvent",
         "kikoo",
@@ -42,7 +41,6 @@ describe("Basic Matomo functionality", () => {
         null,
         { dimension1: "ok", dimension2: "foobar" },
       ]);
-
       expect(window._paq).toMatchSnapshot();
     });
   });
