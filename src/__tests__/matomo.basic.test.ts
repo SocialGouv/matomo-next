@@ -33,8 +33,16 @@ describe("Basic Matomo functionality", () => {
     test("should append custom dimensions data to window._paq", () => {
       initPagesRouter({ siteId: "42", url: "YO" });
       window._paq = [];
-      push(["setCustomDimension", 1, "ok"]);
-      push(["setCustomDimension", 2, "foobar"]);
+
+      push([
+        "trackEvent",
+        "kikoo",
+        "lol",
+        "with-dimensions",
+        1,
+        { dimension1: "ok", dimension2: "foobar" },
+      ]);
+
       expect(window._paq).toMatchSnapshot();
     });
   });

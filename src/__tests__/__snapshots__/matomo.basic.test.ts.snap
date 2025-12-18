@@ -24,14 +24,15 @@ Array [
 exports[`Basic Matomo functionality push should append custom dimensions data to window._paq 1`] = `
 Array [
   Array [
-    "setCustomDimension",
+    "trackEvent",
+    "kikoo",
+    "lol",
+    "with-dimensions",
     1,
-    "ok",
-  ],
-  Array [
-    "setCustomDimension",
-    2,
-    "foobar",
+    Object {
+      "dimension1": "ok",
+      "dimension2": "foobar",
+    },
   ],
 ]
 `;
