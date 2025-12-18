@@ -4,7 +4,9 @@ describe("safePush", () => {
   let consoleWarnSpy: jest.SpyInstance;
 
   beforeEach(() => {
-    consoleWarnSpy = jest.spyOn(console, "warn").mockImplementation();
+    consoleWarnSpy = jest
+      .spyOn(console, "warn")
+      .mockImplementation(() => undefined);
   });
 
   afterEach(() => {
@@ -13,7 +15,7 @@ describe("safePush", () => {
 
   it("should successfully push command when pushFn works", () => {
     const mockPushFn = jest.fn();
-    const command = ["trackPageView"];
+    const command = ["trackPageView"] as const;
 
     safePush(mockPushFn, command);
 
@@ -25,7 +27,7 @@ describe("safePush", () => {
     const mockPushFn = jest.fn(() => {
       throw new Error("Method not found");
     });
-    const command = ["HeatmapSessionRecording.setKeystrokes", "false"];
+    const command = ["HeatmapSessionRecording.setKeystrokes", "false"] as const;
 
     safePush(mockPushFn, command, false);
 
@@ -37,7 +39,7 @@ describe("safePush", () => {
     const mockPushFn = jest.fn(() => {
       throw new Error("Method not found");
     });
-    const command = ["HeatmapSessionRecording.setKeystrokes", "false"];
+    const command = ["HeatmapSessionRecording.setKeystrokes", "false"] as const;
 
     safePush(mockPushFn, command, true);
 
@@ -53,7 +55,7 @@ describe("safePush", () => {
     const command = [
       "HeatmapSessionRecording.setCaptureVisibleContentOnly",
       "true",
-    ];
+    ] as const;
 
     safePush(mockPushFn, command);
 
@@ -64,7 +66,7 @@ describe("safePush", () => {
     const mockPushFn = jest.fn(() => {
       throw new Error("Critical error");
     });
-    const command = ["trackPageView"];
+    const command = ["trackPageView"] as const;
 
     expect(() => safePush(mockPushFn, command)).not.toThrow();
   });

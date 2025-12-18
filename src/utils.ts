@@ -1,3 +1,5 @@
+import type { PushArgs } from "./types";
+
 /**
  * Check if a string matches any of the provided regex patterns
  */
@@ -39,8 +41,8 @@ export const createSanitizer = (trustedPolicyName: string) => {
  * Some Matomo methods may not be available immediately after script load
  */
 export const safePush = (
-  pushFn: (args: any[]) => void,
-  command: any[],
+  pushFn: (args: PushArgs) => void,
+  command: PushArgs,
   debug = false,
 ): void => {
   try {

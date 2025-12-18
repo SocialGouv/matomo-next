@@ -33,7 +33,7 @@ describe("sendEvent", () => {
       category: "purchase",
       action: "buy",
       name: "product-123",
-      value: "99.99",
+      value: 99.99,
     });
 
     expect(push).toHaveBeenCalledWith([
@@ -41,7 +41,7 @@ describe("sendEvent", () => {
       "purchase",
       "buy",
       "product-123",
-      "99.99",
+      99.99,
     ]);
   });
 
@@ -52,7 +52,7 @@ describe("sendEvent", () => {
       category: "form",
       action: "submit",
       name: "contact",
-      value: "1",
+      value: 1,
     });
 
     expect(push).toHaveBeenCalledTimes(3);
@@ -68,7 +68,7 @@ describe("sendEvent", () => {
       "form",
       "submit",
       "contact",
-      "1",
+      1,
     ]);
   });
 });

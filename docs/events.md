@@ -24,7 +24,7 @@ sendEvent({
   category: "purchase",
   action: "buy",
   name: "product-123",
-  value: "99.99",
+  value: 99,
 });
 ```
 

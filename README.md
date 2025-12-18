@@ -131,7 +131,7 @@ sendEvent({
   category: "video",
   action: "play",
   name: "intro-video",
-  value: "120",
+  value: 120,
 });
 ```
 
