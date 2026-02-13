@@ -27,7 +27,7 @@ jobs:
         run: pnpm lint
 
       - name: Unit tests
-        run: pnpm test -- --coverage --coverageReporters=lcov --coverageReporters=text-summary
+        run: pnpm test:coverage
 
       - name: Send test coverage to codecov
         continue-on-error: true

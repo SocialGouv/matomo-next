@@ -45,6 +45,7 @@
     "build": "tsc",
     "lint": "eslint src",
     "test": "jest",
+    "test:coverage": "jest --coverage --coverageReporters=lcov --coverageReporters=text-summary",
     "typecheck": "tsc --noEmit"
   }
 }
