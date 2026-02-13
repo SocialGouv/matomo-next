@@ -2,12 +2,21 @@ import { default as Router } from "next/router";
 import { trackPagesRouter, push } from "..";
 
 type RouteChangeFunction = (route: string) => void;
- 
+
 let mockRouteChangeComplete: RouteChangeFunction;
- 
+
 let mockRouteChangeStart: RouteChangeFunction;
 
 type AnyObject = Record<string, string>;
+
+/**
+ * Helper to set window.location.pathname in jsdom 26+ (Jest 30+).
+ * Direct assignment triggers "not implemented: navigation" in jsdom 26.
+ * Using history.pushState updates the URL without triggering navigation.
+ */
+function setLocationPathname(pathname: string): void {
+  window.history.pushState({}, "", pathname);
+}
 
 jest.mock("next/router", () => {
   const query = {} as AnyObject;
@@ -16,7 +25,7 @@ jest.mock("next/router", () => {
       emit: (_event: string, route: string) => {
         if (/\?/.exec(route) !== null) {
           const search = route.split("?")[1];
-           
+
           if (search.indexOf("=") > -1) {
             const values = JSON.parse(
               `{"${decodeURI(search)
@@ -48,12 +57,8 @@ jest.mock("next/router", () => {
   };
 });
 
-// default window.location.pathname
-Object.defineProperty(window, "location", {
-  value: {
-    pathname: "/",
-  },
-});
+// jsdom 26+ (Jest 30+) starts at "http://localhost/" with pathname "/"
+// No need to redefine window.location.
 
 beforeEach(() => {
   // Add a fake script node so init can insert matomo tracker code before it
@@ -240,7 +245,7 @@ describe("excludeUrlsPatterns", () => {
   it("should exclude initial page tracking", async () => {
     global._paq = [];
     document.title = "some page";
-    window.location.pathname = "/change-password-pouet";
+    setLocationPathname("/change-password-pouet");
     document.head.appendChild(document.createElement("script"));
     trackPagesRouter({
       excludeUrlsPatterns: [/^\/change-password/],
@@ -259,7 +264,7 @@ describe("excludeUrlsPatterns", () => {
   it("should track initial page if not excluded", async () => {
     global._paq = [];
     document.title = "some page";
-    window.location.pathname = "/some-page";
+    setLocationPathname("/some-page");
     document.head.appendChild(document.createElement("script"));
     trackPagesRouter({
       excludeUrlsPatterns: [/^\/change-password/],
@@ -279,7 +284,7 @@ describe("excludeUrlsPatterns", () => {
 describe("cleanUrl parameter in Pages Router", () => {
   beforeEach(() => {
     global._paq = [];
-    window.location.pathname = "/";
+    setLocationPathname("/");
     if (!document.head.querySelector("script")) {
       document.head.appendChild(document.createElement("script"));
     }

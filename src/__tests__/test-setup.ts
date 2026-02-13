@@ -4,6 +4,16 @@ export type AnyObject = Record<string, string>;
 export let mockRouteChangeComplete: RouteChangeFunction;
 export let mockRouteChangeStart: RouteChangeFunction;
 
+/**
+ * Helper to set window.location.pathname in jsdom 26+ (Jest 30+).
+ * Direct assignment (`window.location.pathname = "..."`) triggers
+ * "not implemented: navigation" in jsdom 26. Using history.pushState
+ * updates the URL without triggering navigation.
+ */
+export function setLocationPathname(pathname: string): void {
+  window.history.pushState({}, "", pathname);
+}
+
 jest.mock("next/router", () => {
   const query = {} as AnyObject;
   return {
@@ -42,12 +52,8 @@ jest.mock("next/router", () => {
   };
 });
 
-// default window.location.pathname
-Object.defineProperty(window, "location", {
-  value: {
-    pathname: "/",
-  },
-});
+// jsdom 26+ (Jest 30+) starts at "http://localhost/" with pathname "/"
+// No need to redefine window.location — it's already correct.
 
 // Setup before each test
 beforeEach(() => {
