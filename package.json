@@ -4,6 +4,11 @@
   "version": "1.11.0",
   "author": "Fabrique numérique des Ministères Sociaux <dsi-incubateur@sg.social.gouv.fr> (https://www.fabrique.social.gouv.fr)",
   "homepage": "https://github.com/SocialGouv/matomo-next#readme",
+  "packageManager": "pnpm@10.29.1",
+  "engines": {
+    "node": ">=24.0.0",
+    "pnpm": ">=10.0.0"
+  },
   "devDependencies": {
     "@socialgouv/eslint-config-react": "1.131.0",
     "@socialgouv/eslint-config-typescript": "^1.97.3",
