@@ -2,9 +2,9 @@ import { default as Router } from "next/router";
 import { trackPagesRouter, push } from "..";
 
 type RouteChangeFunction = (route: string) => void;
-// eslint-disable-next-line @typescript-eslint/init-declarations
+ 
 let mockRouteChangeComplete: RouteChangeFunction;
-// eslint-disable-next-line @typescript-eslint/init-declarations
+ 
 let mockRouteChangeStart: RouteChangeFunction;
 
 type AnyObject = Record<string, string>;
@@ -16,7 +16,7 @@ jest.mock("next/router", () => {
       emit: (_event: string, route: string) => {
         if (/\?/.exec(route) !== null) {
           const search = route.split("?")[1];
-          // eslint-disable-next-line @typescript-eslint/prefer-includes
+           
           if (search.indexOf("=") > -1) {
             const values = JSON.parse(
               `{"${decodeURI(search)
@@ -287,7 +287,7 @@ describe("cleanUrl parameter in Pages Router", () => {
   });
 
   test("should clean URL by default (cleanUrl=true) - remove query params and hash", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     const { trackPagesRouter } = require("../index");
     trackPagesRouter({ siteId: "42", url: "YO", cleanUrl: true });
     window._paq = [];
@@ -310,7 +310,7 @@ describe("cleanUrl parameter in Pages Router", () => {
   });
 
   test("should keep query params and hash when cleanUrl=false", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     const { trackPagesRouter } = require("../index");
     trackPagesRouter({ siteId: "42", url: "YO", cleanUrl: false });
     window._paq = [];
@@ -333,7 +333,7 @@ describe("cleanUrl parameter in Pages Router", () => {
   });
 
   test("should clean consecutive URLs when cleanUrl=true", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     const { trackPagesRouter } = require("../index");
     trackPagesRouter({ siteId: "42", url: "YO", cleanUrl: true });
     window._paq = [];
@@ -359,7 +359,7 @@ describe("cleanUrl parameter in Pages Router", () => {
   });
 
   test("should keep query params in consecutive URLs when cleanUrl=false", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     const { trackPagesRouter } = require("../index");
     trackPagesRouter({ siteId: "42", url: "YO", cleanUrl: false });
     window._paq = [];
@@ -382,7 +382,7 @@ describe("cleanUrl parameter in Pages Router", () => {
   });
 
   test("should handle hash-only URLs correctly when cleanUrl=true", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     const { trackPagesRouter } = require("../index");
     trackPagesRouter({ siteId: "42", url: "YO", cleanUrl: true });
     window._paq = [];
@@ -402,7 +402,7 @@ describe("cleanUrl parameter in Pages Router", () => {
   });
 
   test("should keep hash when cleanUrl=false", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     const { trackPagesRouter } = require("../index");
     trackPagesRouter({ siteId: "42", url: "YO", cleanUrl: false });
     window._paq = [];
@@ -422,7 +422,7 @@ describe("cleanUrl parameter in Pages Router", () => {
   });
 
   test("should handle complex URLs with query and hash when cleanUrl=true", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     const { trackPagesRouter } = require("../index");
     trackPagesRouter({ siteId: "42", url: "YO", cleanUrl: true });
     window._paq = [];
@@ -442,7 +442,7 @@ describe("cleanUrl parameter in Pages Router", () => {
   });
 
   test("should keep query params for search routes with cleanUrl=true", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     const { trackPagesRouter } = require("../index");
     trackPagesRouter({ siteId: "42", url: "YO", cleanUrl: true });
     window._paq = [];
@@ -468,7 +468,7 @@ describe("cleanUrl parameter in Pages Router", () => {
   });
 
   test("should keep query params for /recherche route with cleanUrl=true", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     const { trackPagesRouter } = require("../index");
     trackPagesRouter({ siteId: "42", url: "YO", cleanUrl: true });
     window._paq = [];
@@ -488,7 +488,7 @@ describe("cleanUrl parameter in Pages Router", () => {
   });
 
   test("should clean non-search routes but keep search routes with cleanUrl=true", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     const { trackPagesRouter } = require("../index");
     trackPagesRouter({ siteId: "42", url: "YO", cleanUrl: true });
     window._paq = [];

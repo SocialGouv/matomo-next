@@ -1,20 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Basic Matomo functionality initPagesRouter should NOT create events when url is not provided 1`] = `Array []`;
+exports[`Basic Matomo functionality initPagesRouter should NOT create events when url is not provided 1`] = `[]`;
 
 exports[`Basic Matomo functionality initPagesRouter should create a js tag and initialize 1`] = `
-Array [
-  Array [
+[
+  [
     "trackPageView",
   ],
-  Array [
+  [
     "enableLinkTracking",
   ],
-  Array [
+  [
     "setTrackerUrl",
     "https://YO/matomo.php",
   ],
-  Array [
+  [
     "setSiteId",
     "42",
   ],
@@ -22,8 +22,8 @@ Array [
 `;
 
 exports[`Basic Matomo functionality push should append data to window._paq 1`] = `
-Array [
-  Array [
+[
+  [
     "trackEvent",
     "kikoo",
     "lol",
@@ -32,14 +32,14 @@ Array [
 `;
 
 exports[`Basic Matomo functionality push should append dimensions data to window._paq 1`] = `
-Array [
-  Array [
+[
+  [
     "trackEvent",
     "kikoo",
     "lol",
     null,
     null,
-    Object {
+    {
       "dimension1": "ok",
       "dimension2": "foobar",
     },

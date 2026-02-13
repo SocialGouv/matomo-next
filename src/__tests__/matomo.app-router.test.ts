@@ -7,7 +7,7 @@ describe("App Router functionality", () => {
   });
 
   test("should track initial pageview when pathname is provided (first call)", () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     const { trackAppRouter } = require("../index");
     document.head.appendChild(document.createElement("script"));
 
@@ -24,7 +24,7 @@ describe("App Router functionality", () => {
   });
 
   test("should track subsequent pageviews with setCustomUrl", () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     const { trackAppRouter } = require("../index");
     document.head.appendChild(document.createElement("script"));
 
@@ -37,7 +37,7 @@ describe("App Router functionality", () => {
   });
 
   test("should not track again if pathname hasn't changed", () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     const { trackAppRouter } = require("../index");
     document.head.appendChild(document.createElement("script"));
 
@@ -50,7 +50,7 @@ describe("App Router functionality", () => {
   });
 
   test("should track URL with search params on initial pageview", () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     const { trackAppRouter } = require("../index");
     document.head.appendChild(document.createElement("script"));
 
@@ -71,7 +71,7 @@ describe("App Router functionality", () => {
   });
 
   test("should track different URLs when search params change", (done) => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     const { trackAppRouter } = require("../index");
     document.head.appendChild(document.createElement("script"));
 
@@ -104,7 +104,7 @@ describe("App Router functionality", () => {
   });
 
   test("should not track when URL with search params hasn't changed", () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     const { trackAppRouter } = require("../index");
     document.head.appendChild(document.createElement("script"));
 
@@ -128,7 +128,7 @@ describe("App Router functionality", () => {
   });
 
   test("should exclude URLs based on patterns even with search params", () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     const { trackAppRouter } = require("../index");
     document.head.appendChild(document.createElement("script"));
 
@@ -149,7 +149,7 @@ describe("App Router functionality", () => {
   });
 
   test("should call onRouteChangeStart and onRouteChangeComplete callbacks in App Router", (done) => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     const { trackAppRouter } = require("../index");
     document.head.appendChild(document.createElement("script"));
 
@@ -182,7 +182,7 @@ describe("App Router functionality", () => {
 
   describe("Site search tracking", () => {
     test("should track site search in App Router for /recherche route", (done) => {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+       
       const { trackAppRouter } = require("../index");
       document.head.appendChild(document.createElement("script"));
 
@@ -213,7 +213,7 @@ describe("App Router functionality", () => {
     });
 
     test("should track site search in App Router for /search route", (done) => {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+       
       const { trackAppRouter } = require("../index");
       document.head.appendChild(document.createElement("script"));
 
@@ -244,7 +244,7 @@ describe("App Router functionality", () => {
     });
 
     test("should handle search route without q parameter in App Router", (done) => {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+       
       const { trackAppRouter } = require("../index");
       document.head.appendChild(document.createElement("script"));
 
@@ -275,7 +275,7 @@ describe("App Router functionality", () => {
     });
 
     test("should track both /recherche and /search routes to avoid regressions", (done) => {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+       
       const { trackAppRouter } = require("../index");
       document.head.appendChild(document.createElement("script"));
 
@@ -316,7 +316,7 @@ describe("App Router functionality", () => {
     });
 
     test("should handle complex search query with multiple params and hashtag", (done) => {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+       
       const { trackAppRouter } = require("../index");
       document.head.appendChild(document.createElement("script"));
 
@@ -349,7 +349,7 @@ describe("App Router functionality", () => {
     });
 
     test("should support custom search keyword parameter", (done) => {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+       
       const { trackAppRouter } = require("../index");
       document.head.appendChild(document.createElement("script"));
 
@@ -378,7 +378,7 @@ describe("App Router functionality", () => {
     });
 
     test("should support custom search routes", (done) => {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+       
       const { trackAppRouter } = require("../index");
       document.head.appendChild(document.createElement("script"));
 
@@ -410,7 +410,7 @@ describe("App Router functionality", () => {
     });
 
     test("should not track as search on non-search routes when custom searchRoutes is defined", (done) => {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+       
       const { trackAppRouter } = require("../index");
       document.head.appendChild(document.createElement("script"));
 
@@ -443,7 +443,7 @@ describe("App Router functionality", () => {
   });
 
   test("should strip hashtag from URL in App Router", () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+     
     const { trackAppRouter } = require("../index");
     document.head.appendChild(document.createElement("script"));
 
@@ -467,7 +467,7 @@ describe("App Router functionality", () => {
 
   describe("cleanUrl parameter", () => {
     test("should clean URL by default (cleanUrl=true) - remove query params and hash", (done) => {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+       
       const { trackAppRouter } = require("../index");
       document.head.appendChild(document.createElement("script"));
 
@@ -504,7 +504,7 @@ describe("App Router functionality", () => {
     });
 
     test("should keep query params and hash when cleanUrl=false", (done) => {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+       
       const { trackAppRouter } = require("../index");
       document.head.appendChild(document.createElement("script"));
 
@@ -536,7 +536,7 @@ describe("App Router functionality", () => {
     });
 
     test("should clean referrer URL when cleanUrl=true", (done) => {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+       
       const { trackAppRouter } = require("../index");
       document.head.appendChild(document.createElement("script"));
 
@@ -570,7 +570,7 @@ describe("App Router functionality", () => {
     });
 
     test("should keep query params in referrer when cleanUrl=false", (done) => {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+       
       const { trackAppRouter } = require("../index");
       document.head.appendChild(document.createElement("script"));
 
@@ -603,7 +603,7 @@ describe("App Router functionality", () => {
     });
 
     test("should handle hash fragments correctly when cleanUrl=true", (done) => {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+       
       const { trackAppRouter } = require("../index");
       document.head.appendChild(document.createElement("script"));
 
@@ -632,7 +632,7 @@ describe("App Router functionality", () => {
     });
 
     test("should keep query params for search routes even with cleanUrl=true", (done) => {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+       
       const { trackAppRouter } = require("../index");
       document.head.appendChild(document.createElement("script"));
 
@@ -668,7 +668,7 @@ describe("App Router functionality", () => {
     });
 
     test("should keep query params for /recherche route with cleanUrl=true", (done) => {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+       
       const { trackAppRouter } = require("../index");
       document.head.appendChild(document.createElement("script"));
 
@@ -701,7 +701,7 @@ describe("App Router functionality", () => {
     });
 
     test("should clean non-search routes but keep search routes with cleanUrl=true", (done) => {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+       
       const { trackAppRouter } = require("../index");
       document.head.appendChild(document.createElement("script"));
 

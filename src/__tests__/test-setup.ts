@@ -1,11 +1,7 @@
-import { default as Router } from "next/router";
-
 export type RouteChangeFunction = (route: string) => void;
 export type AnyObject = Record<string, string>;
 
-// eslint-disable-next-line @typescript-eslint/init-declarations
 export let mockRouteChangeComplete: RouteChangeFunction;
-// eslint-disable-next-line @typescript-eslint/init-declarations
 export let mockRouteChangeStart: RouteChangeFunction;
 
 jest.mock("next/router", () => {
@@ -15,7 +11,6 @@ jest.mock("next/router", () => {
       emit: (_event: string, route: string) => {
         if (/\?/.exec(route) !== null) {
           const search = route.split("?")[1];
-          // eslint-disable-next-line @typescript-eslint/prefer-includes
           if (search.indexOf("=") > -1) {
             const values = JSON.parse(
               `{"${decodeURI(search)
