@@ -331,6 +331,165 @@ describe("initABTesting", () => {
 });
 
 // ---------------------------------------------------------------------------
+// abTests integration via trackAppRouter / trackPagesRouter
+// ---------------------------------------------------------------------------
+
+describe("abTests config option (first-class integration)", () => {
+  beforeEach(() => {
+    window._paq = [] as PushArgs[];
+    delete window.__MATOMO_AB_TEST__;
+    jest.resetModules();
+    if (!document.head.querySelector("script")) {
+      document.head.appendChild(document.createElement("script"));
+    }
+  });
+
+  it("should auto-init A/B testing when abTests is passed to trackAppRouter", () => {
+    const { trackAppRouter } = require("../index");
+    document.head.appendChild(document.createElement("script"));
+
+    trackAppRouter({
+      url: "https://matomo.example.com",
+      siteId: "1",
+      pathname: "/home",
+      abTests: [
+        {
+          name: "app-router-test",
+          percentage: 100,
+          variations: [{ name: "original" }, { name: "variant-a" }],
+        },
+      ],
+    });
+
+    // Verify AbTesting::create was pushed
+    const calls = collectPaqCalls();
+    const abCalls = calls.filter((c) => c[0] === "AbTesting::create");
+    expect(abCalls).toHaveLength(1);
+
+    const config = abCalls[0][1] as Record<string, unknown>;
+    expect(config.name).toBe("app-router-test");
+
+    // Verify state was created
+    expect(window.__MATOMO_AB_TEST__).toBeDefined();
+    expect(window.__MATOMO_AB_TEST__!["app-router-test"]).toEqual({
+      abTest: "app-router-test",
+      variant: null,
+      isReady: false,
+    });
+  });
+
+  it("should auto-init A/B testing when abTests is passed to trackPagesRouter", () => {
+    const { trackPagesRouter } = require("../index");
+    document.head.appendChild(document.createElement("script"));
+
+    trackPagesRouter({
+      url: "https://matomo.example.com",
+      siteId: "1",
+      abTests: [
+        {
+          name: "pages-router-test",
+          percentage: 50,
+          variations: [{ name: "original" }, { name: "variant-b" }],
+        },
+      ],
+    });
+
+    // Verify AbTesting::create was pushed
+    const calls = collectPaqCalls();
+    const abCalls = calls.filter((c) => c[0] === "AbTesting::create");
+    expect(abCalls).toHaveLength(1);
+
+    const config = abCalls[0][1] as Record<string, unknown>;
+    expect(config.name).toBe("pages-router-test");
+    expect(config.percentage).toBe(50);
+  });
+
+  it("should not init A/B testing when abTests is empty", () => {
+    const { trackAppRouter } = require("../index");
+    document.head.appendChild(document.createElement("script"));
+
+    trackAppRouter({
+      url: "https://matomo.example.com",
+      siteId: "1",
+      pathname: "/home",
+      abTests: [],
+    });
+
+    const calls = collectPaqCalls();
+    const abCalls = calls.filter((c) => c[0] === "AbTesting::create");
+    expect(abCalls).toHaveLength(0);
+    expect(window.__MATOMO_AB_TEST__).toBeUndefined();
+  });
+
+  it("should not init A/B testing when abTests is undefined", () => {
+    const { trackAppRouter } = require("../index");
+    document.head.appendChild(document.createElement("script"));
+
+    trackAppRouter({
+      url: "https://matomo.example.com",
+      siteId: "1",
+      pathname: "/home",
+    });
+
+    const calls = collectPaqCalls();
+    const abCalls = calls.filter((c) => c[0] === "AbTesting::create");
+    expect(abCalls).toHaveLength(0);
+  });
+
+  it("should register multiple tests via abTests config", () => {
+    const { trackAppRouter } = require("../index");
+    document.head.appendChild(document.createElement("script"));
+
+    trackAppRouter({
+      url: "https://matomo.example.com",
+      siteId: "1",
+      pathname: "/pricing",
+      abTests: [
+        {
+          name: "pricing-hero",
+          percentage: 100,
+          variations: [{ name: "original" }, { name: "new-hero" }],
+        },
+        {
+          name: "pricing-cta",
+          percentage: 80,
+          variations: [{ name: "original" }, { name: "green-cta" }],
+        },
+      ],
+    });
+
+    const calls = collectPaqCalls();
+    const abCalls = calls.filter((c) => c[0] === "AbTesting::create");
+    expect(abCalls).toHaveLength(2);
+    expect((abCalls[0][1] as Record<string, unknown>).name).toBe("pricing-hero");
+    expect((abCalls[1][1] as Record<string, unknown>).name).toBe("pricing-cta");
+  });
+
+  it("should respect excludeUrlsPatterns for A/B testing in trackAppRouter", () => {
+    const { trackAppRouter } = require("../index");
+    document.head.appendChild(document.createElement("script"));
+
+    trackAppRouter({
+      url: "https://matomo.example.com",
+      siteId: "1",
+      pathname: "/admin/settings",
+      excludeUrlsPatterns: [/^\/admin/],
+      abTests: [
+        {
+          name: "admin-test",
+          percentage: 100,
+          variations: [{ name: "original" }, { name: "variant" }],
+        },
+      ],
+    });
+
+    const calls = collectPaqCalls();
+    const abCalls = calls.filter((c) => c[0] === "AbTesting::create");
+    expect(abCalls).toHaveLength(0);
+  });
+});
+
+// ---------------------------------------------------------------------------
 // getABTestState
 // ---------------------------------------------------------------------------
 

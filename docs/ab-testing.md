@@ -29,7 +29,9 @@ export const AB_TESTS: ABTestDefinition[] = [
 ];
 ```
 
-### 2. Initialize during Matomo setup
+### 2. Pass tests to the tracker
+
+A/B testing is a **first-class config option** — just pass `abTests` to `trackAppRouter` or `trackPagesRouter`:
 
 ```tsx
 // app/MatomoProvider.tsx
@@ -37,7 +39,7 @@ export const AB_TESTS: ABTestDefinition[] = [
 
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
-import { trackAppRouter, initABTesting } from "@socialgouv/matomo-next";
+import { trackAppRouter } from "@socialgouv/matomo-next";
 import { AB_TESTS } from "@/config/ab-tests";
 
 export function MatomoProvider() {
@@ -50,18 +52,26 @@ export function MatomoProvider() {
       siteId: process.env.NEXT_PUBLIC_MATOMO_SITE_ID!,
       pathname,
       searchParams,
-      onInitialization: () => {
-        initABTesting({
-          enabled: true,
-          pathname: pathname ?? "",
-          tests: AB_TESTS,
-        });
-      },
+      abTests: AB_TESTS,
     });
   }, [pathname, searchParams]);
 
   return null;
 }
+```
+
+For the Pages Router:
+
+```tsx
+// pages/_app.tsx
+import { trackPagesRouter } from "@socialgouv/matomo-next";
+import { AB_TESTS } from "@/config/ab-tests";
+
+trackPagesRouter({
+  url: process.env.NEXT_PUBLIC_MATOMO_URL!,
+  siteId: process.env.NEXT_PUBLIC_MATOMO_SITE_ID!,
+  abTests: AB_TESTS,
+});
 ```
 
 ### 3. Use the variant in your components
@@ -85,9 +95,29 @@ export function HeroSection() {
 
 ## API Reference
 
-### `initABTesting(params)`
+### `abTests` (InitSettings option)
 
-Registers A/B tests with Matomo. Call this inside `onInitialization`.
+Pass A/B test definitions directly to `trackAppRouter` or `trackPagesRouter`. The library automatically calls `initABTesting()` during initialization.
+
+```ts
+trackAppRouter({
+  url: "https://matomo.example.com",
+  siteId: "1",
+  pathname,
+  searchParams,
+  abTests: [
+    {
+      name: "homepage-hero",
+      percentage: 100,
+      variations: [{ name: "original" }, { name: "new-hero" }],
+    },
+  ],
+});
+```
+
+### `initABTesting(params)` (advanced)
+
+For advanced use cases (e.g. conditional initialization), you can call `initABTesting` manually:
 
 | Parameter              | Type              | Required | Description                                    |
 | ---------------------- | ----------------- | -------- | ---------------------------------------------- |
@@ -168,7 +198,20 @@ Only include logged-in users:
 
 ### Excluding URLs
 
-Skip experiments on admin pages:
+Pass `excludeUrlsPatterns` to the tracker — both page tracking and A/B testing respect the same patterns:
+
+```ts
+trackAppRouter({
+  url: "https://matomo.example.com",
+  siteId: "1",
+  pathname,
+  searchParams,
+  excludeUrlsPatterns: [/^\/admin/, /^\/api/],
+  abTests: AB_TESTS,
+});
+```
+
+Or when using `initABTesting` manually:
 
 ```ts
 initABTesting({
@@ -190,8 +233,9 @@ const ctaVariant = useABTestVariant("cta-color");
 
 ## How It Works
 
-1. `initABTesting()` pushes `AbTesting::create` commands to Matomo's `_paq` queue
-2. Matomo's A/B Testing plugin evaluates participation and assigns a variant
-3. The assigned variant is stored in `window.__MATOMO_AB_TEST__`
-4. `useABTestVariant()` polls this store until a variant is ready (or timeout)
-5. Your component re-renders with the correct variant
+1. When you pass `abTests` to `trackAppRouter`/`trackPagesRouter`, the library calls `initABTesting()` automatically during initialization
+2. `initABTesting()` pushes `AbTesting::create` commands to Matomo's `_paq` queue
+3. Matomo's A/B Testing plugin evaluates participation and assigns a variant
+4. The assigned variant is stored in `window.__MATOMO_AB_TEST__`
+5. `useABTestVariant()` polls this store until a variant is ready (or timeout)
+6. Your component re-renders with the correct variant

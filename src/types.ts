@@ -25,6 +25,29 @@ export interface InitSettings {
   heartBeatTimerInterval?: number;
   heatmapConfig?: HeatmapConfig;
   cleanUrl?: boolean;
+  /**
+   * A/B tests to register automatically during initialization.
+   * When provided, `initABTesting()` is called automatically — no need to
+   * use `onInitialization` manually.
+   *
+   * @example
+   * ```ts
+   * trackAppRouter({
+   *   url: "https://matomo.example.com",
+   *   siteId: "1",
+   *   pathname,
+   *   searchParams,
+   *   abTests: [
+   *     {
+   *       name: "homepage-hero",
+   *       percentage: 100,
+   *       variations: [{ name: "original" }, { name: "new-hero" }],
+   *     },
+   *   ],
+   * });
+   * ```
+   */
+  abTests?: import("./ab-testing").ABTestDefinition[];
 }
 
 export interface HeatmapConfig {

@@ -83,28 +83,33 @@ export interface InitABTestingParams {
 /**
  * Register one or more Matomo A/B tests.
  *
- * Call this inside `onInitialization` of `trackAppRouter` / `trackPagesRouter`.
+ * **Preferred:** pass `abTests` directly to `trackAppRouter` / `trackPagesRouter`
+ * — this function will be called automatically.
+ *
+ * You can also call it manually for advanced use cases (e.g. conditional init).
  *
  * @example
  * ```ts
+ * // Preferred — automatic init via settings
  * trackAppRouter({
  *   url: MATOMO_URL,
  *   siteId: MATOMO_SITE_ID,
  *   pathname,
  *   searchParams,
- *   onInitialization: () => {
- *     initABTesting({
- *       enabled: true,
- *       pathname: pathname ?? "",
- *       tests: [
- *         {
- *           name: "homepage-hero",
- *           percentage: 100,
- *           variations: [{ name: "original" }, { name: "new-hero" }],
- *         },
- *       ],
- *     });
- *   },
+ *   abTests: [
+ *     {
+ *       name: "homepage-hero",
+ *       percentage: 100,
+ *       variations: [{ name: "original" }, { name: "new-hero" }],
+ *     },
+ *   ],
+ * });
+ *
+ * // Manual — for advanced use cases
+ * initABTesting({
+ *   enabled: true,
+ *   pathname: pathname ?? "",
+ *   tests: [...],
  * });
  * ```
  */
