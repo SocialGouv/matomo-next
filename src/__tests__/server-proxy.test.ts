@@ -10,28 +10,22 @@ import {
 // ---------------------------------------------------------------------------
 
 describe("generateProxyPath", () => {
-  it("should generate a deterministic path from a URL", () => {
-    const path1 = generateProxyPath("https://analytics.example.com");
-    const path2 = generateProxyPath("https://analytics.example.com");
-    expect(path1).toBe(path2);
-  });
-
-  it("should generate different paths for different URLs", () => {
-    const path1 = generateProxyPath("https://a.example.com");
-    const path2 = generateProxyPath("https://b.example.com");
+  it("should generate a random path on each call", () => {
+    const path1 = generateProxyPath();
+    const path2 = generateProxyPath();
     expect(path1).not.toBe(path2);
   });
 
-  it("should start with /mtm-", () => {
-    const path = generateProxyPath("https://analytics.example.com");
-    expect(path).toMatch(/^\/mtm-[a-f0-9]{8}$/);
+  it("should start with /a", () => {
+    const path = generateProxyPath();
+    expect(path).toMatch(/^\/a[a-f0-9]{10}$/);
   });
 
-  it("should produce an 8-char hex hash", () => {
-    const path = generateProxyPath("https://test.matomo.cloud");
-    const hash = path.replace("/mtm-", "");
-    expect(hash).toHaveLength(8);
-    expect(hash).toMatch(/^[a-f0-9]+$/);
+  it("should produce a 10-char hex id after the prefix", () => {
+    const path = generateProxyPath();
+    const id = path.replace("/a", "");
+    expect(id).toHaveLength(10);
+    expect(id).toMatch(/^[a-f0-9]+$/);
   });
 });
 
@@ -47,24 +41,29 @@ describe("withMatomoProxy", () => {
     expect(typeof wrapper).toBe("function");
   });
 
-  it("should inject NEXT_PUBLIC_MATOMO_PROXY_PATH env var", () => {
-    const config = withMatomoProxy({ matomoUrl: MATOMO_URL })({});
+  it("should inject NEXT_PUBLIC_MATOMO_PROXY_PATH env var with random path", () => {
+    const config = withMatomoProxy({ matomoUrl: MATOMO_URL })({} as any);
     expect(config.env).toBeDefined();
     expect(config.env!.NEXT_PUBLIC_MATOMO_PROXY_PATH).toMatch(
-      /^\/mtm-[a-f0-9]{8}$/,
+      /^\/api\/a[a-f0-9]{10}$/,
     );
+  });
+
+  it("should inject MATOMO_PROXY_TARGET env var (server-only)", () => {
+    const config = withMatomoProxy({ matomoUrl: MATOMO_URL })({} as any);
+    expect(config.env!.MATOMO_PROXY_TARGET).toBe(MATOMO_URL);
   });
 
   it("should inject NEXT_PUBLIC_MATOMO_PROXY_SITE_ID when siteId is provided", () => {
     const config = withMatomoProxy({
       matomoUrl: MATOMO_URL,
       siteId: "42",
-    })({});
+    })({} as any);
     expect(config.env!.NEXT_PUBLIC_MATOMO_PROXY_SITE_ID).toBe("42");
   });
 
   it("should not inject siteId env when siteId is not provided", () => {
-    const config = withMatomoProxy({ matomoUrl: MATOMO_URL })({});
+    const config = withMatomoProxy({ matomoUrl: MATOMO_URL })({} as any);
     expect(config.env!.NEXT_PUBLIC_MATOMO_PROXY_SITE_ID).toBeUndefined();
   });
 
@@ -72,27 +71,28 @@ describe("withMatomoProxy", () => {
     const config = withMatomoProxy({
       matomoUrl: MATOMO_URL,
       proxyPath: "/my-custom-path",
-    })({});
+    })({} as any);
     expect(config.env!.NEXT_PUBLIC_MATOMO_PROXY_PATH).toBe("/my-custom-path");
   });
 
-  it("should create rewrites for matomo.js, matomo.php, and plugins", async () => {
-    const config = withMatomoProxy({ matomoUrl: MATOMO_URL })({});
+  it("should generate different paths per build (non-deterministic)", () => {
+    const config1 = withMatomoProxy({ matomoUrl: MATOMO_URL })({} as any);
+    const config2 = withMatomoProxy({ matomoUrl: MATOMO_URL })({} as any);
+    expect(config1.env!.NEXT_PUBLIC_MATOMO_PROXY_PATH).not.toBe(
+      config2.env!.NEXT_PUBLIC_MATOMO_PROXY_PATH,
+    );
+  });
+
+  it("should create a single catch-all rewrite to the internal API route", async () => {
+    const config = withMatomoProxy({ matomoUrl: MATOMO_URL })({} as any);
     const rewrites = await config.rewrites!();
 
-    expect(rewrites).toHaveLength(3);
-
-    // matomo.js
-    expect(rewrites[0].source).toContain("matomo\\.js");
-    expect(rewrites[0].destination).toContain(MATOMO_URL);
-
-    // matomo.php
-    expect(rewrites[1].source).toContain("matomo\\.php");
-    expect(rewrites[1].destination).toContain(MATOMO_URL);
-
-    // plugins
-    expect(rewrites[2].source).toContain("/plugins/");
-    expect(rewrites[2].destination).toContain(`${MATOMO_URL}/plugins/`);
+    expect(Array.isArray(rewrites)).toBe(false);
+    expect((rewrites as any).beforeFiles).toHaveLength(1);
+    expect((rewrites as any).beforeFiles[0].source).toMatch(
+      /^\/api\/a[a-f0-9]{10}\/:path\*$/,
+    );
+    expect((rewrites as any).beforeFiles[0].destination).toBe("/api/__mp/:path*");
   });
 
   it("should preserve existing rewrites", async () => {
@@ -106,15 +106,38 @@ describe("withMatomoProxy", () => {
     });
 
     const rewrites = await config.rewrites!();
-    expect(rewrites).toHaveLength(4); // 1 existing + 3 matomo
-    expect(rewrites[0]).toEqual(existingRewrite);
+    expect(Array.isArray(rewrites)).toBe(false);
+    expect((rewrites as any).beforeFiles).toHaveLength(1);
+    expect((rewrites as any).afterFiles).toHaveLength(1); // existing rule moved to afterFiles
+    expect((rewrites as any).afterFiles[0]).toEqual(existingRewrite);
+  });
+
+  it("should preserve existing rewrite objects (beforeFiles/afterFiles/fallback)", async () => {
+    const existingRewrite = {
+      source: "/old-path",
+      destination: "/new-path",
+    };
+
+    const config = withMatomoProxy({ matomoUrl: MATOMO_URL })({
+      rewrites: async () => ({
+        beforeFiles: [existingRewrite],
+        afterFiles: [],
+        fallback: [],
+      }),
+    } as any);
+
+    const rewrites = await config.rewrites!();
+    expect(Array.isArray(rewrites)).toBe(false);
+    expect((rewrites as any).beforeFiles.length).toBeGreaterThanOrEqual(2);
+    // our proxy rewrite should be first, then existing beforeFiles
+    expect((rewrites as any).beforeFiles[1]).toEqual(existingRewrite);
   });
 
   it("should preserve other Next.js config properties", () => {
     const config = withMatomoProxy({ matomoUrl: MATOMO_URL })({
       reactStrictMode: true,
       images: { domains: ["example.com"] },
-    });
+    } as any);
 
     expect(config.reactStrictMode).toBe(true);
     expect(config.images).toEqual({ domains: ["example.com"] });
@@ -123,22 +146,20 @@ describe("withMatomoProxy", () => {
   it("should merge with existing env vars", () => {
     const config = withMatomoProxy({ matomoUrl: MATOMO_URL })({
       env: { EXISTING_VAR: "hello" },
-    });
+    } as any);
 
     expect(config.env!.EXISTING_VAR).toBe("hello");
     expect(config.env!.NEXT_PUBLIC_MATOMO_PROXY_PATH).toBeDefined();
+    expect(config.env!.MATOMO_PROXY_TARGET).toBe(MATOMO_URL);
   });
 
-  it("should strip trailing slash from matomoUrl", async () => {
+  it("should strip trailing slash from matomoUrl", () => {
     const config = withMatomoProxy({
       matomoUrl: "https://analytics.example.com/",
-    })({});
-
-    const rewrites = await config.rewrites!();
-    // All destinations should not have double slashes
-    for (const rule of rewrites) {
-      expect(rule.destination).not.toContain("//:");
-    }
+    })({} as any);
+    expect(config.env!.MATOMO_PROXY_TARGET).toBe(
+      "https://analytics.example.com",
+    );
   });
 });
 
@@ -163,10 +184,10 @@ describe("getProxyUrl", () => {
   });
 
   it("should return full URL with origin when proxy path is set", () => {
-    process.env.NEXT_PUBLIC_MATOMO_PROXY_PATH = "/mtm-abcd1234";
+    process.env.NEXT_PUBLIC_MATOMO_PROXY_PATH = "/api/a1234567890";
     // In jsdom, window.location.origin is "http://localhost"
     const result = getProxyUrl();
-    expect(result).toBe("http://localhost/mtm-abcd1234");
+    expect(result).toBe("http://localhost/api/a1234567890");
   });
 });
 
@@ -191,7 +212,7 @@ describe("getProxyPath", () => {
   });
 
   it("should return the proxy path when set", () => {
-    process.env.NEXT_PUBLIC_MATOMO_PROXY_PATH = "/mtm-abcd1234";
-    expect(getProxyPath()).toBe("/mtm-abcd1234");
+    process.env.NEXT_PUBLIC_MATOMO_PROXY_PATH = "/api/a1234567890";
+    expect(getProxyPath()).toBe("/api/a1234567890");
   });
 });

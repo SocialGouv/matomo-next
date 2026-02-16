@@ -180,6 +180,12 @@ See the [A/B Testing documentation](docs/ab-testing.md) for scheduling, custom t
 
 Bypass ad-blockers by routing Matomo requests through your own domain using [`withMatomoProxy()`](./src/server-proxy.ts:91):
 
+By default, the public proxy endpoint is generated under your own API namespace:
+`/api/{random}/...`.
+
+Note: there is **no PHP** running on your site. The tracking endpoint is an opaque path
+that gets forwarded server-side to Matomo's upstream `matomo.php`.
+
 ```js
 // next.config.mjs
 import { withMatomoProxy } from "@socialgouv/matomo-next";
@@ -191,10 +197,12 @@ export default withMatomoProxy({
 
 ```tsx
 // In your tracker component
-import { trackAppRouter, getProxyUrl } from "@socialgouv/matomo-next";
+import { trackAppRouter } from "@socialgouv/matomo-next";
 
-const url = getProxyUrl() ?? process.env.NEXT_PUBLIC_MATOMO_URL!;
-trackAppRouter({ url, siteId: "1", pathname, searchParams });
+// When the proxy is configured, calls are automatically routed through your own domain.
+// This also hides the usual `matomo.js` / `matomo.php` filenames behind opaque build-time
+// random names (some blockers match on those filenames).
+trackAppRouter({ siteId: "1", pathname, searchParams });
 ```
 
 See the [Server-Side Proxy documentation](docs/server-side-proxy.md) for custom paths, chaining with other plugins, and security considerations.
@@ -203,12 +211,13 @@ See the [Server-Side Proxy documentation](docs/server-side-proxy.md) for custom 
 
 | Option                          | Type              | Description                         | Default                     | Docs                                                      |
 | ------------------------------- | ----------------- | ----------------------------------- | --------------------------- | --------------------------------------------------------- |
-| `url`                           | `string`          | Matomo instance URL                 | -                           | Required                                                  |
+| `url`                           | `string`          | Matomo instance URL                 | -                           | Required unless using the server-side proxy               |
 | `siteId`                        | `string`          | Matomo site ID                      | -                           | Required                                                  |
+| `useProxy`                      | `boolean`         | Prefer proxy (path + opaque filenames) when available | `true` | Server-side proxy                                         |
 | `pathname`                      | `string`          | Current pathname (App Router only)  | -                           | Required for App Router                                   |
 | `searchParams`                  | `URLSearchParams` | URL search params (App Router only) | -                           | Required for App Router                                   |
-| `jsTrackerFile`                 | `string`          | Custom JS tracker filename          | `"matomo.js"`               | [Advanced](docs/advanced.md)                              |
-| `phpTrackerFile`                | `string`          | Custom PHP tracker filename         | `"matomo.php"`              | [Advanced](docs/advanced.md)                              |
+| `jsTrackerFile`                 | `string`          | Custom JS tracker filename          | `"matomo.js"` (or proxy-provided opaque name) | [Advanced](docs/advanced.md)                |
+| `phpTrackerFile`                | `string`          | Custom PHP tracker filename         | `"matomo.php"` (or proxy-provided opaque name) | [Advanced](docs/advanced.md)               |
 | `excludeUrlsPatterns`           | `RegExp[]`        | URLs to exclude from tracking       | `[]`                        | [Advanced](docs/advanced.md#exclude-url-patterns)         |
 | `disableCookies`                | `boolean`         | Cookie-less tracking                | `false`                     | [Advanced](docs/advanced.md#disable-cookies)              |
 | `cleanUrl`                      | `boolean`         | Remove query params from URLs       | `false`                     | [Advanced](docs/advanced.md#clean-urls)                   |

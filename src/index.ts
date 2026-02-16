@@ -35,6 +35,7 @@ export { useABTestVariant, useABTestVariantSync, readABTestState } from "./use-a
 // Export server-side proxy utilities
 export {
   withMatomoProxy,
+  createMatomoProxyHandler,
   getProxyUrl,
   getProxyPath,
   generateProxyPath,

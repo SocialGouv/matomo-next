@@ -3,10 +3,26 @@ export interface HTMLTrustedScriptElement
   src: TrustedScriptURL | string;
 }
 export interface InitSettings {
-  url: string;
+  /**
+   * Matomo base URL.
+   *
+   * When using the server-side proxy (`withMatomoProxy()`), you can omit this
+   * and the library will automatically use `NEXT_PUBLIC_MATOMO_PROXY_PATH` when
+   * available (so browser requests go to your own domain).
+   */
+  url?: string;
   siteId: string;
   jsTrackerFile?: string;
   phpTrackerFile?: string;
+  /**
+   * When `true` (default), and if `NEXT_PUBLIC_MATOMO_PROXY_PATH` is defined,
+   * the tracker will use the proxy path instead of the provided `url`.
+   *
+   * Set to `false` to force direct calls to the Matomo instance URL.
+   *
+   * @default true
+   */
+  useProxy?: boolean;
   excludeUrlsPatterns?: RegExp[];
   disableCookies?: boolean;
   onRouteChangeStart?: (path: string) => void;
