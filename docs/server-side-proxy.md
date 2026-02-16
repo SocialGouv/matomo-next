@@ -34,6 +34,10 @@ Notes:
 
 ### 1. Wrap your Next.js config
 
+`matomoUrl` is required here because the proxy runs on **your server** and it must know
+where to forward requests (your Matomo instance base URL). This value is stored in
+`MATOMO_PROXY_TARGET` (server-only) and is **not** exposed to the browser.
+
 ```js
 // next.config.mjs
 import { withMatomoProxy } from "@socialgouv/matomo-next";
@@ -99,6 +103,18 @@ export function MatomoProvider() {
   return null;
 }
 ```
+
+### How the detection works (what happens at runtime)
+
+1. You enable the proxy at build time via [`withMatomoProxy()`](src/server-proxy.ts:154).
+   This injects client env vars like `NEXT_PUBLIC_MATOMO_PROXY_PATH`.
+2. On the client, when you call [`trackAppRouter()`](src/track-app-router.ts:25) (or [`trackPagesRouter()`](src/track-pages-router.ts:19)),
+   the library detects those env vars and (by default) switches to the proxy automatically (`useProxy: true`).
+3. The browser then loads the Matomo JS tracker from your own API endpoint:
+   `https://yoursite.com/api/{random}/{opaque}.js`.
+4. Events triggered via Matomo (including what you queue through `push()` / `sendEvent()`) are sent by the tracker to
+   `https://yoursite.com/api/{random}/{opaque}`.
+5. Next.js rewrites those requests to `/api/__mp/...` and [`createMatomoProxyHandler()`](src/server-proxy.ts:237) forwards them to your Matomo instance (`matomo.js` / `matomo.php`).
 
 If you still want an explicit fallback to the direct Matomo URL, you can keep
 passing `url` yourself:

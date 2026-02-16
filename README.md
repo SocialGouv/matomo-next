@@ -180,11 +180,7 @@ See the [A/B Testing documentation](docs/ab-testing.md) for scheduling, custom t
 
 Bypass ad-blockers by routing Matomo requests through your own domain using [`withMatomoProxy()`](./src/server-proxy.ts:91):
 
-By default, the public proxy endpoint is generated under your own API namespace:
-`/api/{random}/...`.
-
-Note: there is **no PHP** running on your site. The tracking endpoint is an opaque path
-that gets forwarded server-side to Matomo's upstream `matomo.php`.
+By default, the public proxy endpoint is generated under your own API namespace: `/api/{random}`.
 
 ```js
 // next.config.mjs
@@ -194,6 +190,9 @@ export default withMatomoProxy({
   matomoUrl: "https://analytics.example.com",
 })(nextConfig);
 ```
+
+`matomoUrl` is required here because it’s the **server-side** target the proxy forwards to
+(stored in `MATOMO_PROXY_TARGET`, not exposed to the browser).
 
 ```tsx
 // In your tracker component
