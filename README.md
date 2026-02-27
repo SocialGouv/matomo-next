@@ -24,6 +24,7 @@ A lightweight, TypeScript-ready Matomo analytics integration for Next.js applica
 - ✅ **GDPR Compliant** - Cookie-less tracking option
 - ✅ **Custom Events** - Type-safe event tracking API
 - ✅ **A/B Testing** - Built-in support for Matomo's A/B Testing plugin with React hooks
+- ✅ **Server-Side Proxy** - Bypass ad-blockers by routing tracking through your own domain
 - ✅ **Heatmap & Session Recording** - Optional user behavior visualization
 - ✅ **TypeScript Support** - Full type safety and auto-completion
 
@@ -113,6 +114,7 @@ export default function RootLayout({ children }) {
 - **[Advanced Configuration](docs/advanced.md)** - All configuration options, HeartBeat timer, callbacks, and extensibility
 - **[Event Tracking](docs/events.md)** - Track custom user interactions
 - **[A/B Testing](docs/ab-testing.md)** - Integrate Matomo's A/B Testing plugin with React hooks
+- **[Server-Side Proxy](docs/server-side-proxy.md)** - Bypass ad-blockers by proxying tracking requests
 - **[Heatmap & Session Recording](docs/heatmap-session-recording.md)** - User behavior tracking and visualization
 - **[Security & Privacy](docs/security.md)** - CSP configuration and GDPR compliance
 
@@ -174,16 +176,47 @@ export function HeroSection() {
 
 See the [A/B Testing documentation](docs/ab-testing.md) for scheduling, custom triggers, and advanced usage.
 
+### Server-Side Proxy
+
+Bypass ad-blockers by routing Matomo requests through your own domain using [`withMatomoProxy()`](./src/server-proxy.ts:91):
+
+By default, the public proxy endpoint is generated under your own API namespace: `/api/{random}`.
+
+```js
+// next.config.mjs
+import { withMatomoProxy } from "@socialgouv/matomo-next";
+
+export default withMatomoProxy({
+  matomoUrl: "https://analytics.example.com",
+})(nextConfig);
+```
+
+`matomoUrl` is required here because it’s the **server-side** target the proxy forwards to
+(stored in `MATOMO_PROXY_TARGET`, not exposed to the browser).
+
+```tsx
+// In your tracker component
+import { trackAppRouter } from "@socialgouv/matomo-next";
+
+// When the proxy is configured, calls are automatically routed through your own domain.
+// This also hides the usual `matomo.js` / `matomo.php` filenames behind opaque build-time
+// random names (some blockers match on those filenames).
+trackAppRouter({ siteId: "1", pathname, searchParams });
+```
+
+See the [Server-Side Proxy documentation](docs/server-side-proxy.md) for custom paths, chaining with other plugins, and security considerations.
+
 ## Configuration Options
 
 | Option                          | Type              | Description                         | Default                     | Docs                                                      |
 | ------------------------------- | ----------------- | ----------------------------------- | --------------------------- | --------------------------------------------------------- |
-| `url`                           | `string`          | Matomo instance URL                 | -                           | Required                                                  |
+| `url`                           | `string`          | Matomo instance URL                 | -                           | Required unless using the server-side proxy               |
 | `siteId`                        | `string`          | Matomo site ID                      | -                           | Required                                                  |
+| `useProxy`                      | `boolean`         | Prefer proxy (path + opaque filenames) when available | `true` | Server-side proxy                                         |
 | `pathname`                      | `string`          | Current pathname (App Router only)  | -                           | Required for App Router                                   |
 | `searchParams`                  | `URLSearchParams` | URL search params (App Router only) | -                           | Required for App Router                                   |
-| `jsTrackerFile`                 | `string`          | Custom JS tracker filename          | `"matomo.js"`               | [Advanced](docs/advanced.md)                              |
-| `phpTrackerFile`                | `string`          | Custom PHP tracker filename         | `"matomo.php"`              | [Advanced](docs/advanced.md)                              |
+| `jsTrackerFile`                 | `string`          | Custom JS tracker filename          | `"matomo.js"` (or proxy-provided opaque name) | [Advanced](docs/advanced.md)                |
+| `phpTrackerFile`                | `string`          | Custom PHP tracker filename         | `"matomo.php"` (or proxy-provided opaque name) | [Advanced](docs/advanced.md)               |
 | `excludeUrlsPatterns`           | `RegExp[]`        | URLs to exclude from tracking       | `[]`                        | [Advanced](docs/advanced.md#exclude-url-patterns)         |
 | `disableCookies`                | `boolean`         | Cookie-less tracking                | `false`                     | [Advanced](docs/advanced.md#disable-cookies)              |
 | `cleanUrl`                      | `boolean`         | Remove query params from URLs       | `false`                     | [Advanced](docs/advanced.md#clean-urls)                   |
