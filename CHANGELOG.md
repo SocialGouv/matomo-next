@@ -1,3 +1,10 @@
+## [1.13.1](https://github.com/SocialGouv/matomo-next/compare/v1.13.0...v1.13.1) (2026-02-27)
+
+
+### Bug Fixes
+
+* **format:** ajout de prettier comme formatter dans la CI ([#158](https://github.com/SocialGouv/matomo-next/issues/158)) ([db4e310](https://github.com/SocialGouv/matomo-next/commit/db4e310ec9fee08a5f97b4784233d4c23f5ef553))
+
 # [1.13.0](https://github.com/SocialGouv/matomo-next/compare/v1.12.0...v1.13.0) (2026-02-27)
 
 ### Features
