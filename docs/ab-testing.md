@@ -19,12 +19,9 @@ import type { ABTestDefinition } from "@socialgouv/matomo-next";
 
 export const AB_TESTS: ABTestDefinition[] = [
   {
-    name: "homepage-hero",          // Must match Matomo experiment name
-    percentage: 100,                // % of visitors included
-    variations: [
-      { name: "original" },
-      { name: "new-hero" },
-    ],
+    name: "homepage-hero", // Must match Matomo experiment name
+    percentage: 100, // % of visitors included
+    variations: [{ name: "original" }, { name: "new-hero" }],
   },
 ];
 ```
@@ -119,23 +116,23 @@ trackAppRouter({
 
 For advanced use cases (e.g. conditional initialization), you can call `initABTesting` manually:
 
-| Parameter              | Type              | Required | Description                                    |
-| ---------------------- | ----------------- | -------- | ---------------------------------------------- |
-| `enabled`              | `boolean`         | ✅        | Master switch                                  |
-| `pathname`             | `string`          | ✅        | Current pathname                               |
-| `tests`                | `ABTestDefinition[]` | ✅     | Array of experiment definitions                |
-| `excludeUrlsPatterns`  | `RegExp[]`        | ❌        | URL patterns to skip                           |
+| Parameter             | Type                 | Required | Description                     |
+| --------------------- | -------------------- | -------- | ------------------------------- |
+| `enabled`             | `boolean`            | ✅       | Master switch                   |
+| `pathname`            | `string`             | ✅       | Current pathname                |
+| `tests`               | `ABTestDefinition[]` | ✅       | Array of experiment definitions |
+| `excludeUrlsPatterns` | `RegExp[]`           | ❌       | URL patterns to skip            |
 
 ### `ABTestDefinition`
 
-| Field            | Type                  | Required | Description                                    |
-| ---------------- | --------------------- | -------- | ---------------------------------------------- |
-| `name`           | `string`              | ✅        | Experiment name (must match Matomo dashboard)   |
-| `percentage`     | `number`              | ✅        | Percentage of visitors included (0–100)         |
-| `variations`     | `ABTestVariation[]`   | ✅        | Array of `{ name: string }`                    |
-| `startDateTime`  | `string`              | ❌        | ISO 8601 start date                            |
-| `endDateTime`    | `string`              | ❌        | ISO 8601 end date                              |
-| `trigger`        | `() => boolean`       | ❌        | Custom participation rule (default: all visitors) |
+| Field           | Type                | Required | Description                                       |
+| --------------- | ------------------- | -------- | ------------------------------------------------- |
+| `name`          | `string`            | ✅       | Experiment name (must match Matomo dashboard)     |
+| `percentage`    | `number`            | ✅       | Percentage of visitors included (0–100)           |
+| `variations`    | `ABTestVariation[]` | ✅       | Array of `{ name: string }`                       |
+| `startDateTime` | `string`            | ❌       | ISO 8601 start date                               |
+| `endDateTime`   | `string`            | ❌       | ISO 8601 end date                                 |
+| `trigger`       | `() => boolean`     | ❌       | Custom participation rule (default: all visitors) |
 
 ### `useABTestVariant(testName, timeoutMs?)`
 

@@ -3,6 +3,10 @@
   "description": "Matomo analytics integration for Next.js applications",
   "version": "1.13.0",
   "author": "Fabrique numérique des Ministères Sociaux <dsi-incubateur@sg.social.gouv.fr> (https://www.fabrique.social.gouv.fr)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SocialGouv/matomo-next"
+  },
   "homepage": "https://github.com/SocialGouv/matomo-next#readme",
   "packageManager": "pnpm@10.29.1",
   "engines": {
@@ -46,6 +50,8 @@
   },
   "scripts": {
     "build": "tsc",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "lint": "eslint src",
     "test": "jest",
     "test:coverage": "jest --coverage --coverageReporters=lcov --coverageReporters=text-summary",

@@ -18,6 +18,7 @@ Browser → yoursite.com/api/a3f7b2c1e9/t3fa1c0d2e4 → [Next.js rewrite] → /a
 ```
 
 Notes:
+
 - There is **no PHP running on your site**. `matomo.php` is only the upstream Matomo endpoint.
   On your domain we use an opaque path (e.g. `t3fa1c0d2e4`) and forward it server-side.
 - Route conflicts are practically avoided because the public proxy prefix is **random** and
@@ -70,7 +71,8 @@ That's it! The handler reads the `MATOMO_PROXY_TARGET` env var (set automaticall
 When the proxy is configured via `withMatomoProxy()`, the library will **automatically**
 route calls through your own domain.
 
-This includes **both** the hostname *and* the usual Matomo filenames:
+This includes **both** the hostname _and_ the usual Matomo filenames:
+
 - the browser will request an opaque `*.js` filename (proxied to upstream `matomo.js`)
 - the tracking hits will go to an opaque non-`.php` endpoint (proxied to upstream `matomo.php`)
 
@@ -160,21 +162,21 @@ trackAppRouter({ url, siteId, pathname, searchParams });
 
 Wraps your Next.js config to add proxy rewrite rules and environment variables.
 
-| Option       | Type     | Required | Description                                                              |
-| ------------ | -------- | -------- | ------------------------------------------------------------------------ |
-| `matomoUrl`  | `string` | ✅        | Full URL of your Matomo instance                                         |
-| `proxyPath`  | `string` | ❌        | Custom proxy path (default: random per build). ⚠️ Fixed paths reduce ad-block resistance |
-| `siteId`     | `string` | ❌        | Injected as `NEXT_PUBLIC_MATOMO_PROXY_SITE_ID` env var                   |
+| Option      | Type     | Required | Description                                                                              |
+| ----------- | -------- | -------- | ---------------------------------------------------------------------------------------- |
+| `matomoUrl` | `string` | ✅       | Full URL of your Matomo instance                                                         |
+| `proxyPath` | `string` | ❌       | Custom proxy path (default: random per build). ⚠️ Fixed paths reduce ad-block resistance |
+| `siteId`    | `string` | ❌       | Injected as `NEXT_PUBLIC_MATOMO_PROXY_SITE_ID` env var                                   |
 
 **Environment variables set:**
 
-| Variable                          | Scope  | Description                          |
-| --------------------------------- | ------ | ------------------------------------ |
-| `NEXT_PUBLIC_MATOMO_PROXY_PATH`   | Client | The random proxy path (e.g. `/api/a3f7b2c1e9`) |
-| `NEXT_PUBLIC_MATOMO_PROXY_JS_TRACKER_FILE` | Client | Opaque JS filename served by your domain (e.g. `s3fa1c0d2e4.js`) |
-| `NEXT_PUBLIC_MATOMO_PROXY_PHP_TRACKER_FILE`| Client | Opaque tracking endpoint served by your domain (e.g. `t3fa1c0d2e4`) |
-| `MATOMO_PROXY_TARGET`             | Server | The Matomo URL (used by the API route handler) |
-| `NEXT_PUBLIC_MATOMO_PROXY_SITE_ID`| Client | Site ID (only if `siteId` provided)  |
+| Variable                                    | Scope  | Description                                                         |
+| ------------------------------------------- | ------ | ------------------------------------------------------------------- |
+| `NEXT_PUBLIC_MATOMO_PROXY_PATH`             | Client | The random proxy path (e.g. `/api/a3f7b2c1e9`)                      |
+| `NEXT_PUBLIC_MATOMO_PROXY_JS_TRACKER_FILE`  | Client | Opaque JS filename served by your domain (e.g. `s3fa1c0d2e4.js`)    |
+| `NEXT_PUBLIC_MATOMO_PROXY_PHP_TRACKER_FILE` | Client | Opaque tracking endpoint served by your domain (e.g. `t3fa1c0d2e4`) |
+| `MATOMO_PROXY_TARGET`                       | Server | The Matomo URL (used by the API route handler)                      |
+| `NEXT_PUBLIC_MATOMO_PROXY_SITE_ID`          | Client | Site ID (only if `siteId` provided)                                 |
 
 **Returns:** A function that takes a Next.js config and returns the enhanced config.
 
@@ -183,6 +185,7 @@ Wraps your Next.js config to add proxy rewrite rules and environment variables.
 Creates Next.js App Router route handlers (GET & POST) that proxy requests to Matomo. Reads `MATOMO_PROXY_TARGET` from the environment.
 
 The handler forwards:
+
 - Query parameters
 - User-Agent, Accept-Language, Content-Type headers
 - Client IP (`X-Forwarded-For`) for geolocation accuracy
@@ -219,11 +222,11 @@ generateProxyPath(); // "/a3f7b2c1e9" (different every call)
 
 ## What Gets Proxied
 
-| Request                        | Browser sees                               | Forwarded to                                   |
-| ------------------------------ | ------------------------------------------ | ---------------------------------------------- |
-| JS tracker                     | `yoursite.com/api/{random}/{opaque}.js`    | `analytics.example.com/matomo.js`              |
-| PHP tracker (data collection)  | `yoursite.com/api/{random}/{opaque}`       | `analytics.example.com/matomo.php`             |
-| Plugin assets                  | `yoursite.com/api/{random}/plugins/*`      | `analytics.example.com/plugins/*`              |
+| Request                       | Browser sees                            | Forwarded to                       |
+| ----------------------------- | --------------------------------------- | ---------------------------------- |
+| JS tracker                    | `yoursite.com/api/{random}/{opaque}.js` | `analytics.example.com/matomo.js`  |
+| PHP tracker (data collection) | `yoursite.com/api/{random}/{opaque}`    | `analytics.example.com/matomo.php` |
+| Plugin assets                 | `yoursite.com/api/{random}/plugins/*`   | `analytics.example.com/plugins/*`  |
 
 ## Advanced Usage
 
@@ -244,9 +247,7 @@ export default withMatomoProxy({
 
 ```js
 const nextConfig = {
-  rewrites: async () => [
-    { source: "/old-page", destination: "/new-page" },
-  ],
+  rewrites: async () => [{ source: "/old-page", destination: "/new-page" }],
 };
 
 // Both the existing rewrite and Matomo rewrites will be active
@@ -261,13 +262,13 @@ export default withMatomoProxy({
 import { withMatomoProxy } from "@socialgouv/matomo-next";
 import withBundleAnalyzer from "@next/bundle-analyzer";
 
-const nextConfig = { /* ... */ };
+const nextConfig = {
+  /* ... */
+};
 
 export default withMatomoProxy({
   matomoUrl: "https://analytics.example.com",
-})(
-  withBundleAnalyzer({ enabled: false })(nextConfig)
-);
+})(withBundleAnalyzer({ enabled: false })(nextConfig));
 ```
 
 ### Pages Router API route
@@ -297,15 +298,22 @@ export default async function handler(
   }
 
   const headers: Record<string, string> = {};
-  if (req.headers["user-agent"]) headers["user-agent"] = req.headers["user-agent"];
-  if (req.headers["accept-language"]) headers["accept-language"] = req.headers["accept-language"] as string;
-  if (req.headers["content-type"]) headers["content-type"] = req.headers["content-type"];
-  if (req.headers["x-forwarded-for"]) headers["x-forwarded-for"] = req.headers["x-forwarded-for"] as string;
+  if (req.headers["user-agent"])
+    headers["user-agent"] = req.headers["user-agent"];
+  if (req.headers["accept-language"])
+    headers["accept-language"] = req.headers["accept-language"] as string;
+  if (req.headers["content-type"])
+    headers["content-type"] = req.headers["content-type"];
+  if (req.headers["x-forwarded-for"])
+    headers["x-forwarded-for"] = req.headers["x-forwarded-for"] as string;
 
   const response = await fetch(targetUrl.toString(), {
     method: req.method ?? "GET",
     headers,
-    body: req.method !== "GET" && req.method !== "HEAD" ? JSON.stringify(req.body) : undefined,
+    body:
+      req.method !== "GET" && req.method !== "HEAD"
+        ? JSON.stringify(req.body)
+        : undefined,
   });
 
   res.status(response.status);

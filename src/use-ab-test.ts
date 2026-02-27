@@ -1,7 +1,11 @@
 "use client";
 
 import { useEffect, useState, useCallback, useSyncExternalStore } from "react";
-import type { ABTestName, ABTestVariant, MatomoABTestState } from "./ab-testing";
+import type {
+  ABTestName,
+  ABTestVariant,
+  MatomoABTestState,
+} from "./ab-testing";
 
 // ---------------------------------------------------------------------------
 // Polling-based hook (works with React 16-18+)
