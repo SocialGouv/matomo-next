@@ -1,4 +1,4 @@
-import "./test-setup";
+import { setLocationPathname } from "./test-setup";
 import { initPagesRouter } from "..";
 
 describe("Matomo Configuration", () => {
@@ -54,7 +54,7 @@ describe("Matomo Configuration", () => {
 
   describe("Pages Router without pathname", () => {
     test("should track initial pageview by default", () => {
-      window.location.pathname = "/some-page";
+      setLocationPathname("/some-page");
       document.head.appendChild(document.createElement("script"));
       initPagesRouter({ siteId: "42", url: "https://YO" });
       expect(window._paq).toEqual(expect.arrayContaining([["trackPageView"]]));
