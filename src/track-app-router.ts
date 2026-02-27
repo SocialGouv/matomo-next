@@ -1,5 +1,6 @@
 import type { InitSettings, MatomoState } from "./types";
 import { matchesAnyPattern, createSanitizer, cleanUrlPath } from "./utils";
+import { getProxyPath, getProxyUrl } from "./server-proxy";
 import {
   push,
   loadMatomoScript,
@@ -24,9 +25,10 @@ const state: MatomoState = {
 export const trackAppRouter = (settings: InitSettings): void => {
   const {
     url,
+    useProxy = true,
     siteId,
-    jsTrackerFile = "matomo.js",
-    phpTrackerFile = "matomo.php",
+    jsTrackerFile,
+    phpTrackerFile,
     excludeUrlsPatterns = [],
     disableCookies = false,
     onRouteChangeStart,
@@ -48,9 +50,29 @@ export const trackAppRouter = (settings: InitSettings): void => {
     abTests,
   } = settings;
 
-  if (!url) {
+  // Prefer the proxy *path* (relative URL) so we don't have to embed the current
+  // domain anywhere — the browser will resolve it against the current origin.
+  const proxyBaseUrl = useProxy ? getProxyPath() ?? getProxyUrl() : null;
+  const resolvedUrl = proxyBaseUrl ?? url;
+
+  const resolvedJsTrackerFile =
+    jsTrackerFile ??
+    (useProxy
+      ? process.env.NEXT_PUBLIC_MATOMO_PROXY_JS_TRACKER_FILE
+      : undefined) ??
+    "matomo.js";
+  const resolvedPhpTrackerFile =
+    phpTrackerFile ??
+    (useProxy
+      ? process.env.NEXT_PUBLIC_MATOMO_PROXY_PHP_TRACKER_FILE
+      : undefined) ??
+    "matomo.php";
+
+  if (!resolvedUrl) {
     if (debug) {
-      console.warn("Matomo disabled, please provide matomo url");
+      console.warn(
+        "Matomo disabled, please provide `url` or configure the server-side proxy via withMatomoProxy().",
+      );
     }
     return;
   }
@@ -71,10 +93,15 @@ export const trackAppRouter = (settings: InitSettings): void => {
 
     const sanitizer = createSanitizer(trustedPolicyName);
 
-    configureMatomoTracker(url, siteId, phpTrackerFile, disableCookies);
+    configureMatomoTracker(
+      resolvedUrl,
+      siteId,
+      resolvedPhpTrackerFile,
+      disableCookies,
+    );
     loadMatomoScript(
-      url,
-      jsTrackerFile,
+      resolvedUrl,
+      resolvedJsTrackerFile,
       sanitizer,
       nonce,
       onScriptLoadingError,
@@ -83,7 +110,7 @@ export const trackAppRouter = (settings: InitSettings): void => {
     // Enable Heatmap & Session Recording if requested
     if (enableHeatmapSessionRecording) {
       loadHeatmapSessionRecording(
-        url,
+        resolvedUrl,
         heatmapConfig,
         nonce,
         onScriptLoadingError,
