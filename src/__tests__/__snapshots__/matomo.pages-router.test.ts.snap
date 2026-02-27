@@ -1,15 +1,15 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`excludeUrlsPatterns should exclude initial page tracking 1`] = `
-Array [
-  Array [
+[
+  [
     "enableLinkTracking",
   ],
-  Array [
+  [
     "setTrackerUrl",
     "https://YO/matomo.php",
   ],
-  Array [
+  [
     "setSiteId",
     "42",
   ],
@@ -17,56 +17,56 @@ Array [
 `;
 
 exports[`excludeUrlsPatterns should excluded login.php and token variables 1`] = `
-Array [
-  Array [
+[
+  [
     "trackPageView",
   ],
-  Array [
+  [
     "enableLinkTracking",
   ],
-  Array [
+  [
     "setTrackerUrl",
     "https://YO/matomo.php",
   ],
-  Array [
+  [
     "setSiteId",
     "42",
   ],
-  Array [
+  [
     "setReferrerUrl",
     "/",
   ],
-  Array [
+  [
     "setCustomUrl",
     "/path/to/page.php",
   ],
-  Array [
+  [
     "deleteCustomVariables",
     "page",
   ],
-  Array [
+  [
     "setDocumentTitle",
     "some page",
   ],
-  Array [
+  [
     "trackPageView",
   ],
 ]
 `;
 
 exports[`excludeUrlsPatterns should track initial page if not excluded 1`] = `
-Array [
-  Array [
+[
+  [
     "trackPageView",
   ],
-  Array [
+  [
     "enableLinkTracking",
   ],
-  Array [
+  [
     "setTrackerUrl",
     "https://YO/matomo.php",
   ],
-  Array [
+  [
     "setSiteId",
     "42",
   ],
@@ -74,12 +74,12 @@ Array [
 `;
 
 exports[`router.routeChangeComplete event should track route as search in /recherche 1`] = `
-Array [
-  Array [
+[
+  [
     "setDocumentTitle",
     "search results",
   ],
-  Array [
+  [
     "trackSiteSearch",
     "some+query",
   ],
@@ -87,12 +87,12 @@ Array [
 `;
 
 exports[`router.routeChangeComplete event should track route as search in /search 1`] = `
-Array [
-  Array [
+[
+  [
     "setDocumentTitle",
     "search results",
   ],
-  Array [
+  [
     "trackSiteSearch",
     "some+query",
   ],
@@ -100,24 +100,24 @@ Array [
 `;
 
 exports[`router.routeChangeComplete event should trackPageView with correct title on route change 1`] = `
-Array [
-  Array [
+[
+  [
     "setDocumentTitle",
     "test page",
   ],
-  Array [
+  [
     "trackPageView",
   ],
 ]
 `;
 
 exports[`router.routeChangeComplete event should use previousPath as referer on consecutive route change 1`] = `
-Array [
-  Array [
+[
+  [
     "setDocumentTitle",
     "test page 2",
   ],
-  Array [
+  [
     "trackPageView",
   ],
 ]
