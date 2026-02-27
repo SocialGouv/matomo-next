@@ -32,6 +32,16 @@ export type {
 // Export A/B testing React hooks
 export { useABTestVariant, useABTestVariantSync, readABTestState } from "./use-ab-test";
 
+// Export server-side proxy utilities
+export {
+  withMatomoProxy,
+  createMatomoProxyHandler,
+  getProxyUrl,
+  getProxyPath,
+  generateProxyPath,
+} from "./server-proxy";
+export type { MatomoProxyOptions } from "./server-proxy";
+
 // Import for deprecated init function
 import type { InitSettings } from "./types";
 import { trackAppRouter } from "./track-app-router";
