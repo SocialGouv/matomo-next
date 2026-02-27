@@ -1,3 +1,15 @@
+# [1.12.0](https://github.com/SocialGouv/matomo-next/compare/v1.11.0...v1.12.0) (2026-02-27)
+
+
+### Bug Fixes
+
+* **types:** `trackEvent` cannot accept à string on the latest parameters + add some types of the library ([#148](https://github.com/SocialGouv/matomo-next/issues/148)) ([73649db](https://github.com/SocialGouv/matomo-next/commit/73649dbbf484f2b343e907ce0c54988cd89f513b))
+
+
+### Features
+
+* add A/B testing support with React hooks ([#155](https://github.com/SocialGouv/matomo-next/issues/155)) ([89f5d58](https://github.com/SocialGouv/matomo-next/commit/89f5d588f8d36c1d9e08c74a0831f1f7d0d741e0))
+
 # [1.11.0](https://github.com/SocialGouv/matomo-next/compare/v1.10.0...v1.11.0) (2025-12-08)
 
 
