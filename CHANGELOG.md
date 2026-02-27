@@ -1,3 +1,10 @@
+# [1.13.0](https://github.com/SocialGouv/matomo-next/compare/v1.12.0...v1.13.0) (2026-02-27)
+
+
+### Features
+
+* add server-side tracking proxy to bypass ad-blockers ([#157](https://github.com/SocialGouv/matomo-next/issues/157)) ([913e3b1](https://github.com/SocialGouv/matomo-next/commit/913e3b1c9403c42f6817d297c5d6c633c09cddc7))
+
 # [1.12.0](https://github.com/SocialGouv/matomo-next/compare/v1.11.0...v1.12.0) (2026-02-27)
 
 
