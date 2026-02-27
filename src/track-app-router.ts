@@ -7,6 +7,7 @@ import {
   configureHeartBeatTimer,
 } from "./tracker";
 import { loadHeatmapSessionRecording } from "./heatmap";
+import { initABTesting } from "./ab-testing";
 
 // Internal state for tracking initial page load in App Router
 const state: MatomoState = {
@@ -44,6 +45,7 @@ export const trackAppRouter = (settings: InitSettings): void => {
     heartBeatTimerInterval,
     heatmapConfig = {},
     cleanUrl = false,
+    abTests,
   } = settings;
 
   if (!url) {
@@ -94,6 +96,16 @@ export const trackAppRouter = (settings: InitSettings): void => {
 
     if (onInitialization) {
       onInitialization();
+    }
+
+    // Auto-init A/B testing if abTests is provided
+    if (abTests && abTests.length > 0) {
+      initABTesting({
+        enabled: true,
+        pathname: pathname,
+        excludeUrlsPatterns,
+        tests: abTests,
+      });
     }
   }
 

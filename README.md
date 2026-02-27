@@ -23,6 +23,7 @@ A lightweight, TypeScript-ready Matomo analytics integration for Next.js applica
 - ✅ **Search Tracking** - Built-in search query tracking
 - ✅ **GDPR Compliant** - Cookie-less tracking option
 - ✅ **Custom Events** - Type-safe event tracking API
+- ✅ **A/B Testing** - Built-in support for Matomo's A/B Testing plugin with React hooks
 - ✅ **Heatmap & Session Recording** - Optional user behavior visualization
 - ✅ **TypeScript Support** - Full type safety and auto-completion
 
@@ -111,6 +112,7 @@ export default function RootLayout({ children }) {
 
 - **[Advanced Configuration](docs/advanced.md)** - All configuration options, HeartBeat timer, callbacks, and extensibility
 - **[Event Tracking](docs/events.md)** - Track custom user interactions
+- **[A/B Testing](docs/ab-testing.md)** - Integrate Matomo's A/B Testing plugin with React hooks
 - **[Heatmap & Session Recording](docs/heatmap-session-recording.md)** - User behavior tracking and visualization
 - **[Security & Privacy](docs/security.md)** - CSP configuration and GDPR compliance
 
@@ -134,6 +136,43 @@ sendEvent({
   value: 120,
 });
 ```
+
+### A/B Testing
+
+Run experiments using Matomo's [A/B Testing plugin](https://plugins.matomo.org/AbTesting). Pass your test definitions to the tracker and use the [`useABTestVariant()`](./src/use-ab-test.ts:32) hook in your components:
+
+```tsx
+// Pass abTests to the tracker
+trackAppRouter({
+  url: MATOMO_URL,
+  siteId: MATOMO_SITE_ID,
+  pathname,
+  searchParams,
+  abTests: [
+    {
+      name: "homepage-hero",
+      percentage: 100,
+      variations: [{ name: "original" }, { name: "new-hero" }],
+    },
+  ],
+});
+```
+
+```tsx
+// In your component
+import { useABTestVariant } from "@socialgouv/matomo-next";
+
+export function HeroSection() {
+  const variant = useABTestVariant("homepage-hero");
+
+  if (variant === "new-hero") {
+    return <NewHeroSection />;
+  }
+  return <OriginalHeroSection />;
+}
+```
+
+See the [A/B Testing documentation](docs/ab-testing.md) for scheduling, custom triggers, and advanced usage.
 
 ## Configuration Options
 
@@ -161,6 +200,7 @@ sendEvent({
 | `onRouteChangeStart`            | `(path) => void`  | Callback on route change start      | -                           | [Advanced](docs/advanced.md#extensibility-with-callbacks) |
 | `onRouteChangeComplete`         | `(path) => void`  | Callback on route change complete   | -                           | [Advanced](docs/advanced.md#extensibility-with-callbacks) |
 | `onScriptLoadingError`          | `() => void`      | Callback on script loading error    | -                           | [Advanced](docs/advanced.md#extensibility-with-callbacks) |
+| `abTests`                       | `ABTestDefinition[]` | A/B test experiments to register | -                           | [A/B Testing](docs/ab-testing.md)                         |
 
 See [complete configuration options](docs/advanced.md) for full details.
 
