@@ -15,6 +15,23 @@ export { trackPagesRouter } from "./track-pages-router";
 export { trackAppRouter as initAppRouter } from "./track-app-router";
 export { trackPagesRouter as initPagesRouter } from "./track-pages-router";
 
+// Export A/B testing
+export {
+  initABTesting,
+  getABTestState,
+} from "./ab-testing";
+export type {
+  ABTestName,
+  ABTestVariant,
+  ABTestVariation,
+  ABTestDefinition,
+  MatomoABTestState,
+  InitABTestingParams,
+} from "./ab-testing";
+
+// Export A/B testing React hooks
+export { useABTestVariant, useABTestVariantSync, readABTestState } from "./use-ab-test";
+
 // Import for deprecated init function
 import type { InitSettings } from "./types";
 import { trackAppRouter } from "./track-app-router";

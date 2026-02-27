@@ -8,6 +8,7 @@ import {
   configureHeartBeatTimer,
 } from "./tracker";
 import { loadHeatmapSessionRecording } from "./heatmap";
+import { initABTesting } from "./ab-testing";
 
 /**
  * Track page views with Matomo for Next.js Pages Router
@@ -36,6 +37,7 @@ export const trackPagesRouter = (settings: InitSettings): void => {
     heartBeatTimerInterval,
     heatmapConfig = {},
     cleanUrl = false,
+    abTests,
   } = settings;
 
   if (!url) {
@@ -58,6 +60,18 @@ export const trackPagesRouter = (settings: InitSettings): void => {
 
   if (onInitialization) {
     onInitialization();
+  }
+
+  // Auto-init A/B testing if abTests is provided
+  if (abTests && abTests.length > 0) {
+    const currentPathname =
+      typeof window !== "undefined" ? window.location.pathname : "";
+    initABTesting({
+      enabled: true,
+      pathname: currentPathname,
+      excludeUrlsPatterns,
+      tests: abTests,
+    });
   }
 
   if (excludedUrl) {
