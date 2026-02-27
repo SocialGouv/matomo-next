@@ -185,9 +185,7 @@ export function withMatomoProxy(options: MatomoProxyOptions) {
         MATOMO_PROXY_TARGET: cleanMatomoUrl,
         NEXT_PUBLIC_MATOMO_PROXY_JS_TRACKER_FILE: resolvedJsTrackerFile,
         NEXT_PUBLIC_MATOMO_PROXY_PHP_TRACKER_FILE: resolvedPhpTrackerFile,
-        ...(siteId
-          ? { NEXT_PUBLIC_MATOMO_PROXY_SITE_ID: siteId }
-          : {}),
+        ...(siteId ? { NEXT_PUBLIC_MATOMO_PROXY_SITE_ID: siteId } : {}),
       },
       rewrites: async () => {
         const result = existingRewrites ? await existingRewrites() : undefined;
@@ -247,9 +245,7 @@ export function createMatomoProxyHandler() {
 
     // Support both Next.js 13/14 (sync params) and 15+ (async params)
     const resolvedParams =
-      context.params instanceof Promise
-        ? await context.params
-        : context.params;
+      context.params instanceof Promise ? await context.params : context.params;
 
     const { path = [] } = resolvedParams;
 

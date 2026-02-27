@@ -208,32 +208,32 @@ See the [Server-Side Proxy documentation](docs/server-side-proxy.md) for custom 
 
 ## Configuration Options
 
-| Option                          | Type              | Description                         | Default                     | Docs                                                      |
-| ------------------------------- | ----------------- | ----------------------------------- | --------------------------- | --------------------------------------------------------- |
-| `url`                           | `string`          | Matomo instance URL                 | -                           | Required unless using the server-side proxy               |
-| `siteId`                        | `string`          | Matomo site ID                      | -                           | Required                                                  |
-| `useProxy`                      | `boolean`         | Prefer proxy (path + opaque filenames) when available | `true` | Server-side proxy                                         |
-| `pathname`                      | `string`          | Current pathname (App Router only)  | -                           | Required for App Router                                   |
-| `searchParams`                  | `URLSearchParams` | URL search params (App Router only) | -                           | Required for App Router                                   |
-| `jsTrackerFile`                 | `string`          | Custom JS tracker filename          | `"matomo.js"` (or proxy-provided opaque name) | [Advanced](docs/advanced.md)                |
-| `phpTrackerFile`                | `string`          | Custom PHP tracker filename         | `"matomo.php"` (or proxy-provided opaque name) | [Advanced](docs/advanced.md)               |
-| `excludeUrlsPatterns`           | `RegExp[]`        | URLs to exclude from tracking       | `[]`                        | [Advanced](docs/advanced.md#exclude-url-patterns)         |
-| `disableCookies`                | `boolean`         | Cookie-less tracking                | `false`                     | [Advanced](docs/advanced.md#disable-cookies)              |
-| `cleanUrl`                      | `boolean`         | Remove query params from URLs       | `false`                     | [Advanced](docs/advanced.md#clean-urls)                   |
-| `searchKeyword`                 | `string`          | Search query parameter name         | `"q"`                       | [Advanced](docs/advanced.md#search-tracking)              |
-| `searchRoutes`                  | `string[]`        | Custom search route paths           | `["/recherche", "/search"]` | [Advanced](docs/advanced.md#search-tracking)              |
-| `enableHeartBeatTimer`          | `boolean`         | Track time on page                  | `false`                     | [Advanced](docs/advanced.md#heartbeat-timer)              |
-| `heartBeatTimerInterval`        | `number`          | HeartBeat timer interval (seconds)  | `15` (Matomo default)       | [Advanced](docs/advanced.md#heartbeat-timer)              |
-| `enableHeatmapSessionRecording` | `boolean`         | Enable session recording            | `false`                     | [Heatmap](docs/heatmap-session-recording.md)              |
-| `heatmapConfig`                 | `HeatmapConfig`   | Heatmap configuration object        | `{}`                        | [Heatmap](docs/heatmap-session-recording.md)              |
-| `debug`                         | `boolean`         | Enable debug logs                   | `false`                     | [Advanced](docs/advanced.md#debug-mode)                   |
-| `nonce`                         | `string`          | CSP nonce value                     | -                           | [Security](docs/security.md)                              |
-| `trustedPolicyName`             | `string`          | Trusted Types policy name           | `"matomo-next"`             | [Security](docs/security.md)                              |
-| `onInitialization`              | `() => void`      | Callback on init                    | -                           | [Advanced](docs/advanced.md#extensibility-with-callbacks) |
-| `onRouteChangeStart`            | `(path) => void`  | Callback on route change start      | -                           | [Advanced](docs/advanced.md#extensibility-with-callbacks) |
-| `onRouteChangeComplete`         | `(path) => void`  | Callback on route change complete   | -                           | [Advanced](docs/advanced.md#extensibility-with-callbacks) |
-| `onScriptLoadingError`          | `() => void`      | Callback on script loading error    | -                           | [Advanced](docs/advanced.md#extensibility-with-callbacks) |
-| `abTests`                       | `ABTestDefinition[]` | A/B test experiments to register | -                           | [A/B Testing](docs/ab-testing.md)                         |
+| Option                          | Type                 | Description                                           | Default                                        | Docs                                                      |
+| ------------------------------- | -------------------- | ----------------------------------------------------- | ---------------------------------------------- | --------------------------------------------------------- |
+| `url`                           | `string`             | Matomo instance URL                                   | -                                              | Required unless using the server-side proxy               |
+| `siteId`                        | `string`             | Matomo site ID                                        | -                                              | Required                                                  |
+| `useProxy`                      | `boolean`            | Prefer proxy (path + opaque filenames) when available | `true`                                         | Server-side proxy                                         |
+| `pathname`                      | `string`             | Current pathname (App Router only)                    | -                                              | Required for App Router                                   |
+| `searchParams`                  | `URLSearchParams`    | URL search params (App Router only)                   | -                                              | Required for App Router                                   |
+| `jsTrackerFile`                 | `string`             | Custom JS tracker filename                            | `"matomo.js"` (or proxy-provided opaque name)  | [Advanced](docs/advanced.md)                              |
+| `phpTrackerFile`                | `string`             | Custom PHP tracker filename                           | `"matomo.php"` (or proxy-provided opaque name) | [Advanced](docs/advanced.md)                              |
+| `excludeUrlsPatterns`           | `RegExp[]`           | URLs to exclude from tracking                         | `[]`                                           | [Advanced](docs/advanced.md#exclude-url-patterns)         |
+| `disableCookies`                | `boolean`            | Cookie-less tracking                                  | `false`                                        | [Advanced](docs/advanced.md#disable-cookies)              |
+| `cleanUrl`                      | `boolean`            | Remove query params from URLs                         | `false`                                        | [Advanced](docs/advanced.md#clean-urls)                   |
+| `searchKeyword`                 | `string`             | Search query parameter name                           | `"q"`                                          | [Advanced](docs/advanced.md#search-tracking)              |
+| `searchRoutes`                  | `string[]`           | Custom search route paths                             | `["/recherche", "/search"]`                    | [Advanced](docs/advanced.md#search-tracking)              |
+| `enableHeartBeatTimer`          | `boolean`            | Track time on page                                    | `false`                                        | [Advanced](docs/advanced.md#heartbeat-timer)              |
+| `heartBeatTimerInterval`        | `number`             | HeartBeat timer interval (seconds)                    | `15` (Matomo default)                          | [Advanced](docs/advanced.md#heartbeat-timer)              |
+| `enableHeatmapSessionRecording` | `boolean`            | Enable session recording                              | `false`                                        | [Heatmap](docs/heatmap-session-recording.md)              |
+| `heatmapConfig`                 | `HeatmapConfig`      | Heatmap configuration object                          | `{}`                                           | [Heatmap](docs/heatmap-session-recording.md)              |
+| `debug`                         | `boolean`            | Enable debug logs                                     | `false`                                        | [Advanced](docs/advanced.md#debug-mode)                   |
+| `nonce`                         | `string`             | CSP nonce value                                       | -                                              | [Security](docs/security.md)                              |
+| `trustedPolicyName`             | `string`             | Trusted Types policy name                             | `"matomo-next"`                                | [Security](docs/security.md)                              |
+| `onInitialization`              | `() => void`         | Callback on init                                      | -                                              | [Advanced](docs/advanced.md#extensibility-with-callbacks) |
+| `onRouteChangeStart`            | `(path) => void`     | Callback on route change start                        | -                                              | [Advanced](docs/advanced.md#extensibility-with-callbacks) |
+| `onRouteChangeComplete`         | `(path) => void`     | Callback on route change complete                     | -                                              | [Advanced](docs/advanced.md#extensibility-with-callbacks) |
+| `onScriptLoadingError`          | `() => void`         | Callback on script loading error                      | -                                              | [Advanced](docs/advanced.md#extensibility-with-callbacks) |
+| `abTests`                       | `ABTestDefinition[]` | A/B test experiments to register                      | -                                              | [A/B Testing](docs/ab-testing.md)                         |
 
 See [complete configuration options](docs/advanced.md) for full details.
 

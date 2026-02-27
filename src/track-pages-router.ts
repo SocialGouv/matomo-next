@@ -44,7 +44,7 @@ export const trackPagesRouter = (settings: InitSettings): void => {
 
   // Prefer the proxy *path* (relative URL) so we don't have to embed the current
   // domain anywhere — the browser will resolve it against the current origin.
-  const proxyBaseUrl = useProxy ? getProxyPath() ?? getProxyUrl() : null;
+  const proxyBaseUrl = useProxy ? (getProxyPath() ?? getProxyUrl()) : null;
   const resolvedUrl = proxyBaseUrl ?? url;
 
   const resolvedJsTrackerFile =

@@ -92,7 +92,9 @@ describe("withMatomoProxy", () => {
     expect((rewrites as any).beforeFiles[0].source).toMatch(
       /^\/api\/a[a-f0-9]{10}\/:path\*$/,
     );
-    expect((rewrites as any).beforeFiles[0].destination).toBe("/api/__mp/:path*");
+    expect((rewrites as any).beforeFiles[0].destination).toBe(
+      "/api/__mp/:path*",
+    );
   });
 
   it("should preserve existing rewrites", async () => {

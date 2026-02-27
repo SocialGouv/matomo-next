@@ -16,10 +16,7 @@ export { trackAppRouter as initAppRouter } from "./track-app-router";
 export { trackPagesRouter as initPagesRouter } from "./track-pages-router";
 
 // Export A/B testing
-export {
-  initABTesting,
-  getABTestState,
-} from "./ab-testing";
+export { initABTesting, getABTestState } from "./ab-testing";
 export type {
   ABTestName,
   ABTestVariant,
@@ -30,7 +27,11 @@ export type {
 } from "./ab-testing";
 
 // Export A/B testing React hooks
-export { useABTestVariant, useABTestVariantSync, readABTestState } from "./use-ab-test";
+export {
+  useABTestVariant,
+  useABTestVariantSync,
+  readABTestState,
+} from "./use-ab-test";
 
 // Export server-side proxy utilities
 export {

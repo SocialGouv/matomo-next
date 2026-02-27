@@ -1,5 +1,7 @@
-export interface HTMLTrustedScriptElement
-  extends Omit<HTMLScriptElement, "src"> {
+export interface HTMLTrustedScriptElement extends Omit<
+  HTMLScriptElement,
+  "src"
+> {
   src: TrustedScriptURL | string;
 }
 export interface InitSettings {
@@ -120,7 +122,7 @@ export interface HeatmapConfig {
  * Note: keys are expected to be `"dimension1"`, `"dimension2"`, etc.
  * We intentionally keep this type compatible with older TS/ESLint parsers.
  */
-export type Dimensions =   {
+export type Dimensions = {
   dimension1?: string;
   dimension2?: string;
   dimension3?: string;
@@ -131,9 +133,7 @@ export type Dimensions =   {
   dimension8?: string;
   dimension9?: string;
   dimension10?: string;
-}
-
-
+};
 
 /**
  * A single value inside a Matomo command pushed to the queue.
@@ -246,7 +246,6 @@ export type MatomoCustomCommand = readonly [
   Exclude<string, MatomoKnownCommandName>,
   ...PushArg[],
 ];
-
 
 /**
  * Matomo also supports queueing functions executed once the tracker is ready.

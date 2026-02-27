@@ -190,9 +190,7 @@ export function initABTesting({
  * Useful outside of React (e.g. in server components or plain functions).
  * Inside React prefer `useABTestVariant()`.
  */
-export function getABTestState(
-  testName: ABTestName,
-): MatomoABTestState | null {
+export function getABTestState(testName: ABTestName): MatomoABTestState | null {
   if (typeof window === "undefined") return null;
   return window.__MATOMO_AB_TEST__?.[testName] ?? null;
 }

@@ -292,7 +292,6 @@ describe("cleanUrl parameter in Pages Router", () => {
   });
 
   test("should clean URL by default (cleanUrl=true) - remove query params and hash", async () => {
-     
     const { trackPagesRouter } = require("../index");
     trackPagesRouter({ siteId: "42", url: "YO", cleanUrl: true });
     window._paq = [];
@@ -315,7 +314,6 @@ describe("cleanUrl parameter in Pages Router", () => {
   });
 
   test("should keep query params and hash when cleanUrl=false", async () => {
-     
     const { trackPagesRouter } = require("../index");
     trackPagesRouter({ siteId: "42", url: "YO", cleanUrl: false });
     window._paq = [];
@@ -338,7 +336,6 @@ describe("cleanUrl parameter in Pages Router", () => {
   });
 
   test("should clean consecutive URLs when cleanUrl=true", async () => {
-     
     const { trackPagesRouter } = require("../index");
     trackPagesRouter({ siteId: "42", url: "YO", cleanUrl: true });
     window._paq = [];
@@ -364,7 +361,6 @@ describe("cleanUrl parameter in Pages Router", () => {
   });
 
   test("should keep query params in consecutive URLs when cleanUrl=false", async () => {
-     
     const { trackPagesRouter } = require("../index");
     trackPagesRouter({ siteId: "42", url: "YO", cleanUrl: false });
     window._paq = [];
@@ -387,7 +383,6 @@ describe("cleanUrl parameter in Pages Router", () => {
   });
 
   test("should handle hash-only URLs correctly when cleanUrl=true", async () => {
-     
     const { trackPagesRouter } = require("../index");
     trackPagesRouter({ siteId: "42", url: "YO", cleanUrl: true });
     window._paq = [];
@@ -407,7 +402,6 @@ describe("cleanUrl parameter in Pages Router", () => {
   });
 
   test("should keep hash when cleanUrl=false", async () => {
-     
     const { trackPagesRouter } = require("../index");
     trackPagesRouter({ siteId: "42", url: "YO", cleanUrl: false });
     window._paq = [];
@@ -427,7 +421,6 @@ describe("cleanUrl parameter in Pages Router", () => {
   });
 
   test("should handle complex URLs with query and hash when cleanUrl=true", async () => {
-     
     const { trackPagesRouter } = require("../index");
     trackPagesRouter({ siteId: "42", url: "YO", cleanUrl: true });
     window._paq = [];
@@ -447,7 +440,6 @@ describe("cleanUrl parameter in Pages Router", () => {
   });
 
   test("should keep query params for search routes with cleanUrl=true", async () => {
-     
     const { trackPagesRouter } = require("../index");
     trackPagesRouter({ siteId: "42", url: "YO", cleanUrl: true });
     window._paq = [];
@@ -473,7 +465,6 @@ describe("cleanUrl parameter in Pages Router", () => {
   });
 
   test("should keep query params for /recherche route with cleanUrl=true", async () => {
-     
     const { trackPagesRouter } = require("../index");
     trackPagesRouter({ siteId: "42", url: "YO", cleanUrl: true });
     window._paq = [];
@@ -493,7 +484,6 @@ describe("cleanUrl parameter in Pages Router", () => {
   });
 
   test("should clean non-search routes but keep search routes with cleanUrl=true", async () => {
-     
     const { trackPagesRouter } = require("../index");
     trackPagesRouter({ siteId: "42", url: "YO", cleanUrl: true });
     window._paq = [];

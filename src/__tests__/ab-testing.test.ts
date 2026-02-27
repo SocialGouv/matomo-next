@@ -1,10 +1,5 @@
-import {
-  initABTesting,
-  getABTestState,
-} from "../ab-testing";
-import type {
-  ABTestDefinition,
-} from "../ab-testing";
+import { initABTesting, getABTestState } from "../ab-testing";
+import type { ABTestDefinition } from "../ab-testing";
 import type { PushArgs } from "../types";
 
 // ---------------------------------------------------------------------------
@@ -461,7 +456,9 @@ describe("abTests config option (first-class integration)", () => {
     const calls = collectPaqCalls();
     const abCalls = calls.filter((c) => c[0] === "AbTesting::create");
     expect(abCalls).toHaveLength(2);
-    expect((abCalls[0][1] as Record<string, unknown>).name).toBe("pricing-hero");
+    expect((abCalls[0][1] as Record<string, unknown>).name).toBe(
+      "pricing-hero",
+    );
     expect((abCalls[1][1] as Record<string, unknown>).name).toBe("pricing-cta");
   });
 
