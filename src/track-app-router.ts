@@ -168,6 +168,17 @@ export const trackAppRouter = (settings: InitSettings): void => {
   if (state.isInitialPageview) {
     state.isInitialPageview = false;
     state.previousUrl = currentUrl;
+
+    // Apply cleanUrl on the initial pageview too, so a landing URL with query
+    // params / hash fragments isn't tracked "dirty". Search routes keep their
+    // params to preserve trackSiteSearch.
+    const isSearchRoute = searchRoutes.some((route) =>
+      currentUrl.startsWith(route),
+    );
+    if (cleanUrl && !isSearchRoute) {
+      push(["setCustomUrl", cleanUrlPath(currentUrl)]);
+    }
+
     trackPageOrSearch();
   } else if (currentUrl !== state.previousUrl) {
     // Check if current route is a search route

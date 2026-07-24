@@ -709,5 +709,69 @@ describe("App Router functionality", () => {
         done();
       }, 10);
     });
+
+    test("should clean the URL on the initial pageview when cleanUrl=true", () => {
+      const { trackAppRouter } = require("../index");
+      document.head.appendChild(document.createElement("script"));
+
+      trackAppRouter({
+        pathname: "/products",
+        searchParams: new URLSearchParams("id=123&category=electronics"),
+        siteId: "42",
+        url: "https://YO",
+        cleanUrl: true,
+      });
+
+      expect(window._paq).toEqual(
+        expect.arrayContaining([
+          ["setCustomUrl", "/products"],
+          ["trackPageView"],
+        ]),
+      );
+      expect(window._paq).not.toEqual(
+        expect.arrayContaining([
+          ["setCustomUrl", "/products?id=123&category=electronics"],
+        ]),
+      );
+    });
+
+    test("should not set a cleaned custom URL on the initial pageview when cleanUrl=false", () => {
+      const { trackAppRouter } = require("../index");
+      document.head.appendChild(document.createElement("script"));
+
+      trackAppRouter({
+        pathname: "/products",
+        searchParams: new URLSearchParams("id=123"),
+        siteId: "42",
+        url: "https://YO",
+        cleanUrl: false,
+      });
+
+      expect(window._paq).not.toEqual(
+        expect.arrayContaining([["setCustomUrl", "/products"]]),
+      );
+      expect(window._paq).toEqual(expect.arrayContaining([["trackPageView"]]));
+    });
+
+    test("should keep query params on the initial pageview for search routes when cleanUrl=true", () => {
+      const { trackAppRouter } = require("../index");
+      document.head.appendChild(document.createElement("script"));
+
+      trackAppRouter({
+        pathname: "/search",
+        searchParams: new URLSearchParams("q=test&page=2"),
+        siteId: "42",
+        url: "https://YO",
+        cleanUrl: true,
+      });
+
+      // Search routes keep their query params so trackSiteSearch still works
+      expect(window._paq).not.toEqual(
+        expect.arrayContaining([["setCustomUrl", "/search"]]),
+      );
+      expect(window._paq).toEqual(
+        expect.arrayContaining([["trackSiteSearch", "test"]]),
+      );
+    });
   });
 });

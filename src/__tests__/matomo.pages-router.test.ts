@@ -504,4 +504,46 @@ describe("cleanUrl parameter in Pages Router", () => {
       resolve();
     });
   });
+
+  test("should clean the initial pageview URL when cleanUrl=true", () => {
+    const { trackPagesRouter } = require("../index");
+    window.history.pushState({}, "", "/products?id=123&ref=home#reviews");
+
+    trackPagesRouter({ siteId: "42", url: "YO", cleanUrl: true });
+
+    expect(window._paq).toEqual(
+      expect.arrayContaining([
+        ["setCustomUrl", "/products"],
+        ["trackPageView"],
+      ]),
+    );
+    expect(window._paq).not.toEqual(
+      expect.arrayContaining([["setCustomUrl", "/products?id=123&ref=home"]]),
+    );
+  });
+
+  test("should not set a cleaned custom URL on the initial pageview when cleanUrl=false", () => {
+    const { trackPagesRouter } = require("../index");
+    window.history.pushState({}, "", "/products?id=123");
+
+    trackPagesRouter({ siteId: "42", url: "YO", cleanUrl: false });
+
+    expect(window._paq).not.toEqual(
+      expect.arrayContaining([["setCustomUrl", "/products"]]),
+    );
+    expect(window._paq).toEqual(expect.arrayContaining([["trackPageView"]]));
+  });
+
+  test("should keep query params on the initial pageview for search routes when cleanUrl=true", () => {
+    const { trackPagesRouter } = require("../index");
+    window.history.pushState({}, "", "/search?q=test&page=2");
+
+    trackPagesRouter({ siteId: "42", url: "YO", cleanUrl: true });
+
+    // Search routes keep their query params so trackSiteSearch still works
+    expect(window._paq).not.toEqual(
+      expect.arrayContaining([["setCustomUrl", "/search"]]),
+    );
+    expect(window._paq).toEqual(expect.arrayContaining([["trackPageView"]]));
+  });
 });

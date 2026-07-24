@@ -101,6 +101,18 @@ export const trackPagesRouter = (settings: InitSettings): void => {
       console.log(`matomo: exclude track ${window.location.pathname}`);
     }
   } else {
+    // Apply cleanUrl on the initial pageview too, so a landing URL with query
+    // params / hash fragments isn't tracked "dirty". Search routes keep their
+    // params to preserve trackSiteSearch.
+    if (cleanUrl && typeof window !== "undefined") {
+      const initialPath = `${window.location.pathname}${window.location.search}`;
+      const isSearchRoute = searchRoutes.some((route) =>
+        initialPath.startsWith(route),
+      );
+      if (!isSearchRoute) {
+        push(["setCustomUrl", cleanUrlPath(initialPath)]);
+      }
+    }
     push(["trackPageView"]);
   }
 
